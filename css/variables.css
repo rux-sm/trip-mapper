@@ -103,6 +103,24 @@
      Component CSS must use these — never Tier 1 directly.
      ============================================================ */
 
+  /* 2A. Panel Header & Footer
+  ──────────────────────────────────────────────────────────────── */     
+  --rux-header-height: 48px;
+  --rux-header-padding-x: var(--rux-space-4);
+  --rux-header-padding-y: var(--rux-space-4);
+  --rux-header-gap: var(--rux-space-4);
+  --rux-header-bg: var(--rux-bg-3);
+  --rux-header-shadow: var(--panel-header-shadow);  
+
+
+  --rux-footer-height: 48px;
+  --rux-footer-padding-x: var(--rux-space-3);
+  --rux-footer-padding-y: var(--rux-space-3);
+  --rux-footer-gap: var(--rux-space-3);
+  --rux-footer-bg: var(--rux-bg-2);
+  --rux-footer-shadow: var(--panel-footer-shadow);
+
+
   /* 2A. Surfaces
      Number suffix = elevation level. Higher = lighter in dark mode.
   ──────────────────────────────────────────────────────────────── */
@@ -163,7 +181,7 @@
   ──────────────────────────────────────────────────────────────── */
 
   --rux-radius-control: var(--rux-radius-2);  /* inputs, selects — 6px */
-  --rux-radius-section: var(--rux-radius-6);  /* groups inside cards — 14px */
+  --rux-radius-section: var(--rux-radius-5);  /* groups inside cards — 14px */
   --rux-radius-surface: var(--rux-radius-3);  /* cards, panels — 8px */
   --rux-radius-overlay: var(--rux-radius-4);  /* modals, popovers — 10px */
   --rux-radius-badge:   var(--rux-radius-0);  /* chips, mini-badges — 0px */
@@ -188,116 +206,5 @@
   --card-shadow-context: 0 8px 16px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   --card-shadow-left:    -4px 4px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   --card-shadow-right:   4px 4px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-
-  /* ============================================================
-     COMPAT — Migration aliases
-     Old token names pointing to their current equivalents.
-     Delete each group once all callers are updated (Part C).
-     ============================================================ */
-
-  /* Text (old names) → Tier 2 text roles */
-  --text-primary:     var(--rux-text-1);
-  --text-secondary:   var(--rux-text-2);
-  --text-placeholder: var(--rux-text-placeholder);
-  --text-disabled:    var(--rux-text-3);
-  --text-muted:       var(--rux-text-2);
-  --rux-text-primary:   var(--rux-text-1);
-  --rux-text-secondary: var(--rux-text-2);
-  --rux-text-disabled:  var(--rux-text-3);
-  --rux-text-hover:     var(--rux-text-3);
-
-  /* Surfaces (old names) → Tier 2 bg levels */
-  --rux-surface-base:       var(--rux-bg-1);
-  --rux-surface-panel:      var(--rux-bg-2);
-  --rux-surface-input:      var(--rux-bg-2);
-  --rux-surface-textarea:   var(--rux-bg-2);
-  --rux-surface-app-header: var(--rux-bg-2);
-  --rux-surface-header:     color-mix(in srgb, var(--rux-bg-3) 10%, transparent);
-  --rux-surface-footer:     var(--rux-bg-2);
-  --rux-surface-menu:       var(--rux-bg-3);
-  --rux-surface-card:       var(--rux-bg-4);
-  --rux-surface-modal:      var(--rux-bg-5);
-  --rux-surface-overlay:    var(--rux-bg-overlay);
-
-  /* Borders (old names) → Tier 2 border roles */
-  --rux-color-border-subtle:  var(--rux-border-1);
-  --rux-color-border-default: var(--rux-border-2);
-  --rux-color-border-strong:  var(--rux-border-3);
-
-  /* Accent (old name) → Tier 2 */
-  --rux-accent-color: var(--rux-color-accent);
-
-  /* Button (old names) → button.css tokens */
-  --rux-button-primary-bg:        var(--rux-btn-bg-primary);
-  --rux-button-secondary-bg:      var(--rux-btn-bg-secondary);
-  --rux-button-danger-bg:         var(--rux-btn-bg-danger);
-  --rux-button-text:               var(--rux-btn-text);
-  --rux-button-hover:              var(--rux-btn-hover-lift);
-  --rux-button-icon-size:          var(--rux-btn-icon-size);
-  --rux-button-icon-fill:          var(--rux-btn-icon-fill);
-  --rux-button-icon-wght:          var(--rux-btn-icon-wght);
-  --rux-button-icon-grad:          var(--rux-btn-icon-grad);
-  --rux-button-icon-opsz:          var(--rux-btn-icon-opsz);
-  --rux-button-square-icon-size:   var(--rux-btn-square-icon-size);
-  --rux-button-square-icon-fill:   var(--rux-btn-square-icon-fill);
-  --rux-button-square-icon-wght:   var(--rux-btn-square-icon-wght);
-  --rux-button-square-icon-grad:   var(--rux-btn-square-icon-grad);
-  --rux-button-square-icon-opsz:   var(--rux-btn-square-icon-opsz);
-
-  /* Color/status (old names) → Tier 2 status tokens */
-  --color-secondary:       oklch(from var(--rux-color-gray) 35% c h);
-  --color-accent:          var(--rux-color-accent);
-  --color-danger:          var(--rux-status-red);
-  --color-danger-soft:     var(--rux-status-red-alpha);
-  --color-success:         var(--rux-status-green);
-  --color-warning:         var(--rux-status-yellow);
-  --color-status-pending:  var(--rux-status-red);
-  --color-status-ok:       var(--rux-status-green);
-  --color-status-assigned: var(--rux-status-yellow);
-  --color-status-blue:     var(--rux-status-blue);
-  --color-conflict-accent: var(--rux-status-red);
-  --color-conflict-bg:     var(--rux-status-red-alpha);
-
-  /* Spacing shorthands (old names) → Tier 1 spacing scale */
-  --space-xs: var(--rux-space-1);
-  --space-sm: var(--rux-space-2);
-  --space-md: var(--rux-space-3);
-  --space-lg: var(--rux-space-4);
-  --space-xl: var(--rux-space-6);
-
-  /* Tier 1 compat (old long-form names — check if used before deleting) */
-  --rux-black:  var(--rux-color-black);
-  --rux-white:  var(--rux-color-white);
-  --rux-gray:   var(--rux-color-gray);
-  --rux-red:    var(--rux-color-red);
-  --rux-orange: var(--rux-color-orange);
-  --rux-yellow: var(--rux-color-yellow);
-  --rux-green:  var(--rux-color-green);
-  --rux-cyan:   var(--rux-color-cyan);
-  --rux-blue:   var(--rux-color-blue);
-  --rux-purple: var(--rux-color-purple);
-  --rux-pink:   var(--rux-color-pink);
-
-  --rux-font-family-sans:  var(--rux-font-sans);
-  --rux-font-family-mono:  var(--rux-font-mono);
-  --rux-font-family-icons: var(--rux-font-icons);
-
-  --rux-font-size-1: var(--rux-size-1);
-  --rux-font-size-2: var(--rux-size-2);
-  --rux-font-size-3: var(--rux-size-3);
-  --rux-font-size-4: var(--rux-size-4);
-  --rux-font-size-5: var(--rux-size-5);
-  --rux-font-size-6: var(--rux-size-6);
-  --rux-font-size-7: var(--rux-size-7);
-  --rux-font-size-8: var(--rux-size-8);
-
-  --rux-font-weight-light:    var(--rux-weight-light);
-  --rux-font-weight-regular:  var(--rux-weight-regular);
-  --rux-font-weight-medium:   var(--rux-weight-medium);
-  --rux-font-weight-semibold: var(--rux-weight-semibold);
-  --rux-font-weight-bold:     var(--rux-weight-bold);
-  --rux-font-weight-black:    var(--rux-weight-black);
-
-  --rux-space-8: 1.75rem;
 
 }

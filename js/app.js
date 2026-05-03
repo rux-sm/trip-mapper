@@ -5858,7 +5858,7 @@ function printEnvelopePages() {
   /* Hide modal chrome from the main app; only show the envelope page(s) */
   .modal--envelope .modal__card--envelope,
   .envelope-modal__toolbar,
-  .c-header--modal,
+  .rux-header--modal,
   .modal__foot,
   .modal__backdrop {
     display: none !important;
@@ -6503,7 +6503,7 @@ function buildPrintScheduleTwoPages() {
       headerClone.classList.add("print-header");
       headerClone
         .querySelectorAll(
-          ".c-header__actions, .agenda-header__date-left .rux-btn--tertiary, .weekpicker-trigger-wrap, .agenda-header__sync-center, .agenda-header__date-right",
+          ".rux-header__actions, .agenda-header__date-left .rux-btn--tertiary, .weekpicker-trigger-wrap, .agenda-header__sync-center, .agenda-header__date-right",
         )
         .forEach((el) => el.remove());
 
@@ -6609,7 +6609,7 @@ function buildPrintScheduleLegalCSSGrid() {
       headerClone.classList.add("print-header");
       headerClone
         .querySelectorAll(
-          ".c-header__actions, .agenda-header__date-left .rux-btn--tertiary, .weekpicker-trigger-wrap, .agenda-header__sync-center, .agenda-header__date-right",
+          ".rux-header__actions, .agenda-header__date-left .rux-btn--tertiary, .weekpicker-trigger-wrap, .agenda-header__sync-center, .agenda-header__date-right",
         )
         .forEach((el) => el.remove());
       const dateLeft = headerClone.querySelector(".agenda-header__date-left");

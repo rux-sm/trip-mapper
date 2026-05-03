@@ -12,7 +12,7 @@
   font-size: var(--input-font-size);
   text-align: left;
   list-style: none;
-  background-color: var(--rux-surface-menu);
+  background-color: var(--rux-bg-3);
   background-clip: padding-box;
   border: none;
   border-radius: 04;
@@ -41,7 +41,7 @@
   flex-shrink: 0;
   padding: 0 16px;
   background: transparent;
-  color: var(--text-primary);
+  color: var(--rux-text-1);
   font-family: var(--font-sans);
   font-size: var(--input-font-size);
   text-align: left;
@@ -53,7 +53,7 @@
 
 /* Make meta/info items visually consistent but less prominent */
 .dropdown__item--meta {
-  color: var(--text-secondary);
+  color: var(--rux-text-2);
   font-style: italic;
   cursor: default;
   background: none;
@@ -61,7 +61,7 @@
 
 .dropdown__item:hover,
 .dropdown__item:focus-visible {
-  background-color: var(--rux-surface-overlay);
+  background-color: var(--rux-bg-overlay);
   outline: none;
 }
 
@@ -73,7 +73,7 @@
     "GRAD" var(--icon-field-grad),
     "opsz" var(--icon-field-opsz);
   flex-shrink: 0;
-  color: var(--text-secondary);
+  color: var(--rux-text-2);
 }
 
 /* Force the text span to stay on a single line */
@@ -87,10 +87,10 @@
   display: block;
   width: 100%;
   padding: 6px 12px;
-  background: var(--rux-surface-overlay);
+  background: var(--rux-bg-overlay);
   border: none;
-  border-bottom: 1px solid var(--rux-color-border-subtle);
-  color: var(--text-primary);
+  border-bottom: 1px solid var(--rux-border-1);
+  color: var(--rux-text-1);
   font-family: var(--font-sans);
   font-size: var(--input-font-size);
   outline: none;
@@ -98,13 +98,13 @@
 }
 
 .dropdown__search::placeholder {
-  color: var(--text-secondary);
+  color: var(--rux-text-2);
 }
 
 /* Style all <option> tags globally for dark theme consistency */
 option {
-  background: var(--rux-surface-panel) !important;
-  color: var(--text-primary) !important;
+  background: var(--rux-bg-2) !important;
+  color: var(--rux-text-1) !important;
   padding: 8px 12px;
   font-family: var(--font-sans);
   font-size: var(--input-font-size);

@@ -85,7 +85,7 @@
   font-variation-settings:
     "FILL" var(--icon-tripbar-fill, 1),
     "opsz" var(--icon-tripbar-opsz, 20);
-  color: color-mix(in srgb, var(--text-primary) 100%, white);
+  color: color-mix(in srgb, var(--rux-text-1) 100%, white);
   text-shadow: var(--text-shadow);
   background: transparent;
   border-radius: var(--tripbar-badge-radius);
@@ -161,149 +161,6 @@
   animation: arrow-right-bounce 0.75s infinite ease-in-out;
 }
 
-/* ==========================================================================
-   5-COMPONENTS / CARDS
-   Base card component and its internal elements (BEM)
-   ========================================================================== */
-
-.c-card {
-  background: var(--rux-surface-base);
-  min-width: 0;
-  border-inline-start: none;
-  position: relative;
-  isolation: isolate;
-  overflow: clip;
-  box-shadow: var(--card-shadow);
-}
-
-.c-card--compact {
-  padding: 0;
-}
-
-/* --- Shared Header Primitive (Carbon-lite scaffold) --- */
-.c-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: auto;
-  width: 100%;
-  flex-shrink: 0;
-}
-
-.c-header__title {
-  margin: 0;
-  padding: 0;
-  white-space: nowrap;
-  line-height: 1;
-}
-
-.c-header__actions {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  gap: 4px;
-}
-
-/* --- Rux UI --- */
-.rux-panel__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: auto;
-  width: 100%;
-  flex-shrink: 0;
-  padding-inline: var(--rux-space-4);
-  padding-block: var(--rux-space-4);
-  z-index: 10;
-
-  /* 1. Position Sticky: Essential so content scrolls UNDER the header to show the blur */
-  position: sticky;
-  top: 0;
-
- background: var(--rux-surface-header); 
-  
-  /* The blur effect */
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px); /* Required for Safari */
-  
-  /* iOS-style border and corners */
-  border: none;
-  border-radius: var(--rux-space-6) var(--rux-space-6) 0 0 ;
-  
-  /* Shadow for depth */
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-  
-}
-
-.rux-panel__header .c-header__title {
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-sans);
-  font-size: var(--rux-font-size-7);
-  font-weight: var(--rux-font-weight-semibold);
-  line-height: 1;
-  height: auto;
-  letter-spacing: var(--heading-2-letter-spacing);
-  color: var(--heading-2-color);
-  white-space: nowrap;
-  text-rendering: optimizeLegibility;
-  text-shadow: var(--heading-shadow-panel);
-}
-
-.rux-panel__header .c-header__actions {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  gap: 4px;
-}
-
-.c-header__actions span.material-symbols-outlined {
-  text-rendering: optimizeLegibility;
-}
-
-.c-card__body {
-  flex: 1 1 auto;
-  min-height: 0;
-  min-width: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-/* Rux UI */
-.rux-panel__footer {
-  --footer-bg: var(--rux-surface-footer);
-  --footer-padding-x: var(--rux-space-3);
-  --footer-padding-y: var(--rux-space-3);
-  --footer-gap: var(--rux-space-3);
-
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--footer-gap);
-  border-top: 1px solid var(--rux-color-border-subtle);
-  flex-wrap: wrap;
-  padding: var(--footer-padding-y) var(--footer-padding-x);
- 
- border-radius: 0 0 var(--rux-space-5) var(--rux-space-5);
- 
-  z-index: 10;
-  position: sticky;
-  bottom: 0;
-  background-color: color-mix(in srgb, var(--rux-surface-header), transparent 75%);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(150%);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: none;
-
-}
-
-/* Direct buttons share space equally */
-.rux-panel__footer > .rux-btn {
-  flex: 1;
-}
-
 
 /* ==========================================================================
    ACCORDION (IBM Carbon Style)
@@ -316,7 +173,7 @@
 
 .cds-accordion__item {
   border-radius: var(--rux-radius-section);
-  border: 1px solid var(--rux-color-border-default);
+  border: 1px solid var(--rux-border-2);
   margin-bottom: 8px;
   overflow: hidden;
 }
@@ -331,7 +188,7 @@
   margin: 0;
   background: transparent;
   border: none;
-  color: var(--text-primary);
+  color: var(--rux-text-1);
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 400;
@@ -340,7 +197,7 @@
 }
 
 .cds-accordion__heading:hover {
-  background-color: oklch(from var(--rux-button-secondary-bg) calc(l + var(--rux-button-hover)) c h);
+  background-color: oklch(from var(--rux-btn-bg-secondary) calc(l + var(--rux-btn-hover-lift)) c h);
 }
 
 .cds-accordion__title {
@@ -351,12 +208,12 @@
 
 .cds-accordion__title .material-symbols-outlined {
   font-size: 1.125rem;
-  color: var(--text-secondary);
+  color: var(--rux-text-2);
 }
 
 .cds-accordion__arrow {
   font-size: 16px;
-  color: var(--text-secondary);
+  color: var(--rux-text-2);
   transition: transform 0.11s ease;
 }
 

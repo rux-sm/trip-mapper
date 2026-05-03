@@ -113,7 +113,7 @@
     outline-color var(--transition-fast);
   will-change: transform, filter, box-shadow;
 
-  --trip-accent-color: var(--rux-blue);
+  --trip-accent-color: var(--rux-color-blue);
 
   /* Background LCHA */
   --tripbar-bg-l: 60%;
@@ -214,8 +214,8 @@
   --tripbar-status-pending-bg: var(--rux-status-red-alpha);
   --tripbar-status-pending-color: color-mix(in srgb,
       var(--rux-status-red) 25%,
-      oklch(from var(--rux-gray) 8% c h));
-  --tripbar-status-ok-bg: var(--rux-red);
+      oklch(from var(--rux-color-gray) 8% c h));
+  --tripbar-status-ok-bg: var(--rux-color-red);
 
   &.out-of-service {
     --tripbar-color: var(--rux-status-red-alpha);
@@ -283,35 +283,35 @@
   }
 
   &.unconfirmed {
-    --trip-accent-color: var(--rux-red);
+    --trip-accent-color: var(--rux-color-red);
   }
 
   &.color-green {
-    --trip-accent-color: var(--rux-green);
+    --trip-accent-color: var(--rux-color-green);
   }
 
   &.color-yellow {
-    --trip-accent-color: var(--rux-yellow);
+    --trip-accent-color: var(--rux-color-yellow);
   }
 
   &.color-purple {
-    --trip-accent-color: var(--rux-purple);
+    --trip-accent-color: var(--rux-color-purple);
   }
 
   &.color-pink {
-    --trip-accent-color: var(--rux-pink);
+    --trip-accent-color: var(--rux-color-pink);
   }
 
   &.color-orange {
-    --trip-accent-color: var(--rux-orange);
+    --trip-accent-color: var(--rux-color-orange);
   }
 
   &.color-teal {
-    --trip-accent-color: var(--rux-cyan);
+    --trip-accent-color: var(--rux-color-cyan);
   }
 
   &.color-cyan {
-    --trip-accent-color: var(--rux-cyan);
+    --trip-accent-color: var(--rux-color-cyan);
   }
 
 }
@@ -554,7 +554,7 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
 .schedule-grid__trip-bar__mini-badge.has-pdf:hover,
 .schedule-grid__trip-bar__mini-badge.has-action:hover {
   transform: scale(1.15);
-  color: var(--text-primary);
+  color: var(--rux-text-1);
   background-color: rgba(255, 255, 255, 0.2);
 }
 

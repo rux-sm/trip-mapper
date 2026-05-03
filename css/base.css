@@ -48,7 +48,7 @@
 }
 
 .schedule-viewport::-webkit-scrollbar-thumb {
-  background-color: var(--rux-button-secondary-bg);
+  background-color: var(--rux-btn-bg-secondary);
   border-radius: 2px;
   border: 2px solid transparent;
   background-clip: padding-box;
@@ -56,16 +56,16 @@
 }
 
 .schedule-viewport::-webkit-scrollbar-thumb:hover {
-  background-color: oklch(from var(--rux-button-secondary-bg) calc(l + var(--rux-button-hover)) c h);
+  background-color: oklch(from var(--rux-btn-bg-secondary) calc(l + var(--rux-btn-hover-lift)) c h);
 }
 
 /* Hide vertical scrollbars while preserving wheel/trackpad scrolling */
-.o-app-layout__sidebar--left .c-card__body,
-.o-app-layout__sidebar--right .c-card__body,
+.o-app-layout__sidebar--left .rux-card__body,
+.o-app-layout__sidebar--right .rux-card__body,
 .o-app-layout__sidebar--right,
 .agenda-header,
 .modal__body,
-.schedule-grid__conflict-panel .c-card__body,
+.schedule-grid__conflict-panel .rux-card__body,
 .notes-textarea,
 .notes__textarea,
 .detail-text.detail-itinerary-scroll,
@@ -76,14 +76,14 @@
   scrollbar-width: none;
 }
 
-.o-app-layout__sidebar--left .c-card__body::-webkit-scrollbar,
-.o-app-layout__sidebar--right .c-card__body::-webkit-scrollbar,
+.o-app-layout__sidebar--left .rux-card__body::-webkit-scrollbar,
+.o-app-layout__sidebar--right .rux-card__body::-webkit-scrollbar,
 .o-app-layout__sidebar--right::-webkit-scrollbar,
-.o-app-layout__sidebar--left>.c-card:not(.is-hidden) .c-card__body::-webkit-scrollbar,
-.o-app-layout__sidebar--right>.c-card:not(.is-hidden) .c-card__body::-webkit-scrollbar,
+.o-app-layout__sidebar--left>.rux-card:not(.is-hidden) .rux-card__body::-webkit-scrollbar,
+.o-app-layout__sidebar--right>.rux-card:not(.is-hidden) .rux-card__body::-webkit-scrollbar,
 .agenda-header::-webkit-scrollbar,
 .modal__body::-webkit-scrollbar,
-.schedule-grid__conflict-panel .c-card__body::-webkit-scrollbar,
+.schedule-grid__conflict-panel .rux-card__body::-webkit-scrollbar,
 .notes-textarea::-webkit-scrollbar,
 .notes__textarea::-webkit-scrollbar,
 .detail-text.detail-itinerary-scroll::-webkit-scrollbar,
@@ -154,7 +154,7 @@ body {
 }
 
 .u-text-danger {
-  color: var(--color-danger) !important;
+  color: var(--rux-status-red) !important;
 }
 
 /* ==========================================================================
@@ -166,8 +166,8 @@ body {
   font-family: var(--font-sans);
   line-height: 1.5;
   letter-spacing: 0.02em;
-  color: var(--text-primary);
-  background: var(--rux-surface-base);
+  color: var(--rux-text-1);
+  background: var(--rux-bg-1);
   /* Base behind schedule */
   transition:
     background-color 200ms ease,
@@ -456,17 +456,17 @@ samp {
 @keyframes today-pulse {
   from {
     box-shadow:
-      0 0 0 0 color-mix(in srgb, var(--rux-accent-color) 40%, transparent),
-      0 0 4px color-mix(in srgb, var(--rux-accent-color) 20%, transparent);
-    background: color-mix(in srgb, var(--rux-accent-color) 100%, transparent);
+      0 0 0 0 color-mix(in srgb, var(--rux-color-accent) 40%, transparent),
+      0 0 4px color-mix(in srgb, var(--rux-color-accent) 20%, transparent);
+    background: color-mix(in srgb, var(--rux-color-accent) 100%, transparent);
     filter: brightness(1) saturate(1);
   }
 
   to {
     box-shadow:
-      0 0 0 6px color-mix(in srgb, var(--rux-accent-color) 0%, transparent),
-      0 0 16px color-mix(in srgb, var(--rux-accent-color) 80%, transparent);
-    background: var(--rux-accent-color);
+      0 0 0 6px color-mix(in srgb, var(--rux-color-accent) 0%, transparent),
+      0 0 16px color-mix(in srgb, var(--rux-color-accent) 80%, transparent);
+    background: var(--rux-color-accent);
     filter: brightness(1.3) saturate(1.3);
   }
 }
@@ -566,7 +566,7 @@ samp {
 }
 
 .text-muted {
-  color: var(--text-muted);
+  color: var(--rux-text-2);
 }
 
 .w-full {
@@ -608,7 +608,7 @@ samp {
   padding: 0;
 
   /* Force to Layer 03 (Highest elevation, lightest background) */
-  background-color: var(--rux-surface-menu);
+  background-color: var(--rux-bg-3);
   border: none;
   border-radius: 0px;
   /* Strictly square */
@@ -645,7 +645,7 @@ samp {
   position: absolute;
   z-index: var(--z-dropdown);
   min-width: 180px;
-  background-color: var(--rux-surface-menu);
+  background-color: var(--rux-bg-3);
   border: none;
   box-shadow: var(--card-shadow-context);
   padding: 4px 0;
@@ -670,7 +670,7 @@ samp {
   font-weight: 600;
   letter-spacing: 0.32px;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: var(--rux-text-2);
   /* Carbon secondary text */
   text-align: start;
   margin-bottom: 0;
@@ -708,7 +708,7 @@ samp {
   font-size: 0.875rem;
   font-weight: 400;
   /* Carbon items are normal weight until hovered/selected */
-  color: var(--text-primary);
+  color: var(--rux-text-1);
   text-align: start;
   cursor: pointer;
 
@@ -732,7 +732,7 @@ samp {
     "wght" var(--icon-field-wght),
     "GRAD" var(--icon-field-grad),
     "opsz" var(--icon-field-opsz);
-  color: var(--text-secondary);
+  color: var(--rux-text-2);
 }
 
 /* Carbon Hover: 10% brighter background mix */
@@ -740,8 +740,8 @@ samp {
 .dropdown__item:hover,
 .context-item:hover,
 .context-menu__item:hover {
-  background-color: var(--rux-surface-overlay);
-  color: var(--text-primary);
+  background-color: var(--rux-bg-overlay);
+  color: var(--rux-text-1);
 }
 
 /* Carbon Active/Pressed state */
@@ -749,26 +749,26 @@ samp {
 .dropdown__item:active,
 .context-item:active,
 .context-menu__item:active {
-  background-color: var(--rux-surface-panel);
+  background-color: var(--rux-bg-2);
 }
 
 .dropdown__item--meta {
   cursor: default;
   font-size: 0.75rem;
-  color: var(--text-secondary);
+  color: var(--rux-text-2);
 }
 
 .dropdown__item--meta:hover,
 .dropdown__item--meta:active {
-  background-color: var(--rux-surface-overlay);
-  color: var(--text-secondary);
+  background-color: var(--rux-bg-overlay);
+  color: var(--rux-text-2);
 }
 
 /* Active Selection overrides */
 .dropdown-icon.is-active,
 .dropdown__icon.is-active,
 .dropdown-item.is-active {
-  color: var(--rux-blue);
+  color: var(--rux-color-blue);
   /* Carbon uses primary blue to indicate current selection */
   font-weight: 600;
 }

@@ -161,6 +161,67 @@ should be treated as technical debt.
 
 ---
 
+## Class Naming Convention
+
+### The Rule
+
+All design-system component classes use the `rux-` prefix. Application-specific
+components (things that only exist in this app) do not require a prefix.
+
+Structure follows BEM:
+
+```
+.rux-{block}                  Block  — the component itself
+.rux-{block}__{element}       Element — a part of the component
+.rux-{block}--{modifier}      Modifier — a variant or state
+```
+
+### Patterns at a glance
+
+| Pattern | When to use | Examples |
+|---------|-------------|---------|
+| `.rux-{name}` | Any reusable DS component | `.rux-card`, `.rux-modal`, `.rux-btn` |
+| `.rux-{name}__{part}` | A named sub-part of a component | `.rux-card__body`, `.rux-modal__header` |
+| `.rux-{name}--{variant}` | A visual variant or size | `.rux-card--compact`, `.rux-btn--danger` |
+| `.is-{state}` | JS-toggled boolean state | `.is-hidden`, `.is-open`, `.is-active`, `.is-empty` |
+| `.has-{state}` | JS-toggled compound state | `.has-error`, `.has-progress` |
+| *(no prefix)* | App-specific, non-reusable | `.schedule-grid`, `.trip-bar`, `.bus-assign` |
+
+### Design-system vs. app-specific
+
+**Use `rux-` prefix** for anything that could exist in a different app:
+cards, modals, buttons, headers, panels, badges, accordions, menus, form grids.
+
+**No prefix required** for things only this app has:
+the schedule grid, trip bars, bus assignment layout, agenda header, waiting list.
+
+### State classes stay unprefixed
+
+`.is-*` and `.has-*` are added and removed by JavaScript. They are universal enough
+that namespacing them would add noise without benefit. Never create `.rux-is-*`.
+
+### Migration targets
+
+These existing classes violate the convention and should be renamed when each
+component is next edited. Every rename requires a find-replace across
+`css/`, `index.html`, and `js/app.js`.
+
+| Current (violation) | Target | Home file |
+|---------------------|--------|-----------|
+| `.c-card`, `.c-card--compact`, `.c-card__body` | `.rux-card` | `surfaces.css` |
+| `.c-header`, `.c-header__title`, `.c-header__actions` | `.rux-header` | `surfaces.css` |
+| `.heading-1` | `.rux-heading` | `surfaces.css` |
+| `.nav-controls` | `.rux-nav` | `surfaces.css` |
+| `.cds-accordion`, `.cds-accordion__*` | `.rux-accordion` | `primitives.css` |
+| `.modal`, `.modal__card`, `.modal__body` | `.rux-modal` | `modals.css` |
+| `.badge` | `.rux-badge` | `primitives.css` |
+| `.o-app-layout`, `.o-app-layout__*` | `.rux-app-layout` | `layout.css` |
+| `.form-section-card` | `.rux-form-section` | `form.css` |
+| `.context-menu` | `.rux-context-menu` | `base.css` |
+| `.dropdown__menu` | `.rux-menu` | `base.css` / `dropdown.css` |
+
+---
+
 ## Quick Reference — Token Flow
 
 ```

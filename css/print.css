@@ -38,7 +38,7 @@
   }
 }
 
-#printRoot.print-mode-legal .c-header.c-header--schedule {
+#printRoot.print-mode-legal .rux-header.rux-header--schedule {
   border-top: none !important;
   border-bottom: none !important;
   height: 40px !important;
@@ -271,7 +271,7 @@
     margin-bottom: 4px !important;
   }
 
-  .print-header .c-header--schedule {
+  .print-header .rux-header--schedule {
     margin: 0 !important;
     min-height: 0 !important;
   }
@@ -288,7 +288,7 @@
     object-fit: contain;
   }
 
-  .print-header .c-header__title {
+  .print-header .rux-header__title {
     color: #333 !important;
     font-size: 14pt !important;
     line-height: 1.2 !important;
@@ -327,8 +327,8 @@
     border: none !important;
     border-inline-start: none !important;
     /* Main outer left/top borders for the entire grid */
-    border-top: 1px solid var(--rux-color-border-default) !important;
-    border-left: 1px solid var(--rux-color-border-default) !important;
+    border-top: 1px solid var(--rux-border-2) !important;
+    border-left: 1px solid var(--rux-border-2) !important;
   }
 
   /* Letter full: force 1400px so column metrics and scale are tightly coupled; 52px bus matches JS colMetrics */
@@ -387,8 +387,8 @@
     border-left: none !important;
     border-inline-start: none !important;
     border-inline-end: none !important;
-    border-right: 1px solid var(--rux-color-border-default) !important;
-    border-bottom: 1px solid var(--rux-color-border-default) !important;
+    border-right: 1px solid var(--rux-border-2) !important;
+    border-bottom: 1px solid var(--rux-border-2) !important;
     background-color: white !important;
     box-sizing: border-box !important;
     padding: 2px !important;
@@ -403,8 +403,8 @@
     border-left: none !important;
     border-inline-start: none !important;
     border-inline-end: none !important;
-    border-right: 1px solid var(--rux-color-border-default) !important;
-    border-bottom: 1px solid var(--rux-color-border-default) !important;
+    border-right: 1px solid var(--rux-border-2) !important;
+    border-bottom: 1px solid var(--rux-border-2) !important;
     box-sizing: border-box !important;
     padding: 2px !important;
     font-size: 9pt !important;
@@ -429,7 +429,7 @@
     padding: 0 !important;
   }
 
-  #printRoot.print-mode-letter-full .print-header .c-header__title {
+  #printRoot.print-mode-letter-full .print-header .rux-header__title {
     font-size: 14pt !important;
     line-height: 1.2 !important;
   }

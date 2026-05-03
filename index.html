@@ -247,14 +247,14 @@
             >
               <!-- Placeholder for new left panel cards -->
               <div
-                class="c-card c-card--compact is-hidden"
+                class="rux-card rux-card--compact is-hidden"
                 id="leftPanelCard1"
                 data-js="panel-card-left-placeholder"
               >
                 <div class="rux-panel__header">
-                  <h2 class="c-header__title">Left panel card 1</h2>
+                  <h2 class="rux-header__title">Left panel card 1</h2>
                 </div>
-                <div class="c-card__body">
+                <div class="rux-card__body">
                   <p>Add your content here</p>
                 </div>
               </div>
@@ -268,14 +268,14 @@
             >
               <!-- Quote Calculator Card (hidden by default) -->
               <div
-                class="c-card c-card--compact is-hidden quote-calculator"
+                class="rux-card rux-card--compact is-hidden quote-calculator"
                 id="quoteCard"
                 data-js="panel-card-quote"
               >
                 <div class="rux-panel__header">
-                  <h2 class="c-header__title">Quote Calculator</h2>
+                  <h2 class="rux-header__title">Quote Calculator</h2>
                 </div>
-                <div class="c-card__body">
+                <div class="rux-card__body">
                   <div class="quote-calculator__layout-grid">
                     <!-- Left Column: Static Options -->
                     <div class="quote-calculator__col-static">
@@ -636,16 +636,16 @@
 
               <!-- Driver Week Card (hidden by default) -->
               <div
-                class="c-card c-card--compact is-hidden"
+                class="rux-card rux-card--compact is-hidden"
                 id="driverWeekCard"
                 11
                 data-js="panel-card-drivers"
               >
                 <div class="rux-panel__header">
-                  <h2 class="c-header__title">Driver Assignments</h2>
-                  <div class="c-header__actions"></div>
+                  <h2 class="rux-header__title">Driver Assignments</h2>
+                  <div class="rux-header__actions"></div>
                 </div>
-                <div class="c-card__body">
+                <div class="rux-card__body">
                   <div class="driver-week__wrap">
                     <table class="driver-week__table">
                       <thead>
@@ -666,15 +666,15 @@
 
               <!-- Notes Card (hidden by default) -->
               <div
-                class="c-card c-card--compact is-hidden"
+                class="rux-card rux-card--compact is-hidden"
                 id="notesCard"
                 data-js="panel-card-notes"
               >
                 <div class="rux-panel__header">
-                  <h2 class="c-header__title">Notes</h2>
-                  <div class="c-header__actions"></div>
+                  <h2 class="rux-header__title">Notes</h2>
+                  <div class="rux-header__actions"></div>
                 </div>
-                <div class="c-card__body">
+                <div class="rux-card__body">
                   <div class="notes__wrap">
                     <textarea
                       id="scheduleNotes"
@@ -696,15 +696,15 @@
 
               <!-- Daily Checklist Card -->
               <div
-                class="c-card c-card--compact is-hidden"
+                class="rux-card rux-card--compact is-hidden"
                 id="todoCard"
                 data-js="panel-card-todo"
               >
                 <div class="rux-panel__header">
-                  <h2 class="c-header__title">Checklist</h2>
-                  <div class="c-header__actions"></div>
+                  <h2 class="rux-header__title">Checklist</h2>
+                  <div class="rux-header__actions"></div>
                 </div>
-                <div class="c-card__body">
+                <div class="rux-card__body">
                   <div class="todo-header" id="todoHeader"></div>
                   <div class="todo-list" id="todoList"></div>
                 </div>
@@ -712,16 +712,16 @@
 
               <!-- Activity Log Card -->
               <div
-                class="c-card c-card--compact is-hidden"
+                class="rux-card rux-card--compact is-hidden"
                 id="logCard"
                 data-js="panel-card-log"
               >
                 <div class="rux-panel__header">
                   <div class="log-header__title-wrap">
-                    <h2 class="c-header__title">Activity Log</h2>
+                    <h2 class="rux-header__title">Activity Log</h2>
                     <span id="logFilterBadge" class="log-filter-badge is-hidden"></span>
                   </div>
-                  <div class="c-header__actions">
+                  <div class="rux-header__actions">
                     <button
                       id="logClearFilterBtn"
                       class="rux-btn rux-btn--square is-hidden"
@@ -740,28 +740,28 @@
                     </button>
                   </div>
                 </div>
-                <div class="c-card__body">
+                <div class="rux-card__body">
                   <div id="logList" data-js="log-list" class="log-list"></div>
                 </div>
               </div>
 
               <!-- Trip Info Card -->
               <div
-                class="c-card c-card--compact is-hidden"
+                class="rux-card rux-card--compact is-hidden"
                 id="tripInfoCard"
                 data-js="panel-card-trip-info"
               >
                 <div class="rux-panel__header">
                   <div class="log-header__title-wrap">
-                    <h2 class="c-header__title">Trip Editor</h2>
+                    <h2 class="rux-header__title">Trip Editor</h2>
                     <span
                       id="tripIdBadge"
                       class="log-filter-badge is-hidden"
                     ></span>
                   </div>
-                  <div class="c-header__actions"></div>
+                  <div class="rux-header__actions"></div>
                 </div>
-                <div class="c-card__body">
+                <div class="rux-card__body">
                   <div
                     id="tripConflictBanner"
                     class="alert alert--danger is-hidden u-mb-4"
@@ -1340,7 +1340,7 @@
             <!-- MAIN PANEL (Schedule) -->
             <div class="o-app-layout__main">
               <div
-                class="c-card"
+                class="rux-card"
                 data-js="schedule-main-card"
               >
                 <!-- Conflicts badge (overlay) -->
@@ -1359,13 +1359,13 @@
                   class="agenda-header"
                   data-js="schedule-agenda-header"
                 >
-                  <div class="c-header c-header--schedule">
+                  <div class="rux-header rux-header--schedule">
                     <div class="agenda-header__date-left">
                       <div
                         id="dateWrapper"
                         class="date-picker-wrapper"
                       >
-                        <h2 class="c-header__title">
+                        <h2 class="rux-header__title">
                           <span
                             class="agenda-header__week-date"
                             id="headerWeek"
@@ -1385,7 +1385,7 @@
                         Loading…
                       </span>
                     </div>
-                    <div class="c-header__actions">
+                    <div class="rux-header__actions">
                       <button
                         id="prevWeekBtn"
                         class="rux-btn rux-btn--tertiary"
@@ -1543,16 +1543,16 @@
 
                 <div
                   id="conflictPanel"
-                  class="c-card schedule-grid__conflict-panel is-hidden"
+                  class="rux-card schedule-grid__conflict-panel is-hidden"
                   data-js="schedule-conflict-panel"
                 >
                   <div class="rux-panel__header">
-                    <h2 class="c-header__title">Conflicts</h2>
-                    <div class="c-header__actions">
+                    <h2 class="rux-header__title">Conflicts</h2>
+                    <div class="rux-header__actions">
                       <span class="badge badge--error">Needs attention</span>
                     </div>
                   </div>
-                  <div class="c-card__body">
+                  <div class="rux-card__body">
                     <div
                       id="conflictList"
                       data-js="schedule-conflict-list"
@@ -1584,8 +1584,8 @@
         aria-modal="true"
         aria-label="Trip itinerary"
       >
-        <div class="c-header c-header--modal">
-          <h2 class="section-title c-header__title">Trip Itinerary</h2>
+        <div class="rux-header rux-header--modal">
+          <h2 class="section-title rux-header__title">Trip Itinerary</h2>
         </div>
 
         <div class="modal__body">
@@ -1632,8 +1632,8 @@
         aria-modal="true"
         aria-label="Trip details"
       >
-        <div class="c-header c-header--modal">
-          <h2 class="section-title c-header__title">Trip Details</h2>
+        <div class="rux-header rux-header--modal">
+          <h2 class="section-title rux-header__title">Trip Details</h2>
         </div>
 
         <div class="modal__body">
@@ -1673,8 +1673,8 @@
         aria-modal="true"
         aria-label="Next Day Report"
       >
-        <div class="c-header c-header--modal">
-          <h2 class="section-title c-header__title">Weekly Maintenance Report</h2>
+        <div class="rux-header rux-header--modal">
+          <h2 class="section-title rux-header__title">Weekly Maintenance Report</h2>
           <input
             type="date"
             id="nextDayReportDateInput"
@@ -1727,8 +1727,8 @@
         aria-modal="true"
         aria-label="Daily Maintenance Plan"
       >
-        <div class="c-header c-header--modal">
-          <h2 class="section-title c-header__title">Daily Maintenance Plan</h2>
+        <div class="rux-header rux-header--modal">
+          <h2 class="section-title rux-header__title">Daily Maintenance Plan</h2>
           <input
             type="date"
             id="dailyMaintenancePlanDateInput"
@@ -1780,8 +1780,8 @@
         tabindex="-1"
       ></button>
       <div class="modal__box">
-        <div class="c-header c-header--modal">
-          <h2 class="section-title c-header__title" id="driverWeekScheduleTitle">Driver Week Schedule</h2>
+        <div class="rux-header rux-header--modal">
+          <h2 class="section-title rux-header__title" id="driverWeekScheduleTitle">Driver Week Schedule</h2>
         </div>
         <div class="modal__body">
           <div class="driver-contact__section">
@@ -1815,8 +1815,8 @@
         aria-modal="true"
         aria-label="Driver Contact Information"
       >
-        <div class="c-header c-header--modal">
-          <h2 class="section-title c-header__title">Driver Contact Information / Trip Reminder</h2>
+        <div class="rux-header rux-header--modal">
+          <h2 class="section-title rux-header__title">Driver Contact Information / Trip Reminder</h2>
         </div>
 
         <div class="modal__body driver-contact__body">
@@ -1916,8 +1916,8 @@
         aria-modal="true"
         aria-label="Trip envelope"
       >
-        <div class="c-header c-header--modal">
-          <h2 class="section-title c-header__title">Trip Envelope</h2>
+        <div class="rux-header rux-header--modal">
+          <h2 class="section-title rux-header__title">Trip Envelope</h2>
         </div>
 
         <div class="modal__body envelope-modal__body">
@@ -2120,8 +2120,8 @@
         aria-modal="true"
         aria-label="Quote Calculator Rules"
       >
-        <div class="c-header c-header--modal">
-          <h2 class="section-title c-header__title">Quote Calculator — Rules & Logic</h2>
+        <div class="rux-header rux-header--modal">
+          <h2 class="section-title rux-header__title">Quote Calculator — Rules & Logic</h2>
         </div>
 
         <div class="modal__body">

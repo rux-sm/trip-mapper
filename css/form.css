@@ -78,7 +78,7 @@ textarea,
   border-radius: var(--rux-fld-radius);
   font-size: var(--rux-fld-font-size);
   font-weight: var(--rux-fld-font-weight);
-  color: var(--rux-text-primary);
+  color: var(--rux-text-1);
   text-align: left;
   outline: none;
   box-shadow: var(--rux-fld-shadow);
@@ -125,7 +125,7 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
   cursor: pointer;
   padding: 0px;
   margin-inline-start: 0px;
-  /* Dims the pure white icon to ~68% lightness, visually matching var(--text-secondary) */
+  /* Dims the pure white icon to ~68% lightness, visually matching var(--rux-text-2) */
   filter: brightness(0.7);
   transition: filter var(--transition-fast);
 }
@@ -138,7 +138,7 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 /* Firefox Fallback */
 input[type="date"]::-moz-calendar-picker-indicator,
 input[type="time"]::-moz-calendar-picker-indicator {
-  color: var(--text-secondary);
+  color: var(--rux-text-2);
   opacity: 1;
 }
 
@@ -182,7 +182,7 @@ textarea {
 
 input::placeholder,
 textarea::placeholder {
-  color: var(--text-placeholder);
+  color: var(--rux-text-placeholder);
   opacity: 1;
 }
 
@@ -195,15 +195,15 @@ select:focus-visible,
 textarea:focus-visible,
 .select-trigger:focus-visible {
   outline: none;
-  border-color: var(--rux-accent-color);
+  border-color: var(--rux-color-accent);
   box-shadow: 0 0 0 2px var(--focus-ring-color), var(--rux-fld-shadow);
 }
 
 /* ── 6b. Driver double-booking conflict highlight ──────────────────────────── */
 
 .select-dropdown.driver-conflict .select-trigger {
-  border-color: var(--color-warning);
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-warning) 30%, transparent);
+  border-color: var(--rux-status-yellow);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--rux-status-yellow) 30%, transparent);
 }
 
 /* Warning icon inside the dropdown list item */
@@ -214,14 +214,14 @@ textarea:focus-visible,
     "wght" var(--icon-field-wght),
     "GRAD" var(--icon-field-grad),
     "opsz" var(--icon-field-opsz);
-  color: var(--color-warning);
+  color: var(--rux-status-yellow);
   flex-shrink: 0;
   margin-left: var(--icon-text-gap);
 }
 
 /* Dim the conflicting item text slightly so the icon pops */
 .driver-conflict-item {
-  color: color-mix(in oklch, var(--text-primary) 70%, var(--color-warning));
+  color: color-mix(in oklch, var(--rux-text-1) 70%, var(--rux-status-yellow));
 }
 
 /* ── 7. Custom Select Widget (.select-dropdown / .select-trigger) ─────────── */
@@ -276,7 +276,7 @@ textarea:disabled {
 
 /* Open state — same focus ring as inputs */
 .select-trigger.is-open {
-  outline: 2px solid var(--rux-accent-color);
+  outline: 2px solid var(--rux-color-accent);
   outline-offset: -2px;
 }
 
@@ -292,24 +292,24 @@ textarea:disabled {
 
 /* Muted icon color when trigger has no selection */
 .select-trigger.is-empty .dropdown-icon.is-active {
-  color: var(--text-placeholder);
+  color: var(--rux-text-placeholder);
 }
 
 /* Status icon colors inside select triggers */
 .dropdown-icon.status-pending {
-  color: var(--color-status-pending);
+  color: var(--rux-status-red);
 }
 
 .dropdown-icon.status-ok {
-  color: var(--color-status-ok);
+  color: var(--rux-status-green);
 }
 
 .dropdown-icon.status-assigned {
-  color: var(--color-status-assigned);
+  color: var(--rux-status-yellow);
 }
 
 .dropdown-icon.status-blue {
-  color: var(--color-status-blue);
+  color: var(--rux-status-blue);
 }
 
 /* Status colors on dropdown menu items */
@@ -358,12 +358,12 @@ textarea:disabled {
 
 input[type="date"].is-empty:not(:focus)::-webkit-datetime-edit,
 input[type="time"].is-empty:not(:focus)::-webkit-datetime-edit {
-  color: var(--text-placeholder);
+  color: var(--rux-text-placeholder);
 }
 
 select.is-empty:not(:focus),
 .select-trigger.is-empty {
-  color: var(--text-placeholder);
+  color: var(--rux-text-placeholder);
 }
 
 /* ── 9. Labels ───────────────────────────────────────────────────────────── */
@@ -374,7 +374,7 @@ select.is-empty:not(:focus),
   display: block;
   font-size: var(--rux-fld-label-font-size);
   font-weight: var(--rux-fld-label-font-weight);
-  color: var(--rux-text-secondary);
+  color: var(--rux-text-2);
   line-height: 1;
   margin-bottom: var(--rux-fld-label-margin);
   padding-left: var(--rux-fld-label-indent);
@@ -405,7 +405,7 @@ select.is-empty:not(:focus),
 
 #itineraryModalField:focus {
   outline: none;
-  border-color: var(--rux-accent-color);
+  border-color: var(--rux-color-accent);
   box-shadow: var(--focus-ring);
 }
 
@@ -424,8 +424,8 @@ select.is-empty:not(:focus),
   letter-spacing: normal;
   font-variant-numeric: normal;
   white-space: pre-wrap;
-  color: var(--text-secondary);
-  background: var(--rux-surface-panel);
+  color: var(--rux-text-2);
+  background: var(--rux-bg-2);
   border: none;
   border-radius: 0;
 }
@@ -440,8 +440,8 @@ select.is-empty:not(:focus),
   font-family: var(--font-mono);
   font-size: 0.875rem;
   white-space: pre;
-  color: var(--text-secondary);
-  background: var(--rux-surface-panel);
+  color: var(--rux-text-2);
+  background: var(--rux-bg-2);
   padding: 12px;
   line-height: 1.5;
   letter-spacing: normal;
@@ -530,7 +530,7 @@ select.is-empty:not(:focus),
 hr.form-divider {
   grid-column: span 12;
   border: none;
-  border-top: 1px solid var(--rux-color-border-default);
+  border-top: 1px solid var(--rux-border-2);
   margin: 0;
   padding: 0;
 }
@@ -568,14 +568,14 @@ hr.form-divider {
   content: "";
   flex: 1;
   height: 1px;
-  background: var(--rux-color-border-default);
+  background: var(--rux-border-2);
 }
 
 .form-divider__label {
   font-size: var(--rux-fld-section-label-font-size);
   font-weight: var(--rux-fld-section-label-font-weight);
   letter-spacing: var(--rux-fld-section-label-letter-spacing);
-  color: var(--text-secondary);
+  color: var(--rux-text-2);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -586,9 +586,9 @@ hr.form-divider {
   display: grid;
   grid-template-columns: subgrid;
   row-gap: var(--rux-fld-row-gap);
-  padding: var(--rux-space-5);
-  background: var(--rux-surface-card);
-  border: 1px solid var(--rux-color-border-subtle);
+  padding: var(--rux-space-4);
+  background: var(--rux-bg-4);
+  border: 1px solid var(--rux-border-1);
   border-radius: var(--rux-radius-section);
   box-shadow: var(--card-shadow);
 }
@@ -598,8 +598,8 @@ hr.form-divider {
   font-size: var(--rux-fld-section-label-font-size);
   font-weight: var(--rux-fld-section-label-font-weight);
   letter-spacing: 0.08em;
-  color: var(--text-secondary);
+  color: var(--rux-text-2);
   text-transform: uppercase;
   padding-bottom: var(--rux-space-3);
-  border-bottom: 1px solid var(--rux-color-border-subtle);
+  border-bottom: 1px solid var(--rux-border-1);
 }

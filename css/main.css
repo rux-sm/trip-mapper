@@ -1,5 +1,6 @@
 @import "variables.css";
 @import "base.css";
+@import "surfaces.css";
 @import "layout.css";
 
 /* Core UI primitives (buttons, cards, headers, icons, toast, loading) */
