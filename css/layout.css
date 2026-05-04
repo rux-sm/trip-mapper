@@ -3,7 +3,7 @@
 :root {
   /* App shell sizing */
   --layout-container-max: 100%;
-  --layout-panel-gap:     var(--rux-space-3);
+  --layout-panel-gap:     var(--rux-layout-spacing);
   --card-padding:         16px;
   --size-header-row:      40px;
   --size-header-action:   40px;
@@ -11,9 +11,9 @@
 
   /* Panel / sidebar geometry */
   --panel-width:           384px;
-  --panel-header-h:        3rem;
+  --panel-header-h:        56px;
   --panel-body-top-gap:    0.75rem;
-  --panel-footer-h:        3rem;
+  --panel-footer-h:        56px;
   --panel-body-bottom-gap: 1.25rem;
   --panel-body-left-gap:   1rem;
 
@@ -67,9 +67,8 @@
   flex: 1;
   overflow: visible;
   min-height: 0;
-  gap: var(--layout-panel-gap);
-  padding-left: var(--layout-panel-gap);
-  padding-right: var(--layout-panel-gap);
+  gap: var(--rux-layout-spacing);
+
 }
 
 .o-app-layout__sidebar--right,
@@ -81,7 +80,9 @@
 
 /* Margin below center schedule card only */
 .o-app-layout__main {
-  padding-bottom: var(--rux-space-4);
+
+  padding-top: var(--rux-layout-spacing);
+  padding-bottom: var(--rux-layout-spacing);
 }
 
 /* Sidebar symmetry: structural reset only (visual skin lives in component layer) */
@@ -97,10 +98,12 @@
   /* Match table height; avoid forced stretch. */
   max-height: 100%;
 
-  padding: 0;
+  padding: var(--rux-layout-spacing);
   margin: 0;
   display: flex;
   flex-direction: column;
+  border-radius: var(--rux-radius-9);
+  background: var(--rux-bg-2);
 
   overflow: visible;
   /* Let the table container own scrolling. */
@@ -138,7 +141,6 @@
   display: flex;
   flex-direction: column;
   overflow: visible;
-  box-shadow: none;
 }
 
 .o-app-layout__main .schedule-viewport {
@@ -150,7 +152,7 @@
 
 .o-app-layout__sidebar--left,
 .o-app-layout__sidebar--right {
-  width: var(--panel-width);
+  width: calc(var(--panel-width) + var(--rux-layout-spacing));
   flex-shrink: 0;
   position: relative;
   z-index: 1001;
@@ -181,22 +183,22 @@
 .o-app-layout__sidebar--left>.rux-card,
 .o-app-layout__sidebar--right>.rux-card {
   position: fixed;
-  top: calc(var(--size-header-row) + var(--rux-space-3));
-  bottom: var(--rux-space-3);
+  top: calc(var(--size-header-row) + var(--rux-layout-spacing));
+  bottom: var(--rux-layout-spacing);
   width: var(--panel-width);
   box-shadow: none;
   transition:none;
 }
 
 .o-app-layout__sidebar--left>.rux-card {
-  left: var(--rux-space-3);
-  border-radius: var(--rux-radius-7);
+  left: var(--rux-layout-spacing);
+  border-radius: var(--rux-radius-9);
   transform: translateX(0);
 }
 
 .o-app-layout__sidebar--right>.rux-card {
-  right: var(--rux-space-3);
-  border-radius: var(--rux-radius-7);
+  right: var(--rux-layout-spacing);
+  border-radius: var(--rux-radius-9);
   transform: translateX(0);
 }
 
@@ -236,8 +238,8 @@
   min-height: 0;
   z-index: 1;
   
-  padding-top: calc(var(--panel-header-h) + var(--panel-body-top-gap));
-  padding-bottom: calc(var(--panel-footer-h) + var(--panel-body-bottom-gap));
+  padding-top: var(--panel-header-h);
+  padding-bottom: var(--panel-footer-h);
 }
 
 /* Footer: row 3 — paints above the body via z-index */

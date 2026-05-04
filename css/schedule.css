@@ -52,7 +52,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(0);
+  background-color: var(--rux-bg-2);
   border-bottom: none;
   width: 100%;
   height: auto;
@@ -309,9 +309,8 @@
 
 /* Main schedule area layer */
 .o-app-layout__main>.rux-card {
-  border-radius: 0;
-  background: var(--rux-bg-1);
-  /* Your pure black background */
+  border-radius: var(--rux-radius-9);
+  background: var(--rux-bg-2);
 }
 
 /* ==========================================================================

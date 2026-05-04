@@ -3,11 +3,11 @@
 :root {
   /* Fields */
   --rux-fld-height:           28px;
-  --rux-fld-radius:           var(--rux-radius-2);
+  --rux-fld-radius:           var(--rux-radius-3);
   --rux-fld-padding:          0 var(--rux-space-2);
   --rux-fld-bg:               var(--rux-bg-2);
   --rux-fld-bg-hover:         var(--rux-bg-2);
-  --rux-fld-shadow:           inset 0 2px 4px oklch(0% 0 0 / 35%);
+  --rux-fld-shadow:           inset 0 2px 4px oklch(0% 0 0 / 0%);
   --rux-fld-disabled-opacity: 0.5;
   --rux-fld-font-size:        var(--rux-size-4);
   --rux-fld-font-weight:      var(--rux-weight-regular);
@@ -595,11 +595,12 @@ hr.form-divider {
 
 .form-section-card__label {
   grid-column: 1 / -1;
-  font-size: var(--rux-fld-section-label-font-size);
-  font-weight: var(--rux-fld-section-label-font-weight);
-  letter-spacing: 0.08em;
+  font-family: var(--rux-font-sans);
+  font-size: var(--rux-size-4);
+  font-weight: var(--rux-weight-semibold);
   color: var(--rux-text-2);
   text-transform: uppercase;
+  letter-spacing: 0.05em;
   padding-bottom: var(--rux-space-3);
   border-bottom: 1px solid var(--rux-border-1);
 }

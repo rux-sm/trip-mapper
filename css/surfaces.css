@@ -15,7 +15,6 @@
 
 .rux-app__header {
   --app-height: var(--size-header-row);
-  --app-bg: var(--rux-bg-2);
 
   display: flex;
   align-items: center;
@@ -27,7 +26,7 @@
   z-index: 1000;
   height: var(--app-height);
   padding-inline: var(--rux-space-4);
-  background-color: var(--rux-bg-1);
+  background-color: var(--rux-bg-2);
   box-shadow: none;
 }
 
@@ -119,13 +118,13 @@
 /* ── 2. Card ─────────────────────────────────────────────────────────────── */
 
 .rux-card {
-  background: var(--rux-bg-1);
+  background: var(--rux-bg-2);
   min-width: 0;
   border-inline-start: none;
   position: relative;
   isolation: isolate;
   overflow: clip;
-  box-shadow: var(--card-shadow);
+  box-shadow: none;
 }
 
 .rux-card--compact {
@@ -154,7 +153,6 @@
 }
 
 .rux-header__title {
-  margin: 0;
   padding: 0;
   white-space: nowrap;
   line-height: 1;
@@ -177,39 +175,34 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: auto;
-  width: 100%;
+  height: var(--panel-header-h);
+  width: auto;
   flex-shrink: 0;
-  padding-inline: var(--rux-space-4);
+  padding-inline:var(--rux-space-7);
   padding-block: var(--rux-space-4);
   z-index: 10;
 
   position: sticky;
   top: 0;
-
-  background: color-mix(in srgb, var(--rux-bg-3) 10%, transparent);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: color-mix(in srgb, var(--rux-bg-3) 0%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 
   border: none;
-  border-radius: var(--rux-radius-7) var(--rux-radius-7) 0 0;
-
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  border-radius: var(--rux-radius-9) var(--rux-radius-9) 0 0;
+  box-shadow: none;
 }
 
 .rux-panel__header .rux-header__title {
   margin: 0;
   padding: 0;
-  font-family: var(--font-sans);
-  font-size: var(--rux-size-7);
+  font-family: var(--rux-font-sans);
+  font-size: var(--rux-size-6);
   font-weight: var(--rux-weight-semibold);
-  line-height: 1;
-  height: auto;
-  letter-spacing: var(--heading-2-letter-spacing);
-  color: var(--heading-2-color);
+  color: var(--rux-text-1);
+  line-height: var(--rux-line-height-1);
   white-space: nowrap;
-  text-rendering: optimizeLegibility;
-  text-shadow: var(--heading-shadow-panel);
+  -webkit-font-smoothing: antialiased;
 }
 
 .rux-panel__header .rux-header__actions {
@@ -221,9 +214,9 @@
 
 .rux-panel__footer {
   --footer-bg:        var(--rux-bg-2);
-  --footer-padding-x: var(--rux-space-3);
-  --footer-padding-y: var(--rux-space-3);
-  --footer-gap:       var(--rux-space-3);
+  --footer-padding-x: var(--rux-layout-spacing);
+  --footer-padding-y: var(--rux-layout-spacing);
+  --footer-gap:       var(--rux-layout-spacing);
 
   flex-shrink: 0;
   display: flex;
@@ -232,16 +225,16 @@
   flex-wrap: wrap;
   padding: var(--rux-footer-padding-y) var(--rux-footer-padding-x);
 
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border: none;
   border-radius: 0 0 var(--rux-radius-7) var(--rux-radius-7);
 
   z-index: 10;
   position: sticky;
   bottom: 0;
 
-  background-color: color-mix(in srgb, color-mix(in srgb, var(--rux-bg-3) 10%, transparent), transparent 75%);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(150%);
+ background: color-mix(in srgb, var(--rux-bg-3) 0%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 
   box-shadow: none;
 }
