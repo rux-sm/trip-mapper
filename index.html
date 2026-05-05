@@ -856,6 +856,18 @@
                       id="reqWifiValue"
                       value="false"
                     />
+                    <input
+                      type="hidden"
+                      name="driverInfoSent"
+                      id="driverInfoSentValue"
+                      value="false"
+                    />
+                    <input
+                      type="hidden"
+                      name="tripReminderSent"
+                      id="tripReminderSentValue"
+                      value="false"
+                    />
 
                     <!-- ── Section 1: Trip Details ─────────────────────── -->
                     <div class="form-section-card">
@@ -1044,12 +1056,12 @@
                     </div>
 
                     <div class="form-group col-6">
-                      <label for="notes">Notes</label>
+                      <label for="paymentType">Payment Type</label>
                       <input
                         type="text"
-                        id="notes"
-                        name="notes"
-                        placeholder="PO # or note…"
+                        id="paymentType"
+                        name="paymentType"
+                        placeholder=""
                       />
                     </div>
 
@@ -1063,6 +1075,40 @@
                         id="invoiceNumber"
                         name="invoiceNumber"
                         placeholder=""
+                      />
+                    </div>
+
+                    <div class="form-group col-12">
+                      <label for="notes">Notes</label>
+                      <input
+                        type="text"
+                        id="notes"
+                        name="notes"
+                        placeholder=""
+                      />
+                    </div>
+
+                    <div class="form-group col-6">
+                      <label for="estimatedMileage">Estimated Mileage</label>
+                      <input
+                        type="number"
+                        id="estimatedMileage"
+                        name="estimatedMileage"
+                        placeholder=""
+                        min="0"
+                        step="0.1"
+                      />
+                    </div>
+
+                    <div class="form-group col-6">
+                      <label for="quotedPrice">Quoted Price</label>
+                      <input
+                        type="number"
+                        id="quotedPrice"
+                        name="quotedPrice"
+                        placeholder=""
+                        min="0"
+                        step="0.01"
                       />
                     </div>
 
@@ -1289,6 +1335,27 @@
                         class="col-12"
                         data-js="trip-bus-grid"
                       ></div>
+
+                      <div class="form-group col-12" style="display:flex; gap:8px;">
+                        <button
+                          type="button"
+                          class="rux-btn rux-btn--toggle"
+                          id="tripReminderSent"
+                          aria-pressed="false"
+                        >
+                          <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+                          Reminder
+                        </button>
+                        <button
+                          type="button"
+                          class="rux-btn rux-btn--toggle"
+                          id="driverInfoSent"
+                          aria-pressed="false"
+                        >
+                          <span class="material-symbols-outlined" aria-hidden="true">send</span>
+                          Driver Info
+                        </button>
+                      </div>
                     </div>
 
                     <input

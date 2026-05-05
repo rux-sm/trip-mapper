@@ -25,7 +25,7 @@
   --rux-fld-row-gap:                      var(--rux-space-3);
   --rux-fld-col-gap:                      var(--rux-space-3);
   --rux-fld-card-gap:                     var(--rux-space-3);
-  --rux-fld-section-gap:                  var(--rux-space-0);
+  --rux-fld-section-gap:                  var(--rux-space-3);
 
   /* Section labels */
   --rux-fld-section-label-color:          var(--rux-text-2);

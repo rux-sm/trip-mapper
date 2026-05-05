@@ -711,7 +711,7 @@ function truthyRequirement(v) {
 }
 
 function setRequirementTogglesFromTrip(t = {}) {
-  const ids = ["req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "reqWifi"];
+  const ids = ["req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "reqWifi", "driverInfoSent", "tripReminderSent"];
   ids.forEach((id) => {
     const btn = document.getElementById(id);
     if (!btn) return;
@@ -848,6 +848,11 @@ function sanitizeWeekResp(resp) {
         invoiceStatus: asStr(t?.invoiceStatus).trim(),
         invoiceNumber: asStr(t?.invoiceNumber).trim(),
         // Core text fields
+        paymentType: asStr(t?.paymentType),
+        estimatedMileage: asStr(t?.estimatedMileage),
+        quotedPrice: asStr(t?.quotedPrice),
+        driverInfoSent: !!t?.driverInfoSent && t?.driverInfoSent !== "false",
+        tripReminderSent: !!t?.tripReminderSent && t?.tripReminderSent !== "false",
         notes: asStr(t?.notes),
         comments: asStr(t?.comments),
         itinerary: asStr(t?.itinerary),
@@ -1770,6 +1775,9 @@ function refreshEmptyStateUI() {
     "invoiceNumber",
     "tripColor",
     "itinerary",
+    "paymentType",
+    "estimatedMileage",
+    "quotedPrice",
     "notes",
     "comments",
   ];
@@ -3880,13 +3888,14 @@ const TRIP_CHECKLIST = [
   },
   {
     key: "reminder",
+    tripProp: "tripReminderSent",
     label: "Trip Reminder Sent",
     show: () => true,
   },
   {
     key: "driverInfo",
+    tripProp: "driverInfoSent",
     label: "Driver Info Sent",
-    // Only relevant when customer contact is required (not "Not Required")
     show: (t) => t.contactStatus !== "Not Required",
   },
   {
@@ -3952,7 +3961,7 @@ function buildTripCard(t, todayYMD, getAsns) {
   const saved      = JSON.parse(localStorage.getItem(savedKey) || "{}");
   const items      = TRIP_CHECKLIST.filter(({ show }) => show(t));
   const checkItems = items.filter(({ type }) => type !== "warning");
-  const checks     = items.map(({ key, label, type }) => {
+  const checks     = items.map(({ key, label, type, tripProp }) => {
     if (type === "warning") {
       return `<li class="todo-item todo-item--warning" data-trip="${t.tripKey}" data-key="${key}">
         <span class="todo-item__label">
@@ -3961,7 +3970,7 @@ function buildTripCard(t, todayYMD, getAsns) {
         </span>
       </li>`;
     }
-    const checked = !!saved[key];
+    const checked = !!saved[key] || (tripProp ? !!t[tripProp] : false);
     return `<li class="todo-item${checked ? " is-done" : ""}" data-trip="${t.tripKey}" data-key="${key}">
       <label class="todo-item__label">
         <input type="checkbox" class="todo-item__check" ${checked ? "checked" : ""}>
@@ -3971,7 +3980,7 @@ function buildTripCard(t, todayYMD, getAsns) {
   }).join("");
   let statusClass = "";
   if (checkItems.length > 0) {
-    const allDone = checkItems.every(({ key }) => !!saved[key]);
+    const allDone = checkItems.every(({ key, tripProp }) => !!saved[key] || (tripProp ? !!t[tripProp] : false));
     statusClass = allDone ? " is-complete" : " has-pending";
   }
   return `<div class="todo-trip-card${statusClass}" data-trip="${t.tripKey}">
@@ -6129,6 +6138,9 @@ async function openTripForEdit(tripKey) {
 
     if ($("itinerary")) dom.itineraryField.value = t.itinerary || "";
     if ($("itineraryPdfUrl")) $("itineraryPdfUrl").value = t.itineraryPdfUrl || "";
+    if ($("paymentType")) $("paymentType").value = t.paymentType || "";
+    if ($("estimatedMileage")) $("estimatedMileage").value = t.estimatedMileage || "";
+    if ($("quotedPrice")) $("quotedPrice").value = t.quotedPrice || "";
     if ($("notes")) $("notes").value = t.notes || "";
     if ($("comments")) $("comments").value = t.comments || "";
 
@@ -8642,6 +8654,9 @@ function wireEvents() {
       itinerary: dom.itineraryField.value,
       // Preserve attached PDF URL during optimistic save/update re-renders.
       itineraryPdfUrl: existingTrip?.itineraryPdfUrl || "",
+      paymentType: $("paymentType")?.value || "",
+      estimatedMileage: $("estimatedMileage")?.value || "",
+      quotedPrice: $("quotedPrice")?.value || "",
       notes: $("notes").value,
       comments: $("comments").value,
       // Envelope-only fields (do not affect quote contact/phone/notes)
@@ -8658,6 +8673,8 @@ function wireEvents() {
       reqHotel: $("reqHotel")?.getAttribute("aria-pressed") === "true",
       reqFuelCard: $("reqFuelCard")?.getAttribute("aria-pressed") === "true",
       reqWifi: $("reqWifi")?.getAttribute("aria-pressed") === "true",
+      driverInfoSent: $("driverInfoSent")?.getAttribute("aria-pressed") === "true",
+      tripReminderSent: $("tripReminderSent")?.getAttribute("aria-pressed") === "true",
     };
 
     // Proactive Conflict Check
@@ -8693,7 +8710,7 @@ function wireEvents() {
     dom.saveBtn.disabled = true;
 
     // Sync requirement toggles to hidden inputs so backend receives them
-    ["req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard"].forEach((id) => {
+    ["req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "driverInfoSent", "tripReminderSent"].forEach((id) => {
       const btn = $(id);
       const hidden = $(id + "Value");
       if (btn && hidden) {
