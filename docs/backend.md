@@ -74,15 +74,21 @@
   "createdAt",
   "updatedAt",
   "itineraryPdfUrl",
+  "paymentType",
+  "estimatedMileage",
+  "quotedPrice",
+  "driverInfoSent",
+  "tripReminderSent",
   ],
-  BusAssignments: ["tripKey", "busNumber", "busId", "driver1", "driver2", "driver1Status", "driver2Status", "driver3", "driver3Status", "driver4", "driver4Status"],
-  Drivers: ["driverId", "driverName", "driverNameFull", "phone", "active", "notes", "priority", "status"],
-  Buses: ["busId", "busName", "capacity", "hasLift", "hasSleeper", "active", "notes", "busColor"],
-  WeekNotes: ["WeekStart", "Notes", "LastUpdated"],
-  Unavailability: ["driverName", "dateYmd"],
-  Checklist: ["tripKey", "date", "envelope", "reminder", "driverInfo", "fuelCard", "hos"],
-  Log: ["timestamp", "tripKey", "tripId", "action", "field", "oldValue", "newValue"],
-  };
+
+BusAssignments: ["tripKey", "busNumber", "busId", "driver1", "driver2", "driver1Status", "driver2Status", "driver3", "driver3Status", "driver4", "driver4Status"],
+Drivers: ["driverId", "driverName", "driverNameFull", "phone", "active", "notes", "priority", "status"],
+Buses: ["busId", "busName", "capacity", "hasLift", "hasSleeper", "active", "notes", "busColor"],
+WeekNotes: ["WeekStart", "Notes", "LastUpdated"],
+Unavailability: ["driverName", "dateYmd"],
+Checklist: ["tripKey", "date", "envelope", "reminder", "driverInfo", "fuelCard", "hos"],
+Log: ["timestamp", "tripKey", "tripId", "action", "field", "oldValue", "newValue"],
+};
 
 /\*\* =============================
 
@@ -535,7 +541,7 @@ itineraryPdfUrl: incomingPdfUrl
 
 updateRowByHeaders\_(tripsSheet, HEADERS.Trips, rowIndex, tripRowObj);
 
-const TRACKED*FIELDS = [
+const TRACKED_FIELDS = [
 "destination", "customer", "contactName", "phone",
 "departureDate", "arrivalDate", "departureTime", "spotTime", "arrivalTime",
 "itineraryStatus", "contactStatus", "paymentStatus", "driverStatus", "invoiceStatus",
@@ -543,8 +549,11 @@ const TRACKED*FIELDS = [
 "req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "reqWifi",
 "envelopePickup", "envelopeTripContact", "envelopeTripPhone", "envelopeTripNotes",
 "itineraryPdfUrl",
+"paymentType", "estimatedMileage", "quotedPrice",
+"driverInfoSent", "tripReminderSent",
 ];
-const DATE_FIELDS = new Set(["departureDate", "arrivalDate"]);
+
+const DATE*FIELDS = new Set(["departureDate", "arrivalDate"]);
 const TIME_FIELDS = new Set(["departureTime", "spotTime", "arrivalTime"]);
 for (const field of TRACKED_FIELDS) {
 const oldVal = DATE_FIELDS.has(field)
@@ -882,6 +891,11 @@ const iEnvelopePickup = idx(tripsHdr, "envelopePickup");
 const iEnvelopeTripContact = idx(tripsHdr, "envelopeTripContact");
 const iEnvelopeTripPhone = idx(tripsHdr, "envelopeTripPhone");
 const iEnvelopeTripNotes = idx(tripsHdr, "envelopeTripNotes");
+const iPaymentType = idx(tripsHdr, "paymentType");
+const iEstimatedMileage = idx(tripsHdr, "estimatedMileage");
+const iQuotedPrice = idx(tripsHdr, "quotedPrice");
+const iDriverInfoSent = idx(tripsHdr, "driverInfoSent");
+const iTripReminderSent = idx(tripsHdr, "tripReminderSent");
 
 const trips = [];
 const tripKeysInRange = new Set();
@@ -936,7 +950,13 @@ if (!k) continue;
       envelopeTripContact: iEnvelopeTripContact >= 0 ? row[iEnvelopeTripContact] || "" : "",
       envelopeTripPhone: iEnvelopeTripPhone >= 0 ? row[iEnvelopeTripPhone] || "" : "",
       envelopeTripNotes: iEnvelopeTripNotes >= 0 ? row[iEnvelopeTripNotes] || "" : "",
+      paymentType:       iPaymentType       >= 0 ? row[iPaymentType]       || "" : "",
+      estimatedMileage:  iEstimatedMileage  >= 0 ? row[iEstimatedMileage]  || "" : "",
+      quotedPrice:       iQuotedPrice       >= 0 ? row[iQuotedPrice]       || "" : "",
+      driverInfoSent:    iDriverInfoSent    >= 0 ? truthy_(row[iDriverInfoSent])   : false,
+      tripReminderSent:  iTripReminderSent  >= 0 ? truthy_(row[iTripReminderSent]) : false,
     });
+
     tripKeysInRange.add(k);
 
 }
@@ -1144,9 +1164,16 @@ return resp;
   envelopeTripContact: String(p.envelopeTripContact || "").trim(),
   envelopeTripPhone: String(p.envelopeTripPhone || "").trim(),
   envelopeTripNotes: String(p.envelopeTripNotes || "").trim(),
+  paymentType: String(p.paymentType || "").trim(),
+  estimatedMileage: String(p.estimatedMileage || "").trim(),
+  quotedPrice: String(p.quotedPrice || "").trim(),
+  driverInfoSent: String(p.driverInfoSent || "").toLowerCase() === "true",
+  tripReminderSent: String(p.tripReminderSent || "").toLowerCase() === "true",
   createdAt: base.createdAt,
-  updatedAt: base.updatedAt,
-  itineraryPdfUrl: base.itineraryPdfUrl || "", // <--- FIXED: Map PDF URL to the database
+
+      updatedAt: base.updatedAt,
+      itineraryPdfUrl: base.itineraryPdfUrl || "", // <--- FIXED: Map PDF URL to the database
+
   };
   }
 

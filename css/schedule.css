@@ -732,14 +732,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   background: var(--rux-color-accent);
   color: var(--rux-text-1);
-  border-radius: var(--rux-radius-2);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  border-radius: 50%;
+  text-shadow: none;
   font-weight: 600;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: none;
 }
 
 .schedule-grid__row {
@@ -1229,8 +1229,13 @@ body.trip-bar-selected .schedule-grid__trip-bar.selected {
 
 .bus-assign__driver-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 72px;
   gap: var(--rux-fld-col-gap);
+}
+
+.bus-assign__pay-input {
+  width: 100%;
+  min-width: 0;
 }
 
 .bus-assign-header {

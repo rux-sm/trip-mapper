@@ -184,6 +184,10 @@ button {
   --rux-button-icon-fill: 1;
 }
 
+.rux-btn--toggle-reviewed[aria-pressed="true"] {
+  background-color: oklch(from var(--rux-color-green) 38% c h);
+}
+
 /* ── 6. Toggle Grid & Requirement Label ─────────────────────────────────── */
 
 .rux-btn--toggle-grid {

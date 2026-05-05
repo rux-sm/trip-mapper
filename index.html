@@ -868,6 +868,12 @@
                       id="tripReminderSentValue"
                       value="false"
                     />
+                    <input
+                      type="hidden"
+                      name="tripReviewed"
+                      id="tripReviewedValue"
+                      value="false"
+                    />
 
                     <!-- ── Section 1: Trip Details ─────────────────────── -->
                     <div class="form-section-card">
@@ -1010,9 +1016,9 @@
                     </div>
                     </div>
 
-                    <!-- ── Section 2: Approval ─────────────────────────── -->
+                    <!-- ── Section 2: Billing ──────────────────────────── -->
                     <div class="form-section-card">
-                      <div class="form-section-card__label">Approval</div>
+                      <div class="form-section-card__label">Billing</div>
 
                     <input type="hidden" id="itineraryStatus" name="itineraryStatus" value="" />
                     <input type="hidden" id="contactStatus" name="contactStatus" value="" />
@@ -1056,7 +1062,7 @@
                     </div>
 
                     <div class="form-group col-6">
-                      <label for="paymentType">Payment Type</label>
+                      <label for="paymentType">PO</label>
                       <input
                         type="text"
                         id="paymentType"
@@ -1078,16 +1084,6 @@
                       />
                     </div>
 
-                    <div class="form-group col-12">
-                      <label for="notes">Notes</label>
-                      <input
-                        type="text"
-                        id="notes"
-                        name="notes"
-                        placeholder=""
-                      />
-                    </div>
-
                     <div class="form-group col-6">
                       <label for="estimatedMileage">Estimated Mileage</label>
                       <input
@@ -1104,6 +1100,35 @@
                         type="text"
                         id="quotedPrice"
                         name="quotedPrice"
+                        placeholder=""
+                      />
+                    </div>
+
+                    <div class="form-group col-6">
+                      <label for="tripMiles">Trip Miles</label>
+                      <input
+                        type="text"
+                        id="tripMiles"
+                        name="tripMiles"
+                        placeholder=""
+                      />
+                    </div>
+
+                    <div class="form-group col-6">
+                      <label for="datePaid">Date Paid</label>
+                      <input
+                        type="date"
+                        id="datePaid"
+                        name="datePaid"
+                      />
+                    </div>
+
+                    <div class="form-group col-12">
+                      <label for="notes">Notes</label>
+                      <input
+                        type="text"
+                        id="notes"
+                        name="notes"
                         placeholder=""
                       />
                     </div>
@@ -1350,6 +1375,15 @@
                         >
                           <span class="material-symbols-outlined" aria-hidden="true">send</span>
                           Driver Info
+                        </button>
+                        <button
+                          type="button"
+                          class="rux-btn rux-btn--toggle rux-btn--toggle-reviewed"
+                          id="tripReviewed"
+                          aria-pressed="false"
+                        >
+                          <span class="material-symbols-outlined" aria-hidden="true">task_alt</span>
+                          Reviewed
                         </button>
                       </div>
                     </div>
