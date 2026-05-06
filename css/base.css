@@ -662,7 +662,7 @@ samp {
 
 .trip-quick-edit {
   position: absolute;
-  z-index: 900;
+  z-index: 1100;
   width: 320px;
   background: var(--rux-bg-4);
   border: 1px solid var(--rux-border-2);
@@ -755,13 +755,15 @@ samp {
 .trip-quick-edit__field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--rux-fld-label-margin);
 }
 
 .trip-quick-edit__label {
-  font-size: var(--rux-size-3);
-  font-weight: var(--rux-weight-medium);
-  color: var(--rux-text-2);
+  font-size: var(--rux-fld-label-font-size);
+  font-weight: var(--rux-fld-label-font-weight);
+  color: var(--rux-fld-label-color);
+  letter-spacing: var(--rux-fld-label-letter-spacing);
+  padding-left: var(--rux-fld-label-indent);
 }
 
 .trip-quick-edit__value {
@@ -773,11 +775,12 @@ samp {
   width: 100%;
   height: var(--rux-fld-height);
   background: var(--rux-fld-bg);
-  border: 1px solid var(--rux-fld-border-color);
+  border: none;
   border-radius: var(--rux-fld-radius);
   color: var(--rux-text-1);
-  font-size: var(--rux-fld-font);
-  padding-inline: var(--rux-space-3);
+  font-size: var(--rux-fld-font-size);
+  font-weight: var(--rux-fld-font-weight);
+  padding: var(--rux-fld-padding);
   box-sizing: border-box;
 }
 
@@ -785,11 +788,12 @@ samp {
   width: 100%;
   height: var(--rux-fld-height);
   background: var(--rux-fld-bg);
-  border: 1px solid var(--rux-fld-border-color);
+  border: none;
   border-radius: var(--rux-fld-radius);
   color: var(--rux-text-1);
-  font-size: var(--rux-fld-font);
-  padding-inline: var(--rux-space-3);
+  font-size: var(--rux-fld-font-size);
+  font-weight: var(--rux-fld-font-weight);
+  padding: var(--rux-fld-padding);
   box-sizing: border-box;
   appearance: none;
 }

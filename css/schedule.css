@@ -237,7 +237,7 @@
 
 /* Treat the entire date as one unified line of natural text */
 .agenda-header__week-date {
-  font-size: var(--rux-size-8);
+  font-size: var(--rux-size-6);
   line-height: normal;
   white-space: nowrap;
   padding-left: 8px;
@@ -252,8 +252,8 @@
 .agenda-header__week-date .wk-month-end {
   margin-right: 4px;
   text-transform: uppercase;
-  color: var(--rux-color-accent);
-  font-weight: 700;
+  color: var(--rux-text-1);
+  font-weight: var(--rux-weight-semibold);
   letter-spacing: 0;
   text-rendering: optimizeLegibility;
 }
@@ -261,7 +261,7 @@
 .agenda-header__week-date .wk-dates {
   margin-right: 4px;
   color: var(--rux-text-1);
-  font-weight: 700;
+  font-weight: var(--rux-weight-semibold);
   letter-spacing: 0;
   text-rendering: optimizeLegibility;
 }
@@ -269,8 +269,8 @@
 .agenda-header__week-date .wk-sep {
   margin-right: 4px;
 
-  color: var(--basey-01);
-  font-weight: 700;
+  color: var(--rux-text-1);
+  font-weight: var(--rux-weight-semibold);
   letter-spacing: 0;
 
   text-rendering: optimizeLegibility;
@@ -280,8 +280,8 @@
 .agenda-header__week-date .wk-year {
   margin-right: 4px;
 
-  color: var(--rux-text-2);
-  font-weight: 700;
+  color: var(--rux-text-1);
+  font-weight: var(--rux-weight-semibold);
   letter-spacing: 0;
 
   text-rendering: optimizeLegibility;

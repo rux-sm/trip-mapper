@@ -21,7 +21,7 @@
 
   --rux-btn-height:      32px;
   --rux-btn-radius:      var(--rux-radius-3);
-  --rux-btn-padding:     0 16px;
+  --rux-btn-padding:     0 6px;
   --rux-btn-gap:         8px;
 
   --rux-btn-font-family: var(--rux-font-sans);

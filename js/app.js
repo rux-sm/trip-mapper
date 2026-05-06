@@ -7534,6 +7534,7 @@ function handleScheduleInteraction(e, isContext) {
 let quickEditTripKey = null;
 
 const QUICK_EDIT_TABS = [
+  { id: "details",   label: "Trip"      },
   { id: "billing",   label: "Billing"   },
   { id: "bus",       label: "Dispatch"  },
   { id: "envelope",  label: "Envelope"  },
@@ -7721,13 +7722,18 @@ function renderQuickEditTab(tabId, trip, assigns) {
 
   } else if (tabId === "details") {
     const fields = [
-      { label: "Destination",    key: "destination",   readonly: true  },
-      { label: "Customer",       key: "customer",      readonly: true  },
-      { label: "Departure",      key: "departureDate", readonly: true  },
-      { label: "Arrival",        key: "arrivalDate",   readonly: true  },
-      { label: "Depart Time",    key: "departureTime", readonly: true  },
-      { label: "Trip Color",     key: "tripColor",     type: "select",
+      { label: "Destination",  key: "destination",   readonly: true },
+      { label: "Customer",     key: "customer",      readonly: true },
+      { label: "Departure",    key: "departureDate", readonly: true },
+      { label: "Arrival",      key: "arrivalDate",   readonly: true },
+      { label: "Name",         key: "contactName",   type: "text"   },
+      { label: "Phone",        key: "phone",         type: "tel"    },
+      { label: "Depart Time",  key: "departureTime", type: "time"   },
+      { label: "Spot Time",    key: "spotTime",      type: "time"   },
+      { label: "Arrival Time", key: "arrivalTime",   type: "time"   },
+      { label: "Trip Color",   key: "tripColor",     type: "select",
         options: [["","None"],["blue","Blue"],["green","Green"],["one-way","One-Way"],["out-of-service","Out of Service"]] },
+      { label: "Buses",        key: "busesNeeded",   readonly: true },
     ];
     fields.forEach(({ label, key, readonly, type, options }) => {
       const wrap = document.createElement("div");
@@ -7745,9 +7751,20 @@ function renderQuickEditTab(tabId, trip, assigns) {
         const sel = document.createElement("select");
         sel.className = "trip-quick-edit__select";
         sel.dataset.key = key;
-        options.forEach(([v, t]) => { const o = document.createElement("option"); o.value = v; o.textContent = t; sel.appendChild(o); });
+        options.forEach(([v, t]) => {
+          const o = document.createElement("option");
+          o.value = v; o.textContent = t;
+          sel.appendChild(o);
+        });
         sel.value = trip[key] || "";
         wrap.appendChild(sel);
+      } else {
+        const input = document.createElement("input");
+        input.type = type;
+        input.className = "trip-quick-edit__input";
+        input.value = trip[key] || "";
+        input.dataset.key = key;
+        wrap.appendChild(input);
       }
       body.appendChild(wrap);
     });
@@ -7784,13 +7801,13 @@ function showQuickEditPopover(tripKey, barEl) {
     tabsEl.appendChild(btn);
   });
 
-  renderQuickEditTab("billing", trip, assigns);
+  renderQuickEditTab("details", trip, assigns);
   el.classList.remove("is-hidden");
 
   // Position
   const scrollX = window.scrollX, scrollY = window.scrollY;
   const barRect = barEl.getBoundingClientRect();
-  const popW = 320, popH = 460;
+  const popW = 320, popH = el.offsetHeight;
   const arrow = el.querySelector(".trip-quick-edit__arrow");
 
   let left = barRect.right + 10 + scrollX;
@@ -7801,8 +7818,8 @@ function showQuickEditPopover(tripKey, barEl) {
     left = barRect.left - popW - 10 + scrollX;
     arrow.classList.add("arrow-right");
   }
-  if (top + popH > window.innerHeight + scrollY - 16) {
-    top = window.innerHeight + scrollY - popH - 16;
+  if (top + popH > window.innerHeight + scrollY - 12) {
+    top = window.innerHeight + scrollY - popH - 12; // --rux-space-4
   }
   if (top < scrollY + 8) top = scrollY + 8;
 
