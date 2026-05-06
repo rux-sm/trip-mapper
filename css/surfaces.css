@@ -190,7 +190,7 @@
   overflow: hidden;
 
   border-bottom: 1px solid color-mix(in srgb, var(--rux-bg-2) 25%, transparent);
-  border-radius: var(--rux-radius-9) var(--rux-radius-9) 0 0;
+  border-radius: var(--rux-radius-9);
   box-shadow: none;
 }
 
@@ -237,7 +237,7 @@
   overflow: hidden;
 
   border-top: 1px solid color-mix(in srgb, var(--rux-bg-2) 25%, transparent);
-  border-radius: var(--rux-radius-9) var(--rux-radius-9) 0 0;
+  border-radius: var(--rux-radius-9);
   box-shadow: none;
 }
 

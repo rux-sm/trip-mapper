@@ -741,6 +741,10 @@ function normalizeAssignment(a) {
     driver2Status: String(a.driver2Status || "").trim(),
     driver3Status: String(a.driver3Status || "").trim(),
     driver4Status: String(a.driver4Status || "").trim(),
+    driver1Pay: String(a.driver1Pay || "").trim(),
+    driver2Pay: String(a.driver2Pay || "").trim(),
+    driver3Pay: String(a.driver3Pay || "").trim(),
+    driver4Pay: String(a.driver4Pay || "").trim(),
   };
 }
 
@@ -4473,29 +4477,77 @@ function getDriverOptions() {
   return base.concat(mapped);
 }
 
-const DRIVER_STATUS_OPTIONS = [
-  { value: "Pending", label: "Pending" },
-  { value: "Assigned", label: "Assigned" },
-  { value: "Confirmed", label: "Confirmed" },
+const DRIVER_STATUS_STATES = [
+  { value: "Pending",   icon: "schedule",               cls: "status-pending"  },
+  { value: "Assigned",  icon: "pending",                cls: "status-assigned" },
+  { value: "Confirmed", icon: "check_circle",           cls: "status-ok"       },
 ];
 
 function makeDriverStatusSelect(name) {
-  const sel = document.createElement("select");
-  sel.name = name;
-  sel.setAttribute("aria-label", "Driver status");
-  const placeholder = document.createElement("option");
-  placeholder.value = "";
-  placeholder.disabled = true;
-  placeholder.selected = true;
-  sel.appendChild(placeholder);
+  const hidden = document.createElement("input");
+  hidden.type = "hidden";
+  hidden.name = name;
+  hidden.value = "";
 
-  DRIVER_STATUS_OPTIONS.forEach((o) => {
-    const opt = document.createElement("option");
-    opt.value = o.value;
-    opt.textContent = o.label;
-    sel.appendChild(opt);
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "driver-status-cycle";
+  btn.setAttribute("aria-label", "Driver status");
+  btn.innerHTML = `<span class="material-symbols-outlined">radio_button_unchecked</span>`;
+
+  const syncBtn = () => {
+    const state = DRIVER_STATUS_STATES.find(s => s.value === hidden.value);
+    if (state) {
+      btn.querySelector("span").textContent = state.icon;
+      btn.className = `driver-status-cycle ${state.cls}`;
+    } else {
+      btn.querySelector("span").textContent = "radio_button_unchecked";
+      btn.className = "driver-status-cycle";
+    }
+  };
+
+  btn.addEventListener("click", () => {
+    const cur = DRIVER_STATUS_STATES.findIndex(s => s.value === hidden.value);
+    const next = DRIVER_STATUS_STATES[(cur + 1) % DRIVER_STATUS_STATES.length];
+    hidden.value = next.value;
+    syncBtn();
+    hidden.dispatchEvent(new Event("change", { bubbles: true }));
+    state.tripFormDirty = true;
   });
-  return sel;
+
+  hidden.addEventListener("change", syncBtn);
+
+  // Override value property so external .value = "..." updates the button too
+  const proto = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value");
+  Object.defineProperty(hidden, "value", {
+    get: () => proto.get.call(hidden),
+    set: (v) => { proto.set.call(hidden, v); syncBtn(); },
+    configurable: true,
+  });
+
+  const wrap = document.createElement("div");
+  wrap.className = "driver-status-cycle-wrap";
+  wrap.appendChild(btn);
+  wrap.appendChild(hidden);
+
+  // Proxy disabled to both button and hidden
+  Object.defineProperty(wrap, "disabled", {
+    set: (v) => { btn.disabled = v; hidden.disabled = v; },
+    get: () => btn.disabled,
+    configurable: true,
+  });
+
+  // Proxy value/dispatchEvent through to hidden input
+  Object.defineProperty(wrap, "value", {
+    get: () => hidden.value,
+    set: (v) => { hidden.value = v; },
+    configurable: true,
+  });
+
+  wrap.dispatchEvent = (e) => hidden.dispatchEvent(e);
+  wrap.addEventListener = (type, fn, opts) => hidden.addEventListener(type, fn, opts);
+
+  return wrap;
 }
 
 function syncBusSelectEmptyState() {
@@ -4598,8 +4650,8 @@ function buildBusRowsOnce() {
     const row = document.createElement("div");
     row.className = "bus-assign__driver-row";
     row.appendChild(dSel);
-    row.appendChild(dStatusSel);
     row.appendChild(payInput);
+    row.appendChild(dStatusSel);
     return row;
   };
 
@@ -7856,6 +7908,14 @@ function wrapSelectInGlassDropdown(sel, opts) {
     return "";
   }
 
+  function getBusDriverNameIcon(name) {
+    if (!name) return "";
+    if (/_driver1$/.test(name)) return "person";
+    if (/_driver2$/.test(name)) return "group";
+    if (/_driver3$/.test(name) || /_driver4$/.test(name)) return "emergency_home";
+    return "";
+  }
+
   function getSelectedIcon() {
     const opt = sel.options[sel.selectedIndex];
     if (opt) {
@@ -7898,9 +7958,16 @@ function wrapSelectInGlassDropdown(sel, opts) {
   function updateTrigger() {
     trigger.innerHTML = "";
     const v = (sel.value ?? "").trim();
-    const lcValue = v.toLowerCase();
 
-    // Add text container to flex grow properly
+    const roleIcon = getBusDriverNameIcon(sel.name);
+    if (roleIcon) {
+      const iconSpan = document.createElement("span");
+      iconSpan.className = "material-symbols-outlined driver-role-icon";
+      iconSpan.setAttribute("aria-hidden", "true");
+      iconSpan.textContent = roleIcon;
+      trigger.appendChild(iconSpan);
+    }
+
     const textSpan = document.createElement("span");
     textSpan.style.flex = "1";
     textSpan.style.textAlign = "left";
@@ -7908,7 +7975,6 @@ function wrapSelectInGlassDropdown(sel, opts) {
     trigger.appendChild(textSpan);
 
     if (statusId && statusIds.has(statusId)) updateStatusSelect(sel);
-    // Toggle placeholder styling for default/empty values
     trigger.classList.toggle("is-empty", !v || v === "None");
   }
 

@@ -1346,17 +1346,24 @@
                       data-js="trip-assignments-section"
                     >
                       <div class="form-section-card__label">Bus Assignment</div>
-                      <div class="bus-assign-header col-12">
-                        <span class="field-label">Bus</span>
-                        <span class="field-label">Driver</span>
-                        <span class="field-label">Status</span>
+                      <div class="form-group col-12">
+                        <div class="bus-assign-header">
+                          <span class="field-label">Bus</span>
+                          <span class="field-label">Driver</span>
+                          <span class="field-label">Pay</span>
+                          <span></span>
+                        </div>
+                        <div
+                          id="busGrid"
+                          data-js="trip-bus-grid"
+                        ></div>
                       </div>
-                      <div
-                        id="busGrid"
-                        class="col-12"
-                        data-js="trip-bus-grid"
-                      ></div>
 
+                    </div>
+
+                    <!-- ── Section 6: Checklist ────────────────────────── -->
+                    <div class="form-section-card">
+                      <div class="form-section-card__label">Checklist</div>
                       <div class="form-group col-12" style="display:flex; gap:8px;">
                         <button
                           type="button"

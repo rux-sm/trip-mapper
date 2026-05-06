@@ -243,6 +243,15 @@ textarea:focus-visible,
   overflow-y: auto;
 }
 
+#busGrid select {
+  background-image: none;
+  padding-right: var(--rux-space-2);
+}
+
+#busGrid .select-trigger::after {
+  display: none;
+}
+
 /* Trigger: a button styled to look like an input */
 .select-trigger {
   display: flex;
