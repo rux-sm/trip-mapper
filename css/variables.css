@@ -126,17 +126,17 @@
   ──────────────────────────────────────────────────────────────── */
 
   --rux-bg-1:       oklch(from var(--rux-color-gray) 0% c h);         /* App canvas — pure black */
-  --rux-bg-field:   oklch(from var(--rux-color-gray) 24% c h); 
+  --rux-bg-field:   oklch(from var(--rux-color-gray) 26.38% c h); 
   --rux-bg-2:       oklch(from var(--rux-color-gray) 26.38% c h);     /* Panels, sidebar, inputs */
-  --rux-bg-3:       oklch(from var(--rux-color-gray) 32% c h);     /* Headers, footers, menus */
-  --rux-bg-4:       oklch(from var(--rux-color-gray) 32% c h);     /* Cards, grouped sections */
+  --rux-bg-3:       oklch(from var(--rux-color-gray) 36.38% c h);     /* Headers, footers, menus */
+  --rux-bg-4:       oklch(from var(--rux-color-gray) 36.38% c h);     /* Cards, grouped sections */
   --rux-bg-5:       oklch(from var(--rux-color-gray) 32% c h);        /* Modals — highest elevation */
   --rux-bg-overlay: oklch(from var(--rux-color-gray) 70% c h);        /* Scrim / backdrop */
 
   /* 2B. Accent & Status Colors
   ──────────────────────────────────────────────────────────────── */
 
-  --rux-color-accent:                oklch(from var(--rux-color-blue) 60% c h);
+  --rux-color-accent:                oklch(from var(--rux-color-blue) 75% c h);
 
   --rux-status-red:                  oklch(from var(--rux-color-red)    90% .3 h);
   --rux-status-red-alpha:            oklch(from var(--rux-color-red)    l c h / 15%);

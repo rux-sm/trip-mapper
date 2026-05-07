@@ -14,13 +14,13 @@
 
 :root {
   --rux-btn-bg-primary:   oklch(from var(--rux-color-blue) 50% c h);
-  --rux-btn-bg-secondary: oklch(from var(--rux-color-gray) 45% 0.02 h);
+  --rux-btn-bg-secondary: oklch(from var(--rux-color-gray) 50% c h);
   --rux-btn-bg-danger:    oklch(from var(--rux-color-red)  50% c h);
   --rux-btn-text:         var(--rux-color-white);
   --rux-btn-hover-lift:   0.1;
 
-  --rux-btn-height:      32px;
-  --rux-btn-radius:      var(--rux-radius-3);
+  --rux-btn-height:      28px;
+  --rux-btn-radius:      var(--rux-radius-2);
   --rux-btn-padding:     0 12px;
   --rux-btn-gap:         4px;
 
@@ -28,15 +28,23 @@
   --rux-btn-font-size:   var(--rux-size-4);
   --rux-btn-font-weight: var(--rux-weight-regular);
 
-  --rux-btn-shadow-inset:
-    0 1px 2px oklch(0% 0 0 / 55%),
-    0 2px 8px oklch(0% 0 0 / 35%),
-    inset 0 1px 0 oklch(100% 0 0 / 18%),
-    inset 0 -1px 0 oklch(0% 0 0 / 30%);
+--rux-btn-shadow-inset:
+    /* 1. Contact Shadow: slightly softer so it doesn't look harsh */
+    0 1px 2px oklch(0% 0 0 / 40%), 
+    /* 2. Ambient Shadow: dropped opacity from 35% to 20% to reduce mud in grids */
+    0 2px 8px oklch(0% 0 0 / 20%), 
+    /* 3. Top Highlight: dropped from 18% to 10% to look less like shiny plastic */
+    inset 0 1px 0 oklch(100% 0 0 / 10%), 
+    /* 4. Bottom Bevel: bumped from 30% to 40% to keep the 3D shape grounded */
+    inset 0 -1px 0 oklch(0% 0 0 / 40%); 
+
   --rux-btn-shadow-active:
-    inset 0 2px 4px oklch(0% 0 0 / 60%),
+    /* Active state is actually great, just slightly smoothed out */
+    inset 0 2px 4px oklch(0% 0 0 / 50%),
     inset 0 1px 2px oklch(0% 0 0 / 30%);
-  --rux-btn-shadow-active-sm: inset 0 2px 4px oklch(0% 0 0 / 60%);
+
+  --rux-btn-shadow-active-sm: 
+    inset 0 2px 4px oklch(0% 0 0 / 50%);
 
   --rux-btn-icon-size: var(--rux-size-6);
   --rux-btn-icon-fill: 1;
@@ -144,8 +152,8 @@ button {
   --btn-hover-background:  oklch(from var(--rux-bg-2) calc(l + var(--rux-btn-hover-lift)) c h);
   --btn-active-background: var(--rux-btn-bg-primary);
 
-  width:     32px;
-  min-width: 32px;
+  width:     28px;
+  min-width: 28px;
   padding:   0;
 }
 
