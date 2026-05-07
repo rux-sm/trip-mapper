@@ -11,15 +11,15 @@
   /* 1A. Color Seeds
   ──────────────────────────────────────────────────────────────── */
 
-  --rux-color-black:  oklch(0% 0 265);
-  --rux-color-white:  oklch(100% 0 265);
-  --rux-color-gray:   oklch(50% 0.01 260);
+  --rux-color-black:  oklch(0% 0 250);
+  --rux-color-white:  oklch(100% 0 250);
+  --rux-color-gray:   oklch(50% 0.008 250);
   --rux-color-red:    oklch(50% 0.2 25);
   --rux-color-orange: oklch(50% 0.2 65);
   --rux-color-yellow: oklch(50% 0.2 100);
   --rux-color-green:  oklch(50% 0.2 155);
   --rux-color-cyan:   oklch(50% 0.2 210);
-  --rux-color-blue:   oklch(50% 0.2 260);
+  --rux-color-blue:   oklch(50% 0.2 250);
   --rux-color-purple: oklch(50% 0.2 300);
   --rux-color-pink:   oklch(50% 0.2 350);
 
@@ -126,8 +126,8 @@
   ──────────────────────────────────────────────────────────────── */
 
   --rux-bg-1:       oklch(from var(--rux-color-gray) 0% c h);         /* App canvas — pure black */
-  --rux-bg-field:       oklch(from var(--rux-color-gray) 24% c h); 
-  --rux-bg-2:       oklch(from var(--rux-color-gray) 22% c h);     /* Panels, sidebar, inputs */
+  --rux-bg-field:   oklch(from var(--rux-color-gray) 24% c h); 
+  --rux-bg-2:       oklch(from var(--rux-color-gray) 26.38% c h);     /* Panels, sidebar, inputs */
   --rux-bg-3:       oklch(from var(--rux-color-gray) 32% c h);     /* Headers, footers, menus */
   --rux-bg-4:       oklch(from var(--rux-color-gray) 32% c h);     /* Cards, grouped sections */
   --rux-bg-5:       oklch(from var(--rux-color-gray) 32% c h);        /* Modals — highest elevation */
