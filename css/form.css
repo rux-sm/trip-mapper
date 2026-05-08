@@ -564,7 +564,7 @@ select.is-empty:not(:focus),
 hr.form-divider {
   grid-column: span 12;
   border: none;
-  border-top: 1px solid var(--rux-border-2);
+  border-top: none;
   margin: 0;
   padding: 0;
 }
@@ -623,7 +623,7 @@ hr.form-divider {
   column-gap: var(--rux-fld-col-gap);
   padding: var(--rux-space-4);
   background: var(--rux-bg-4);
-  border: 1px solid var(--rux-bg-4);
+  border: none;
   border-radius: var(--rux-radius-section);
   box-shadow: var(--rux-btn-shadow-inset);
 }
@@ -637,5 +637,5 @@ hr.form-divider {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding-bottom: var(--rux-space-3);
-  border-bottom: 1px solid var(--rux-border-1);
+  border-bottom: none;
 }

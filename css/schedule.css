@@ -71,8 +71,8 @@
 
   background: transparent;
  
-  border-bottom: 1px solid color-mix(in srgb, var(--rux-bg-2) 25%, transparent);
-  border-radius: var(--rux-radius-9) var(--rux-radius-9) 0 0;
+  border-bottom: none;
+  border-radius: var(--rux-radius-section) var(--rux-radius-section) 0 0;
   box-shadow: none;
 }
 
@@ -253,13 +253,32 @@
    The core grid containing bus rows and day columns
    ========================================================================== */
 
+.schedule-surface,
+.driver-week__surface {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--rux-radius-section);
+}
+
+.schedule-surface::after,
+.driver-week__surface::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--rux-radius-section);
+  box-shadow: var(--rux-btn-shadow-inset);
+  pointer-events: none;
+  z-index: 99999;
+}
+
 .schedule-viewport {
   width: 100%;
-  height: auto;
+  height: 100%;
   overflow-x: auto;
   overflow-y: auto;
   border: none;
-  border-radius: var(--rux-radius-section);
 }
 
 
@@ -280,9 +299,9 @@
 
 /* Main schedule area layer */
 .o-app-layout__main>.rux-card {
+  position: relative;
   border-radius: var(--rux-radius-9);
   background: var(--rux-bg-2);
-
 }
 
 /* ==========================================================================
@@ -291,16 +310,29 @@
 
 /* Right Sidebar Card - Shadow spills LEFT onto the main content */
 .o-app-layout__sidebar--right>.rux-card:not(.is-hidden) {
-  /* Offset-X: -8px, Blur: 10px, Spread: -8px (cleans up top/bottom) */
+  position: relative;
   box-shadow: var(--card-shadow-left);
   border-left: none;
 }
 
 /* Left Sidebar Card - Shadow spills RIGHT onto the main content */
 .o-app-layout__sidebar--left>.rux-card:not(.is-hidden) {
-  /* Offset-X: 8px, Blur: 10px, Spread: -8px */
+  position: relative;
   box-shadow: var(--card-shadow-right);
   border-right: none;
+}
+
+/* Inset shadow overlay — paints above all card content including sticky headers */
+.o-app-layout__main>.rux-card::after,
+.o-app-layout__sidebar--left>.rux-card:not(.is-hidden)::after,
+.o-app-layout__sidebar--right>.rux-card:not(.is-hidden)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--rux-btn-shadow-inset);
+  pointer-events: none;
+  z-index: 99999;
 }
 
 /* ==========================================================================
@@ -451,7 +483,7 @@
 
 .quote-calculator__select-mini {
   background-color: var(--rux-fld-bg);
-  border: 1px solid var(--rux-border-2);
+  border: none;
   border-radius: var(--rux-radius-control);
   color: var(--rux-text-1);
   font-size: inherit;
@@ -469,7 +501,7 @@
 .quote-calculator__summary {
   padding: 0 !important;
   background: var(--rux-bg-2);
-  border-top: 1px solid var(--rux-border-2);
+  border-top: none;
   margin-top: auto;
   display: flex;
   flex-direction: column;
@@ -483,7 +515,7 @@
   align-items: center;
   height: 32px;
   padding: 0 16px;
-  border-bottom: 1px solid var(--rux-border-2);
+  border-bottom: none;
 }
 
 .quote-summary__label {
@@ -608,14 +640,6 @@
   border-spacing: 0;
 }
 
-.schedule-viewport {
-  box-shadow:
-    0 1px 2px oklch(0% 0 0 / 40%),
-    0 2px 8px oklch(0% 0 0 / 20%),
-    inset 0 1px 0 oklch(100% 0 0 / 10%),
-    inset 0 -1px 0 oklch(0% 0 0 / 40%);
-}
-
 .schedule-grid__col-bus {
   width: var(--bus-col-w);
   min-width: var(--bus-col-w);
@@ -645,7 +669,6 @@
   z-index: 2000;
   text-align: center;
   vertical-align: middle;
-  box-shadow: inset 0 1px 0 oklch(100% 0 0 / 10%);
 }
 
 /* Day columns */
@@ -989,13 +1012,12 @@
   overflow-x: auto;
   overflow-y: auto;
   margin: 0;
-  background: var(--rux-bg-2);
+  background: var(--rux-bg-4);
   -ms-overflow-style: none;
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
-  border-radius: 8px;
-  border: 1px solid var(--rux-border-2);
+  border: none;
 }
 
 .driver-week__wrap::-webkit-scrollbar {
@@ -1011,12 +1033,13 @@
   -webkit-user-select: none;
   user-select: none;
   font-size: 14px;
+
 }
 
 .driver-week__table th {
   color: var(--rux-text-1);
   font-weight: 500;
-  background: var(--rux-bg-2);
+  background: var(--rux-bg-4);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -1035,7 +1058,7 @@
 }
 
 .driver-week__table tbody tr:nth-child(even) td {
-  background-color: var(--rux-bg-2);
+  background-color: var(--rux-bg-4);
 }
 
 .driver-week__table tbody tr:nth-child(even) td.driver-week__cell--on {
@@ -1048,11 +1071,11 @@
 
 .driver-week__table th:last-child,
 .driver-week__table td:last-child {
-  border-inline-end: 1px solid transparent;
+  border-inline-end: none;
 }
 
 .driver-week__table tr:last-child td {
-  border-bottom: 1px solid transparent;
+  border-bottom: none;
 }
 
 .driver-week__table th:first-child,
@@ -1066,17 +1089,22 @@
 }
 
 .driver-week__table th {
-  border-top: 1px solid transparent;
+  border-top: none;
 }
 
 .driver-week__table th:first-child {
   font-weight: 500;
   letter-spacing: 0.02em;
-  border-inline-start: 1px solid transparent;
+  border-inline-start: none;
+  border-top-left-radius: var(--rux-radius-section);
+}
+
+.driver-week__table th:last-child {
+  border-top-right-radius: var(--rux-radius-section);
 }
 
 .driver-week__table td:first-child {
-  border-inline-start: 1px solid transparent;
+  border-inline-start: none;
 }
 
 .driver-week__name-cell {
@@ -1151,18 +1179,20 @@ body.trip-bar-selected .schedule-grid__trip-bar.selected {
 }
 
 .driver-week__cell--on {
-  background: var(--rux-color-accent);
+  background: var(--rux-color-blue);
+  padding: 2px;
+  border-radius: 4px;
   color: var(--rux-text-1);
 }
 
 .driver-week__cell--relief {
-  background: var(--rux-color-accent);
+  background: var(--rux-color-blue);
   color: var(--rux-text-1);
   vertical-align: middle;
 }
 
 .driver-week__table tbody tr:nth-child(even) td.driver-week__cell--relief {
-  background-color: var(--rux-color-accent);
+  background-color: var(--rux-color-blue);
 }
 
 .driver-week__relief-icon {
@@ -1176,7 +1206,7 @@ body.trip-bar-selected .schedule-grid__trip-bar.selected {
 #driver-col-hl {
   position: absolute;
   pointer-events: none;
-  border: 2px solid var(--rux-border-3);
+  border: none;
   border-radius: 0px;
   z-index: 100;
 }
