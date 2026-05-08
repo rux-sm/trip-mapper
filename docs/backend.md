@@ -445,6 +445,7 @@ function normalizeTripForApi_(t) {
   const out = Object.assign({}, t);
   out.departureDate = normalizeDateOut_(t.departureDate);
   out.arrivalDate = normalizeDateOut_(t.arrivalDate);
+  out.datePaid = normalizeDateOut_(t.datePaid);
   out.departureTime = normalizeTimeOut_(t.departureTime);
   out.spotTime = normalizeTimeOut_(t.spotTime);
   out.arrivalTime = normalizeTimeOut_(t.arrivalTime);

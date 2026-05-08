@@ -6254,7 +6254,7 @@ function populateFormFromData(t, assigns) {
   if ($("onDutyHours"))  $("onDutyHours").value  = t.onDutyHours  || "";
   if ($("quotedPrice")) $("quotedPrice").value = String(t.quotedPrice || "");
   if ($("tripMiles")) $("tripMiles").value = t.tripMiles || "";
-  if ($("datePaid")) $("datePaid").value = t.datePaid || "";
+  if ($("datePaid")) $("datePaid").value = String(t.datePaid || "").slice(0, 10);
   if ($("notes")) $("notes").value = t.notes || "";
   if ($("comments")) $("comments").value = t.comments || "";
   if ($("envelopePickup")) $("envelopePickup").value = t.envelopePickup || "";
