@@ -1087,13 +1087,13 @@ function weekData_(p) {
       envelopeTripNotes: iEnvelopeTripNotes >= 0 ? row[iEnvelopeTripNotes] || "" : "",
       paymentType: iPaymentType >= 0 ? row[iPaymentType] || "" : "",
       estimatedMileage: iEstimatedMileage >= 0 ? row[iEstimatedMileage] || "" : "",
-      drivingHours: iDrivingHours >= 0 ? row[iDrivingHours] || "" : "",
-      onDutyHours: iOnDutyHours >= 0 ? row[iOnDutyHours] || "" : "",
+      drivingHours: iDrivingHours >= 0 ? normalizeTimeOut_(row[iDrivingHours]) || "" : "",
+      onDutyHours: iOnDutyHours >= 0 ? normalizeTimeOut_(row[iOnDutyHours]) || "" : "",
       quotedPrice: iQuotedPrice >= 0 ? row[iQuotedPrice] || "" : "",
       driverInfoSent: iDriverInfoSent >= 0 ? truthy_(row[iDriverInfoSent]) : false,
       tripReminderSent: iTripReminderSent >= 0 ? truthy_(row[iTripReminderSent]) : false,
       tripMiles: iTripMiles >= 0 ? row[iTripMiles] || "" : "",
-      datePaid: iDatePaid >= 0 ? row[iDatePaid] || "" : "",
+      datePaid: iDatePaid >= 0 ? ymdFromCell_(row[iDatePaid]) || "" : "",
       tripReviewed: iTripReviewed >= 0 ? truthy_(row[iTripReviewed]) : false,
     });
 
