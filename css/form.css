@@ -22,9 +22,9 @@
 
   /* Layout gaps */
   --rux-fld-label-gap:                    8px;
-  --rux-fld-row-gap:                      var(--rux-space-3);
+  --rux-fld-row-gap:                      var(--rux-space-5);
   --rux-fld-col-gap:                      var(--rux-space-3);
-  --rux-fld-card-gap:                     var(--rux-space-3);
+  --rux-fld-card-gap:                     var(--rux-space-4);
   --rux-fld-section-gap:                  var(--rux-space-3);
 
   /* Section labels */
@@ -621,7 +621,7 @@ hr.form-divider {
   grid-template-columns: repeat(12, minmax(0, 1fr));
   row-gap: var(--rux-fld-row-gap);
   column-gap: var(--rux-fld-col-gap);
-  padding: var(--rux-space-4);
+  padding: var(--rux-space-5);
   background: var(--rux-bg-4);
   border: none;
   border-radius: var(--rux-radius-section);
