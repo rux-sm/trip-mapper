@@ -18,7 +18,7 @@
   --panel-body-left-gap:   1rem;
 
   /* Z-index stack */
-  --z-dropdown: 1000;
+  --z-dropdown: 10099;
   --z-modal:    10100;
 }
 

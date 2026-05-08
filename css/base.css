@@ -649,7 +649,9 @@ samp {
   border: none;
   box-shadow: var(--rux-shadow-3);
   padding: 4px 0;
+  border-radius: var(--rux-radius-control);
   animation: menuPopIn var(--transition-fast);
+  box-shadow: var(--rux-shadow-3);
 }
 
 .context-menu[hidden] {

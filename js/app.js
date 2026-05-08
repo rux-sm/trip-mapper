@@ -9291,7 +9291,7 @@ function wireEvents() {
     dom.saveBtn.disabled = true;
 
     // Sync requirement toggles to hidden inputs so backend receives them
-    ["req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "driverInfoSent", "tripReminderSent", "tripReviewed"].forEach((id) => {
+    ["req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "reqWifi", "driverInfoSent", "tripReminderSent", "tripReviewed"].forEach((id) => {
       const btn = $(id);
       const hidden = $(id + "Value");
       if (btn && hidden) {
