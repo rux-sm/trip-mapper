@@ -260,4 +260,15 @@
   .rux-app__branding {
     display: none;
   }
+  .rux-app__header {
+    justify-content: center;
+  }
+  .rux-app__actions {
+    width: 100%;
+    justify-content: space-evenly;
+    gap: 0;
+  }
+  .rux-app__actions .rux-btn--square {
+    flex: 1;
+  }
 }

@@ -8694,7 +8694,7 @@ function wireEvents() {
     toggleCard("drivers");
   });
 
-  dom.quoteBtn.addEventListener("click", () => {
+  dom.quoteBtn?.addEventListener("click", () => {
     if (isMobileOnly()) return;
     toggleCard("quote");
   });
