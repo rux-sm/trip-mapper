@@ -48,11 +48,19 @@ function shortTripId(tripId) {
   return tripId ? tripId.replace(/^TRIP-20/, "") : "—";
 }
 
-async function fetchActivityLog(tripKey = null) {
-  const params = tripKey ? { tripKey } : {};
-  const data = await fetchAPI("listLog", params);
-  if (!data.ok) throw new Error(data.error);
-  return data.log || [];
+async function loadActivityLog(tripKey = null) {
+  const tk = toastShow("Loading log…", "loading", { source: "log-load" });
+  try {
+    const params = tripKey ? { tripKey } : {};
+    const data = await fetchAPI("listLog", params);
+    if (!data.ok) throw new Error(data.error);
+    renderLogList(data.log || []);
+  } catch (err) {
+    console.error("[log fetch]", err);
+    toast("Could not load activity log — check your connection.", "danger", 2500);
+  } finally {
+    toastHide(tk);
+  }
 }
 
 function setLogFilter(tripKey) {
@@ -69,7 +77,7 @@ function setLogFilter(tripKey) {
     if (clearBtn) clearBtn.classList.add("is-hidden");
   }
   if (getCardPanel("log")) {
-    fetchActivityLog(logActiveTripKey).then(renderLogList).catch(console.error);
+    loadActivityLog(logActiveTripKey);
   }
 }
 

@@ -134,8 +134,8 @@
 
 /* Status label — real DOM element (#scheduleStatusLabel), appended to body by dom.js */
 .schedule-status-label {
-  position: fixed;
-  top: 73px;
+  position: absolute;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 500;

@@ -49,7 +49,7 @@ const dom = {
     el.setAttribute("role", "status");
     el.setAttribute("aria-live", "polite");
     el.setAttribute("aria-atomic", "true");
-    document.body.appendChild(el);
+    (document.querySelector('[data-js="schedule-agenda-header"]') || document.body).appendChild(el);
     return el;
   })(),
   weekPicker: $("weekPicker"),

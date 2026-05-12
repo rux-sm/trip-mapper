@@ -885,6 +885,7 @@ async function openTripForEdit(tripKey) {
     priority: 55,
     force: true,
   });
+  startProgressCreep({ from: 5, to: 80, label: "Loading trip… ", toastOpts: { source: "trip-load", priority: 55, force: true } });
 
   // Disable/enable all form inputs during load — defined outside try so finally can call it
   const setFormDisabled = (disabled) => {
@@ -943,6 +944,8 @@ async function openTripForEdit(tripKey) {
       await new Promise((resolve) => setTimeout(resolve, 200 - elapsed));
     }
 
+    stopProgressCreep();
+
     if (!tripResp?.ok) throw new Error(tripResp?.error || "Trip not found");
 
     const serverTrip   = tripResp.trip || {};
@@ -997,6 +1000,7 @@ async function openTripForEdit(tripKey) {
       priority: 55,
     });
   } catch (e) {
+    stopProgressCreep();
     showHeaderStatusNotice("Could not load trip", "danger", {
       duration: 2200,
       source: "trip-load",
@@ -1005,6 +1009,7 @@ async function openTripForEdit(tripKey) {
     console.error(e);
     alert("Could not open trip for editing.");
   } finally {
+    stopProgressCreep();
     tripLoadInFlight = false;
     // Safety net: if neither success nor error notice replaced the loading bar, clear it now.
     if (state.activeStatusNotice?.source === "trip-load" &&

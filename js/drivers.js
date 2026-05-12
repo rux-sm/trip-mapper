@@ -411,7 +411,10 @@ async function renderTodoCard() {
         api.setChecklist(tripKey, todayYMD, latest, controller.signal)
           .then(() => { delete state.checklistAbortControllers[tripKey]; })
           .catch((err) => {
-            if (err?.name !== "AbortError") console.warn("[checklist sync]", err);
+            if (err?.name !== "AbortError") {
+              console.warn("[checklist sync]", err);
+              toast("Checklist may not have saved — check your connection.", "warning", 3500);
+            }
             delete state.checklistAbortControllers[tripKey];
           });
       }, 600);

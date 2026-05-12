@@ -82,6 +82,7 @@
         { busId: "763", busName: "Bus 763" },
       ];
       refreshBusSelectOptions();
+      toast("Could not load driver and bus data — using defaults. Refresh to retry.", "warning", 5000);
     }
     updateWeekDates();
   })();

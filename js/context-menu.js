@@ -318,6 +318,17 @@ function handleScheduleInteraction(e, isContext) {
 
 let quickEditTripKey = null;
 let quickEditDirty = false;
+let pendingQuickEdits = { tripEdits: {}, assignEdits: [] };
+
+function mergeAssignEdits(base, incoming) {
+  const result = base.map(e => ({ ...e }));
+  incoming.forEach(edit => {
+    const existing = result.find(e => e.busNumber === edit.busNumber);
+    if (existing) Object.assign(existing, edit);
+    else result.push({ ...edit });
+  });
+  return result;
+}
 
 const QUICK_EDIT_TABS = [
   { id: "details",   label: "Trip"      },
@@ -332,6 +343,7 @@ function closeQuickEditPopover() {
   if (el) el.classList.add("is-hidden");
   quickEditTripKey = null;
   quickEditDirty = false;
+  pendingQuickEdits = { tripEdits: {}, assignEdits: [] };
 }
 
 function renderQuickEditTab(tabId, trip, assigns) {
@@ -560,6 +572,7 @@ function showQuickEditPopover(tripKey, barEl) {
 
   quickEditTripKey = tripKey;
   quickEditDirty = false;
+  pendingQuickEdits = { tripEdits: {}, assignEdits: [] };
 
   const el = $("tripQuickEdit");
   const titleEl = el.querySelector(".trip-quick-edit__title");
@@ -576,9 +589,19 @@ function showQuickEditPopover(tripKey, barEl) {
     btn.textContent = tab.label;
     btn.dataset.tab = tab.id;
     btn.addEventListener("click", () => {
+      const current = collectQuickEditData();
+      Object.assign(pendingQuickEdits.tripEdits, current.tripEdits);
+      pendingQuickEdits.assignEdits = mergeAssignEdits(pendingQuickEdits.assignEdits, current.assignEdits);
+
       tabsEl.querySelectorAll(".trip-quick-edit__tab").forEach(b => b.classList.remove("is-active"));
       btn.classList.add("is-active");
-      renderQuickEditTab(tab.id, trip, assigns);
+
+      const mergedTrip = { ...trip, ...pendingQuickEdits.tripEdits };
+      const mergedAssigns = assigns.map(a => {
+        const edit = pendingQuickEdits.assignEdits.find(e => String(e.busNumber) === String(a.busNumber));
+        return edit ? { ...a, ...edit } : a;
+      });
+      renderQuickEditTab(tab.id, mergedTrip, mergedAssigns);
     });
     tabsEl.appendChild(btn);
   });
@@ -636,16 +659,22 @@ function saveQuickEdit() {
   const trip = state.tripByKey?.[String(quickEditTripKey)];
   if (!trip) return;
 
-  const { tripEdits, assignEdits } = collectQuickEditData();
-
-  closeQuickEditPopover();
+  if (state.pendingWrite || dom.saveBtn?.disabled) {
+    toast("Please wait for the current save to complete.", "warning", 2000);
+    return;
+  }
 
   if (!confirmDiscardIfDirty("You have unsaved trip changes. Save quick edit instead?")) return;
 
-  // Merge edits into existing state — no API call, panel stays closed
-  const merged = { ...trip, ...tripEdits };
+  const current = collectQuickEditData();
+  const allTripEdits = { ...pendingQuickEdits.tripEdits, ...current.tripEdits };
+  const allAssignEdits = mergeAssignEdits(pendingQuickEdits.assignEdits, current.assignEdits);
+
+  closeQuickEditPopover();
+
+  const merged = { ...trip, ...allTripEdits };
   const baseAssigns = (state.assignmentsByTripKey?.[String(merged.tripKey)] || []).map(a => {
-    const edit = assignEdits.find(e => String(e.busNumber) === String(a.busNumber));
+    const edit = allAssignEdits.find(e => String(e.busNumber) === String(a.busNumber));
     return edit ? { ...a, ...edit } : a;
   });
 

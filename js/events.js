@@ -209,7 +209,7 @@ function wireDelegatedBarEvents() {
       const trip = state.tripByKey?.[tripKey];
       if (trip) {
         trip.itineraryPdfUrl = pdfUrl;
-        trip.itineraryStatus = "Received";
+        trip.itineraryStatus = json.itineraryStatus || trip.itineraryStatus;
         scheduleAgendaReflow();
       }
 
@@ -569,11 +569,11 @@ function wireEvents() {
 
   dom.logBtn?.addEventListener("click", () => {
     toggleCard("log");
-    if (getCardPanel("log")) fetchActivityLog(logActiveTripKey).then(renderLogList).catch(console.error);
+    if (getCardPanel("log")) loadActivityLog(logActiveTripKey);
   });
 
   dom.logRefreshBtn?.addEventListener("click", () => {
-    fetchActivityLog(logActiveTripKey).then(renderLogList).catch(console.error);
+    loadActivityLog(logActiveTripKey);
   });
 
   dom.logClearFilterBtn?.addEventListener("click", () => setLogFilter(null));

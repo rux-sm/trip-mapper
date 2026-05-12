@@ -1519,7 +1519,27 @@ function uploadItineraryPdf_(e) {
     }
   }
 
-  return { tripKey, itineraryPdfUrl: viewUrl };
+  return { tripKey, itineraryPdfUrl: viewUrl, itineraryStatus: "Received" };
+}
+
+// One-time migration: set itineraryStatus = "Received" for trips that have a PDF URL
+// but were uploaded before the status write was added to uploadItineraryPdf_.
+// Run once from the GAS script editor (Run button) — not an HTTP endpoint.
+function fixItineraryStatuses() {
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(CONFIG.SHEET_TRIPS);
+  const [header, ...rows] = sheet.getDataRange().getValues();
+  const colUrl    = header.indexOf("itineraryPdfUrl");
+  const colStatus = header.indexOf("itineraryStatus");
+  if (colUrl < 0 || colStatus < 0) return;
+  rows.forEach((row, i) => {
+    const hasPdf = String(row[colUrl]    || "").trim();
+    const status = String(row[colStatus] || "").trim().toLowerCase();
+    if (hasPdf && status === "pending") {
+      sheet.getRange(i + 2, colStatus + 1).setValue("Received");
+    }
+  });
+  invalidateWeekCache_();
 }
 
 function updateTripItineraryPdf_(p) {

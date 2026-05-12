@@ -60,7 +60,7 @@ Scripts must be loaded in this exact order in `index.html` (each depends on glob
 | 7 | `js/panels.js` | Card/panel show-hide, side panel mode, `enforceDesktopEditing` |
 | 8 | `js/schedule.js` | Schedule grid render, bar positioning, conflict UI (`buildAgendaRows`, `_renderAgendaInner`) |
 | 9 | `js/drivers.js` | Driver week grid, drag unavailability selection, checklist/TODO card |
-| 10 | `js/trip-form.js` | Trip form state, bus row building, dirty tracking, `verifyWriteResult` |
+| 10 | `js/trip-form.js` | Trip form state, bus row building, dirty tracking, `confirmDiscardIfDirty` |
 | 11 | `js/modals.js` | Itinerary modal, trip details modal, driver modals |
 | 12 | `js/envelope.js` | Envelope formatting, two layout templates, print |
 | 13 | `js/print.js` | Three print schedule layouts |
@@ -118,11 +118,11 @@ Pattern: memory cache → localStorage cache → network. On network failure, st
 
 Writes follow this sequence:
 1. Apply change to `state` immediately → re-render
-2. POST to GAS via hidden iframe form submit (not fetch — avoids CORS preflight on POST)
-3. On iframe load, poll `api.getTrip()` until the server reflects the change
+2. POST to GAS via `fetch()` (JSON body, `text/plain` content-type to avoid CORS preflight)
+3. On success: server returns confirmed trip/assignment data → replace optimistic state with server response
 4. On failure: rollback state from `state.pendingWrite.originalTrips`
 
-`state.pendingWrite` is set for the duration. All save and delete handlers check it first to prevent double-submit.
+`state.pendingWrite` is set for the duration. Any handler that saves or deletes a trip must check it first — including indirect triggers like quick edit or any code that calls `dom.saveBtn.click()`. The form submit handler's own guard does not protect against state being mutated before the click fires.
 
 ### Reference data caching (drivers/buses)
 
@@ -151,7 +151,7 @@ Google Apps Script web app. Source in **`docs/backend.md`** — this is the cano
 
 - `doGet` — all reads: `weekData`, `listTrips`, `getTrip`, `listDrivers`, `listBuses`, `getBusAssignments`, `getChecklist`, `listLog`, `batchUnavailability`, `saveWeekNote`
 - `doPost` — all writes: `create`, `update`, `delete`, `setChecklist`, `uploadItineraryPdf`
-- All writes acquire a `LockService` script lock and call `invalidateWeekCache_()` (clears all cached weeks)
+- All writes must call `invalidateWeekCache_()`. Two valid patterns: (1) call `withLock_(fn)` inside the write function — `invalidateWeekCache_()` goes inside the lock; (2) for functions that do slow external I/O before the spreadsheet write (e.g. `uploadItineraryPdf_`), call `invalidateWeekCache_()` at the `doPost` dispatch level after the function returns. Do not add a new write action that follows neither pattern.
 - `setChecklist` does NOT invalidate week cache (checklist data is not in weekData)
 
 ### Data model (Google Sheets)
