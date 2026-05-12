@@ -253,10 +253,10 @@ function logError(e) {
       params.context || "",
     ]);
 
-    return jsonOut({ ok: true, message: "Error logged successfully" });
+    return jsonOut_({ ok: true, message: "Error logged successfully" });
   } catch (err) {
     // If logging fails, still return success to avoid breaking the app
-    return jsonOut({ ok: false, error: String(err) });
+    return jsonOut_({ ok: false, error: String(err) });
   }
 }
 function getChecklist_(p) {
@@ -280,18 +280,13 @@ function setChecklist_(p) {
   const sheet = ss.getSheetByName(CONFIG.SHEET_CHECKLIST);
   if (!sheet) return { ok: false, error: "Checklist sheet not found" };
 
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - 30);
-  const cutoffYMD = cutoff.toISOString().slice(0, 10);
-  const all = readAllAsObjects_(sheet, HEADERS.Checklist);
-  // Single pass: drop stale rows and the existing upsert target together
-  const keep = all.filter((r) => {
-    const d = normalizeCellDateToYMD_(r.date);
-    if (!d || d < cutoffYMD) return false;
-    if (String(r.tripKey).trim() === tripKey && d === date) return false;
-    return true;
-  });
-  keep.push({
+  ensureHeaders_(sheet, HEADERS.Checklist);
+  const headers = HEADERS.Checklist;
+  const headerRow = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+  const colTripKey = headerRow.indexOf("tripKey");
+  const colDate = headerRow.indexOf("date");
+
+  const rowObj = {
     tripKey,
     date,
     envelope: String(p.envelope || "false"),
@@ -299,8 +294,43 @@ function setChecklist_(p) {
     driverInfo: String(p.driverInfo || "false"),
     fuelCard: String(p.fuelCard || "false"),
     hos: String(p.hos || "false"),
+  };
+
+  // Try to find existing row for this tripKey+date and update in-place
+  const last = sheet.getLastRow();
+  if (last >= 2 && colTripKey >= 0 && colDate >= 0) {
+    const vals = sheet.getRange(2, 1, last - 1, headerRow.length).getValues();
+    for (let r = 0; r < vals.length; r++) {
+      if (
+        String(vals[r][colTripKey]).trim() === tripKey &&
+        normalizeCellDateToYMD_(vals[r][colDate]) === date
+      ) {
+        const row = headerRow.map((h) => (rowObj[h] !== undefined ? rowObj[h] : ""));
+        sheet.getRange(r + 2, 1, 1, row.length).setValues([row]);
+        return { ok: true };
+      }
+    }
+  }
+
+  // No existing row — append
+  appendRowByHeaders_(sheet, headers, rowObj);
+  return { ok: true };
+}
+
+// Run on a daily time trigger to prune stale checklist rows (>30 days old)
+function pruneStaleChecklist_() {
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(CONFIG.SHEET_CHECKLIST);
+  if (!sheet) return;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 30);
+  const cutoffYMD = cutoff.toISOString().slice(0, 10);
+  const all = readAllAsObjects_(sheet, HEADERS.Checklist);
+  const keep = all.filter((r) => {
+    const d = normalizeCellDateToYMD_(r.date);
+    return d && d >= cutoffYMD;
   });
-  // Batch rewrite: 2 Sheets API calls instead of N deleteRow calls
+  if (keep.length === all.length) return;
   const headers = HEADERS.Checklist;
   sheet.clearContents();
   sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
@@ -308,7 +338,6 @@ function setChecklist_(p) {
     const rows = keep.map((r) => headers.map((h) => (r[h] !== undefined ? r[h] : "")));
     sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
   }
-  return { ok: true };
 }
 
 function doGet(e) {
@@ -1363,10 +1392,6 @@ function generateTripId_(departureDateObj) {
   props.setProperty(key, String(next));
   return `TRIP-${ymd}-${String(next).padStart(4, "0")}`;
 }
-function nextDailySequence_(tripsSheet, ymdCompact) {
-  // Deprecated: no longer used (kept to avoid breaking references).
-  return 1;
-}
 /** =============================
  * SHEET HELPERS
  * ============================= */
@@ -1805,13 +1830,15 @@ function batchUnavailability_(p) {
     const data = sheet.getDataRange().getValues();
 
     if (mode === "remove") {
-      // Delete rows in reverse to maintain index integrity
-      for (let i = data.length - 1; i >= 1; i--) {
-        const cellDate = normalizeCellDateToYMD_(data[i][1]); // FIX: normalize date
-        if (String(data[i][0]) === driverName && dates.indexOf(cellDate) > -1) {
-          sheet.deleteRow(i + 1);
-        }
+      const datesToRemove = new Set(dates);
+      const keep = [data[0]];
+      for (let i = 1; i < data.length; i++) {
+        const cellDate = normalizeCellDateToYMD_(data[i][1]);
+        if (String(data[i][0]) === driverName && datesToRemove.has(cellDate)) continue;
+        keep.push(data[i]);
       }
+      sheet.clearContents();
+      sheet.getRange(1, 1, keep.length, keep[0].length).setValues(keep);
     } else {
       // Add only if not already present
       const existing = new Set(

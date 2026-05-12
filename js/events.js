@@ -341,6 +341,24 @@ function wireDelegatedBarEvents() {
 // 36) EVENTS
 // ======================================================
 function wireEvents() {
+  // Delegated handler for conflict list — avoids accumulating listeners on each re-render
+  dom.conflictList?.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-tripkey]");
+    if (!el) return;
+    if (isMobileOnly()) return openTripDetailsModal(el.dataset.tripkey);
+    if (!confirmDiscardIfDirty()) return;
+    openTripForEdit(el.dataset.tripkey);
+  });
+  dom.conflictList?.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const el = e.target.closest("[data-tripkey]");
+    if (!el) return;
+    e.preventDefault();
+    if (isMobileOnly()) return openTripDetailsModal(el.dataset.tripkey);
+    if (!confirmDiscardIfDirty()) return;
+    openTripForEdit(el.dataset.tripkey);
+  });
+
   initGlassSelects();
 
   // Re-apply bus row visibility after wrapping (initGlassSelects wraps selects;
@@ -454,17 +472,17 @@ function wireEvents() {
     toggleDragCell(td);
   });
 
+  let _lastDragCell = null;
   dom.driverWeekBody.addEventListener(
     "mouseover",
     (e) => {
       if (!state.dragSelection.active) return;
       const td = e.target.closest("td");
-      if (!td || td.dataset.driver !== state.dragSelection.driver || !td.dataset.date) return;
+      if (!td || td === _lastDragCell) return;
+      _lastDragCell = td;
+      if (td.dataset.driver !== state.dragSelection.driver || !td.dataset.date) return;
       if (td.classList.contains("driver-week__cell--on")) return;
-
-      // Don't re-toggle the same cell in one drag pass
       if (state.dragSelection.dates.has(td.dataset.date)) return;
-
       toggleDragCell(td);
     },
     true,
@@ -586,7 +604,7 @@ function wireEvents() {
       // Optional: change icon style/color if active
       dom.waitingListBtn.classList.toggle("active", visible);
     }
-    localStorage.setItem("waitingListVisible", visible ? "1" : "0");
+    try { localStorage.setItem("waitingListVisible", visible ? "1" : "0"); } catch { }
   }
 
   // Init
@@ -723,7 +741,7 @@ function wireEvents() {
   dom.tripForm.action = CONFIG.ENDPOINT;
 
   dom.deleteBtn.addEventListener("click", () => {
-    if (!dom.tripKey.value) return;
+    if (!dom.tripKey.value || state.pendingWrite) return;
     if (!confirm("Delete this trip?")) return;
 
     dom.action.value = "delete";
@@ -793,7 +811,7 @@ function wireEvents() {
       return;
     }
 
-    if (dom.saveBtn.disabled) return;
+    if (dom.saveBtn.disabled || state.pendingWrite) return;
     if (dom.action.value === "delete") return;
 
     if (!dom.busesNeeded.value) {

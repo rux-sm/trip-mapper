@@ -235,7 +235,8 @@ function buildTripCard(t, todayYMD, getAsns) {
   const statsLine = [busDisplay, envelopeDisplay].filter(Boolean).join('<span class="todo-stat__sep"> · </span>');
 
   const savedKey   = `etb-todo-${t.tripKey}-${todayYMD}`;
-  const saved      = JSON.parse(localStorage.getItem(savedKey) || "{}");
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(savedKey) || "{}"); } catch { }
   const items      = TRIP_CHECKLIST.filter(({ show }) => show(t));
   const checkItems = items.filter(({ type }) => type !== "warning");
   const checks     = items.map(({ key, label, type, tripProp }) => {
@@ -372,9 +373,10 @@ async function renderTodoCard() {
       const tripKey  = item.dataset.trip;
       const key      = item.dataset.key;
       const savedKey = `etb-todo-${tripKey}-${todayYMD}`;
-      const saved    = JSON.parse(localStorage.getItem(savedKey) || "{}");
-      saved[key]     = cb.checked;
-      localStorage.setItem(savedKey, JSON.stringify(saved));
+      let saved = {};
+      try { saved = JSON.parse(localStorage.getItem(savedKey) || "{}"); } catch { }
+      saved[key] = cb.checked;
+      try { localStorage.setItem(savedKey, JSON.stringify(saved)); } catch { }
       item.classList.toggle("is-done", cb.checked);
       // Update card status class live
       const card = cb.closest(".todo-trip-card");
@@ -402,7 +404,8 @@ async function renderTodoCard() {
       // Debounce server persist — waits 600ms after last change for this trip before POSTing
       clearTimeout(syncTimers[tripKey]);
       syncTimers[tripKey] = setTimeout(() => {
-        const latest = JSON.parse(localStorage.getItem(savedKey) || "{}");
+        let latest = {};
+        try { latest = JSON.parse(localStorage.getItem(savedKey) || "{}"); } catch { }
         const controller = new AbortController();
         state.checklistAbortControllers[tripKey] = controller;
         api.setChecklist(tripKey, todayYMD, latest, controller.signal)
@@ -439,7 +442,7 @@ async function syncChecklistFromServer(date) {
       for (const { key: k, tripProp } of TRIP_CHECKLIST) {
         if (tripProp && trip && trip[tripProp]) saved[k] = true;
       }
-      localStorage.setItem(`etb-todo-${tripKey}-${date}`, JSON.stringify(saved));
+      try { localStorage.setItem(`etb-todo-${tripKey}-${date}`, JSON.stringify(saved)); } catch { }
       // Patch the live DOM without re-rendering
       const cardEl = dom.todoList?.querySelector(`[data-trip="${tripKey}"]`);
       if (!cardEl) continue;

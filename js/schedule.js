@@ -410,22 +410,6 @@ function showConflictsPanel(conflicts) {
     .join("");
 
   dom.conflictList.innerHTML = html;
-
-  dom.conflictList.querySelectorAll("[data-tripkey]").forEach((el) => {
-    const open = () => {
-      if (isMobileOnly()) return openTripDetailsModal(el.dataset.tripkey);
-      if (!confirmDiscardIfDirty()) return;
-      openTripForEdit(el.dataset.tripkey);
-    };
-
-    el.addEventListener("click", open);
-    el.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        open();
-      }
-    });
-  });
 }
 
 // ======================================================
