@@ -177,6 +177,17 @@ const api = {
     return fetchAPI("getChecklist", { date });
   },
 
+  async saveTrip(body) {
+    const resp = await fetch(CONFIG.ENDPOINT, {
+      method: "POST",
+      body,
+      mode: "cors",
+      credentials: "omit",
+    }).then((r) => r.json());
+    if (!resp?.ok) throw new Error(resp?.error || "Save failed");
+    return resp;
+  },
+
   async setChecklist(tripKey, date, saved, signal) {
     const body = new URLSearchParams({
       action: "setChecklist",

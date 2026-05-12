@@ -229,33 +229,25 @@ async function fetchWeekDataCached(start, end, notesKey, force = false) {
   return p;
 }
 
-function applyWeekRespToState(resp) {
-  // Guard: don't overwrite live state while a mutation is in-flight or the trip form is open.
-  // Set the deferred flag so the caller can retry once the mutation/form clears.
-  if (state.pendingWrite || state.tripFormOpen) {
+function applyWeekRespToState(resp, weekStart, weekEnd) {
+  if (state.tripFormOpen) {
     state.pendingRefreshDeferred = true;
     return;
+  }
+  if (state.pendingWrite) {
+    const pw = state.pendingWrite;
+    // Only block the week being written to — other weeks render immediately.
+    const sameWeek = !pw.writeWeekKey || !weekStart || !weekEnd
+      || weekKey(weekStart, weekEnd) === pw.writeWeekKey;
+    if (sameWeek) {
+      state.pendingRefreshDeferred = true;
+      return;
+    }
   }
 
   const ok = !!resp?.ok;
 
   let trips = ok ? asArray(resp.trips) : [];
-
-  // DEFENSIVE: Filter out any pending-delete trips to prevent zombie resurrection
-  if (state.pendingWrite?.action === "delete" && state.pendingWrite?.tripKey) {
-    const deletingKey = String(state.pendingWrite.tripKey);
-    trips = trips.filter((t) => String(t.tripKey || "").trim() !== deletingKey);
-  }
-
-  // Filter trips confirmed-deleted but possibly still in a stale GAS cache response.
-  // Entries expire after 60s (well past the 5-min GAS CacheService TTL).
-  if (state.recentlyDeleted.size) {
-    const now = Date.now();
-    for (const [k, exp] of state.recentlyDeleted) {
-      if (now > exp) state.recentlyDeleted.delete(k);
-    }
-    trips = trips.filter((t) => !state.recentlyDeleted.has(String(t.tripKey || "").trim()));
-  }
 
   state.trips = trips
   state.trips = state.trips
@@ -271,12 +263,6 @@ function applyWeekRespToState(resp) {
   for (const t of state.trips) state.tripByKey[t.tripKey] = t;
 
   let asnList = ok ? asArray(resp.assignments) : [];
-
-  // DEFENSIVE: Also filter assignments for pending-delete trips
-  if (state.pendingWrite?.action === "delete" && state.pendingWrite?.tripKey) {
-    const deletingKey = String(state.pendingWrite.tripKey);
-    asnList = asnList.filter((a) => String(a.tripKey || "").trim() !== deletingKey);
-  }
 
   state.assignmentsByTripKey = {};
   for (const a of asnList) {
@@ -370,7 +356,7 @@ function updateWeekDates() {
   const cached = getCachedWeek(key);
 
   if (cached?.ok) {
-    applyWeekRespToState(cached);
+    applyWeekRespToState(cached, start, end);
     updateDriverWeekIfVisible();
     updateTodoCardIfVisible();
     scheduleAgendaReflow();
@@ -412,7 +398,7 @@ async function loadTripsForWeek(reqId) {
 
   if (localData && localData.ok) {
     if (reqId != null && reqId !== state.weekReqId) return;
-    applyWeekRespToState(localData);
+    applyWeekRespToState(localData, start, end);
     updateDriverWeekIfVisible();
     updateTodoCardIfVisible();
     scheduleAgendaReflow();
@@ -433,7 +419,7 @@ async function loadTripsForWeek(reqId) {
 
   if (reqId != null && reqId !== state.weekReqId) return;
 
-  applyWeekRespToState(resp);
+  applyWeekRespToState(resp, start, end);
   updateDriverWeekIfVisible();
   updateTodoCardIfVisible();
   scheduleAgendaReflow();

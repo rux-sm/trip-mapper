@@ -317,7 +317,6 @@ function setChecklist_(p) {
   return { ok: true };
 }
 
-// Run on a daily time trigger to prune stale checklist rows (>30 days old)
 function pruneStaleChecklist_() {
   const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
   const sheet = ss.getSheetByName(CONFIG.SHEET_CHECKLIST);
@@ -519,8 +518,15 @@ function createTrip_(p) {
   const existingIdx = findRowIndexByValue_(tripsSheet, "tripKey", tripKey);
   if (existingIdx > 0) {
     const existing = getRowObject_(tripsSheet, HEADERS.Trips, existingIdx);
-    return { tripKey, tripId: existing.tripId || "" };
+    const { assignments: existingAsn } = getBusAssignments_(tripKey);
+    return {
+      tripKey,
+      tripId: existing.tripId || "",
+      trip: normalizeTripForApi_(existing),
+      assignments: existingAsn || [],
+    };
   }
+
   const tripId = generateTripId_(departureDate);
   // Normalize persisted dates to YYYY-MM-DD strings
   p.departureDate = formatYMD_(departureDate);
@@ -585,7 +591,14 @@ function createTrip_(p) {
     }
   }
 
-  return { tripKey, tripId };
+  SpreadsheetApp.flush();
+  const { assignments: returnAssignments } = getBusAssignments_(tripKey);
+  return {
+    tripKey,
+    tripId,
+    trip: normalizeTripForApi_(tripRowObj),
+    assignments: returnAssignments || [],
+  };
 }
 function updateTrip_(p) {
   const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
@@ -742,7 +755,14 @@ function updateTrip_(p) {
     }
   }
 
-  return { tripKey, tripId };
+  SpreadsheetApp.flush();
+  const { assignments: returnAssignments } = getBusAssignments_(tripKey);
+  return {
+    tripKey,
+    tripId,
+    trip: normalizeTripForApi_(tripRowObj),
+    assignments: returnAssignments || [],
+  };
 }
 
 function deleteTrip_(p) {

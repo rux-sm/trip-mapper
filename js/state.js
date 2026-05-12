@@ -16,7 +16,6 @@ const state = {
   busRowIndex: new Map(),
 
   pendingWrite: null,
-  verifyFallbackTimer: null,
   toastTimer: null,
   weekLoadSafetyTimer: null,
   statusNoticeExpiryTimer: null,
@@ -72,7 +71,6 @@ const state = {
   pendingRefreshDeferred: false,
   tripFormOpen: false,
   mutationId: 0,
-  recentlyDeleted: new Map(),
   checklistWriteTs: {},
   checklistAbortControllers: {},
 };

@@ -734,13 +734,6 @@ function wireEvents() {
   });
 
 
-  dom.hiddenIframe.addEventListener("load", () => {
-    if (!state.pendingWrite) return;
-    toastProgress(60, "Server responded… verifying… 60%");
-    clearVerifyFallback();
-    verifyWriteResult();
-  });
-
   dom.newBtn.addEventListener("click", () => {
     // Warn if clearing while there are unsaved trip changes
     if (state.tripFormDirty) {
@@ -758,59 +751,76 @@ function wireEvents() {
     if (!dom.tripKey.value || state.pendingWrite) return;
     if (!confirm("Delete this trip?")) return;
 
-    dom.action.value = "delete";
     dom.saveBtn.disabled = true;
 
-    // OPTIMISTIC UPDATE: Remove locally immediately
     const key = String(dom.tripKey.value);
+    const tripId = String(dom.tripId?.value || "");
 
-    // Backup for rollback
     const originalTrips = [...state.trips];
     const originalTripByKey = { ...state.tripByKey };
     const originalAssignments = { ...state.assignmentsByTripKey };
 
-    // Capture date before removing from state so clearCacheForTrip can derive the week key
     const tripDate = state.tripByKey[key]?.departureDate || null;
     const tripArrival = state.tripByKey[key]?.arrivalDate || null;
 
-    // 1. Remove from state
+    // Optimistic remove
     state.trips = state.trips.filter((t) => String(t.tripKey) !== key);
     delete state.tripByKey[key];
     delete state.assignmentsByTripKey[key];
 
-    // 2. Evict only the affected week(s) from cache
     clearCacheForTrip(tripDate);
     if (tripArrival && tripArrival !== tripDate) clearCacheForTrip(tripArrival);
 
-    // 3. Re-render UI
     scheduleAgendaReflow();
     updateDriverWeekIfVisible();
 
-    // 4. Feedback & Modal Close (don't reset form yet so it can submit)
     closeTripDetailsModal();
     toast("Trip deleted ✓", "success", 1500);
+    resetTripFormUI();
 
-    // OPTIMISTIC UI: Clear form for next entry
-    setTimeout(() => {
-      resetTripFormUI();
-    }, 100);
+    const _pwDep2 = tripDate ? parseYMD(tripDate) : null;
+    const _pwWs2  = _pwDep2 ? startOfWeek(_pwDep2) : null;
+    const writeWeekKey = _pwWs2 ? weekKey(ymd(_pwWs2), ymd(addDays(_pwWs2, 6))) : null;
 
     state.pendingWrite = {
       action: "delete",
       tripKey: key,
       mutationId: ++state.mutationId,
+      writeWeekKey,
       originalTrips,
       originalTripByKey,
       originalAssignments,
     };
 
-    startVerifyFallback();
+    const formBody = new URLSearchParams({ action: "delete", tripKey: key, tripId });
 
-    // Explicitly set these for the native submission
-    dom.action.value = "delete";
-    dom.tripKey.value = key;
-
-    dom.tripForm.submit();
+    api.saveTrip(formBody)
+      .then(() => {
+        state.weekCache.clear();
+      })
+      .catch((err) => {
+        console.error(err);
+        if (state.pendingWrite) {
+          state.trips = state.pendingWrite.originalTrips;
+          state.tripByKey = state.pendingWrite.originalTripByKey;
+          state.assignmentsByTripKey = state.pendingWrite.originalAssignments;
+          if (tripDate) clearCacheForTrip(tripDate);
+          scheduleAgendaReflow();
+          updateDriverWeekIfVisible();
+        }
+        toast("Delete may have failed — data restored. Refresh to confirm.", "danger", 8000);
+      })
+      .finally(() => {
+        state.pendingWrite = null;
+        dom.saveBtn.disabled = false;
+        dom.action.value = "create";
+        const { start, end } = getWeekRange();
+        state.weekInFlight.delete(weekKey(start, end));
+        if (state.pendingRefreshDeferred) {
+          state.pendingRefreshDeferred = false;
+          refreshWeekData({ silent: true });
+        }
+      });
   });
 
   dom.tripForm.addEventListener("submit", (e) => {
@@ -1055,8 +1065,6 @@ function wireEvents() {
       clearCacheForTrip(optimisticTrip.arrivalDate);
     }
 
-    toast("Saving…", "info", 1000);
-
     dom.saveBtn.disabled = true;
 
     // Sync requirement toggles to hidden inputs so backend receives them
@@ -1068,18 +1076,7 @@ function wireEvents() {
       }
     });
 
-    state.pendingWrite = {
-      action,
-      tripKey: key,
-      mutationId: ++state.mutationId,
-      optimisticSnapshot: { ...optimisticTrip },
-      optimisticAssignments: [...optimisticAssignments],
-      originalTrips,
-      originalTripByKey,
-      originalAssignments,
-    };
-
-    // CLEANLINESS: Clear status values for unassigned drivers so backend doesn't save them
+    // Clear status values for unassigned drivers so backend doesn't save them
     for (let i = 0; i < 10; i++) {
       const row = state.busRows[i];
       if (!row) continue;
@@ -1089,15 +1086,70 @@ function wireEvents() {
       if (row.d4Sel.value === "None") row.d4StatusSel.value = "";
     }
 
-    startVerifyFallback();
-    dom.tripForm.submit();
+    // Capture form data before resetting (fetch POST replaces iframe submit)
+    const formBody = new URLSearchParams(new FormData(dom.tripForm));
 
-    // OPTIMISTIC UI: Clear form immediately for next entry
-    // (Small delay to ensure browser captures data for hidden_iframe submit)
-    setTimeout(() => {
-      resetTripFormUI();
-      toast("Saved ✓", "success", 1200);
-    }, 100);
+    const _pwDep = parseYMD(optimisticTrip.departureDate);
+    const _pwWs  = _pwDep ? startOfWeek(_pwDep) : null;
+    const writeWeekKey = _pwWs ? weekKey(ymd(_pwWs), ymd(addDays(_pwWs, 6))) : null;
+
+    state.pendingWrite = {
+      action,
+      tripKey: key,
+      mutationId: ++state.mutationId,
+      writeWeekKey,
+      originalTrips,
+      originalTripByKey,
+      originalAssignments,
+    };
+
+    // Reset form immediately and show optimistic success
+    resetTripFormUI();
+    toast("Saved ✓", "success", 1200);
+
+    api.saveTrip(formBody)
+      .then((resp) => {
+        if (resp.trip) {
+          const sKey = String(resp.trip.tripKey || key);
+          state.tripByKey[sKey] = resp.trip;
+          const idx = state.trips.findIndex((t) => String(t.tripKey) === sKey);
+          if (idx >= 0) state.trips[idx] = resp.trip;
+          if (resp.assignments) {
+            state.assignmentsByTripKey[sKey] = resp.assignments.map(normalizeAssignment).filter(Boolean);
+          }
+          scheduleAgendaReflow();
+          updateDriverWeekIfVisible();
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        if (state.pendingWrite) {
+          state.trips = state.pendingWrite.originalTrips;
+          state.tripByKey = state.pendingWrite.originalTripByKey;
+          state.assignmentsByTripKey = state.pendingWrite.originalAssignments;
+          const orig = state.pendingWrite.originalTripByKey[key];
+          if (orig?.departureDate) {
+            clearCacheForTrip(orig.departureDate);
+            if (orig.arrivalDate && orig.arrivalDate !== orig.departureDate) {
+              clearCacheForTrip(orig.arrivalDate);
+            }
+          }
+          scheduleAgendaReflow();
+          updateDriverWeekIfVisible();
+        }
+        toast("Save failed — data restored. Please retry.", "danger", 8000);
+      })
+      .finally(() => {
+        state.pendingWrite = null;
+        dom.saveBtn.disabled = false;
+        dom.action.value = dom.tripKey.value ? "update" : "create";
+        const { start, end } = getWeekRange();
+        state.weekInFlight.delete(weekKey(start, end));
+        if (state.pendingRefreshDeferred) {
+          state.pendingRefreshDeferred = false;
+          refreshWeekData({ silent: true });
+        }
+      });
   });
 
   function resetTripFormUI() {
