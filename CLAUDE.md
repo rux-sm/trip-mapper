@@ -1,14 +1,25 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code when working in this repository.
+
+---
 
 ## What this app is
 
-ETB Trip Schedule is a dispatch scheduling web app for Escamilla Tour Buses. It is a **pure static site** (no build step, no framework, no npm) backed by a **Google Apps Script** web app that reads/writes a Google Sheet.
+**ETB Trip Schedule** is a dispatch scheduling web app for Escamilla Tour Buses. Dispatchers use it to:
+- View a weekly grid of trips assigned to buses/drivers
+- Create, edit, and delete trips
+- Assign buses and drivers to trips, track driver confirmation status
+- Print envelopes, next-day reports, and daily maintenance plans
+- Mark driver unavailability by dragging over a weekly grid
+- Track per-trip checklists (envelope, reminder, driver info, fuel card, HOS)
+- View an activity log of all field changes
+
+It is a **pure static site** — no build step, no framework, no npm, no TypeScript. Just HTML, CSS, and vanilla JS files served statically, backed by a Google Apps Script web app that reads/writes a Google Sheet.
+
+---
 
 ## Running the app
-
-Open `index.html` directly in a browser or serve with any static file server:
 
 ```sh
 npx serve .
@@ -16,93 +27,199 @@ npx serve .
 python3 -m http.server 8080
 ```
 
+Open `index.html` in a browser. The `.claude/launch.json` dev server config runs `npx serve .` on an auto-selected port.
+
 There is no build step, no compilation, and no test suite.
 
 ## Formatting
-
-Prettier is configured in `.prettierrc`. Run it with:
 
 ```sh
 npx prettier --write .
 ```
 
-## Architecture
+---
 
-### Frontend (`index.html`, `js/app.js`, `css/`)
+## JS Architecture
 
-Single-page app. All logic lives in `js/app.js`. The Google Apps Script endpoint is set in `CONFIG.ENDPOINT`. Data is fetched via **JSONP** (using a `?callback=` param) because the GAS web app is cross-origin and doesn't support CORS on all request types.
+### Critical constraint: no modules
 
-`css/main.css` is the single CSS entry point — it `@import`s all other stylesheets in load order.
+There is **no `import`/`export`**, no bundler, no ES modules. Every JS file is loaded via `<script defer>` in `index.html`. All functions and variables are **global**. Script load order is the only dependency system.
 
-### Backend (`docs/backend.md`)
+### Module files and load order
 
-The backend is a **Google Apps Script** project deployed as a web app. The source is kept in `backend.md` for reference and must be manually deployed in the Google Apps Script editor. It is **not** deployed from this repo.
+Scripts must be loaded in this exact order in `index.html` (each depends on globals from all previous):
 
-- `doGet` handles reads: `weekData`, `listTrips`, `listDrivers`, `listBuses`, etc.
-- `doPost` handles writes: `create`, `update`, `delete`, `uploadItineraryPdf`
-- All write operations acquire a script lock and invalidate a 2-minute `CacheService` cache
-- The primary data fetch is `weekData` — it returns trips + bus assignments + week notes + driver unavailability for a date range in one call
+| Order | File | Contents |
+|-------|------|----------|
+| 1 | `js/config.js` | `CONFIG` object, `CACHE` localStorage abstraction, theme IIFE, version display |
+| 2 | `js/state.js` | Single `state` object (~84 properties) — all mutable app state lives here |
+| 3 | `js/dom.js` | `$()` helper, `dom` object with 120+ cached element refs, `SELECTORS` |
+| 4 | `js/utils.js` | Date/time utils, general utils, modal a11y helpers (`openModalA11y`, `closeModalA11y`, `trapModalFocus`), response sanitization (`sanitizeWeekResp`) |
+| 5 | `js/api.js` | `fetchAPI`, `withRetry`, `api` object (10 methods), conflict detection, error logger |
+| 6 | `js/status.js` | Toast/status notice system, progress bar, sync status |
+| 7 | `js/panels.js` | Card/panel show-hide, side panel mode, `enforceDesktopEditing` |
+| 8 | `js/schedule.js` | Schedule grid render, bar positioning, conflict UI (`buildAgendaRows`, `_renderAgendaInner`) |
+| 9 | `js/drivers.js` | Driver week grid, drag unavailability selection, checklist/TODO card |
+| 10 | `js/trip-form.js` | Trip form state, bus row building, dirty tracking, `verifyWriteResult` |
+| 11 | `js/modals.js` | Itinerary modal, trip details modal, driver modals |
+| 12 | `js/envelope.js` | Envelope formatting, two layout templates, print |
+| 13 | `js/print.js` | Three print schedule layouts |
+| 14 | `js/log.js` | Activity log, `loadDriversAndBuses` |
+| 15 | `js/reports.js` | Next-day report, daily maintenance plan |
+| 16 | `js/context-menu.js` | Context menus, quick-edit popover |
+| 17 | `js/glass-select.js` | Custom glass dropdown wrapper for `<select>` elements |
+| 18 | `js/events.js` | All event wiring (`wireEvents`, `wireDelegatedBarEvents`, `wireSettingsMenu`) |
+| 19 | `js/week.js` | Week navigation, week data caching, `loadPrefs`, `updateWeekDates` |
+| 20 | `js/app.js` | Boot IIFE — initializes everything, `fitDateTitle` |
 
-Google Sheets data model (sheet names and column headers) is defined in the `HEADERS` constant in `docs/backend.md`.
+**When adding a new file**: place its `<script defer src="...">` tag in the correct position in `index.html`. Adding it in the wrong order will cause "X is not defined" errors at boot.
 
-### CSS Design System (Rux UI)
+### State
 
-Documented in full in `docs/RUX_UI.md`. The key rule:
+All mutable state lives in `state` (`js/state.js`). Key properties:
+- `state.trips` — array of trip objects for the current week
+- `state.tripByKey` — map of tripKey → trip (for O(1) lookup)
+- `state.assignmentsByTripKey` — map of tripKey → array of bus assignments
+- `state.driversList` / `state.busesList` — reference data
+- `state.unavailabilityByDriver` — map of driverName → { dateYmd: true }
+- `state.pendingWrite` — set during save/delete; guards against double-submit
+- `state.weekCache` — in-memory week data cache (Map)
+- `state.weekInFlight` — in-flight request deduplication (Map of key → Promise)
 
-**3-tier token architecture** — all tiers share the `--rux-` prefix. Component CSS must only reference Tier 3 tokens:
+---
+
+## Data Flow
+
+### Primary read: `weekData`
+
+The main data fetch is `api.weekData(start, end)` → GAS `weekData_()`. Returns everything for a week in one call:
+```
+{ trips[], assignments[], weekNotes, unavailability[], _cache: "HIT"|"MISS" }
+```
+Applied atomically in `applyWeekRespToState()`. Trips and assignments always arrive and are applied together — they are never out of sync.
+
+### Three-layer cache
+
+1. **In-memory** (`state.weekCache`) — Map of week key → `{ ts, resp }`. TTL: 5 min. Fastest.
+2. **localStorage** (`CACHE` object in `config.js`) — JSON + expiry timestamp. TTL: 7 days. Survives page reload.
+3. **GAS CacheService** (server-side) — TTL: 5 min for weekData, 10 min for drivers/buses.
+
+Pattern: memory cache → localStorage cache → network. On network failure, stale cache is returned with `__stale: true`.
+
+### Stale-while-revalidate
+
+`fetchWeekDataCached()` serves from cache immediately, then re-fetches in background. Adjacent weeks (±2) are prefetched after the current week loads.
+
+### In-flight deduplication
+
+`state.weekInFlight` maps week keys to in-progress Promises. Duplicate requests for the same week share one Promise instead of firing multiple network requests.
+
+### Optimistic UI + verification
+
+Writes follow this sequence:
+1. Apply change to `state` immediately → re-render
+2. POST to GAS via hidden iframe form submit (not fetch — avoids CORS preflight on POST)
+3. On iframe load, poll `api.getTrip()` until the server reflects the change
+4. On failure: rollback state from `state.pendingWrite.originalTrips`
+
+`state.pendingWrite` is set for the duration. All save and delete handlers check it first to prevent double-submit.
+
+### Reference data caching (drivers/buses)
+
+`loadDriversAndBuses()` in `log.js`:
+- Serves from localStorage cache when fresh (TTL: 1 hour each)
+- Falls back to network fetch via `api.listDrivers` / `api.listBuses`
+- GAS also caches these for 10 min server-side
+- `forceRefresh: true` bypasses all caches (used by Settings → Refresh)
+
+---
+
+## Backend
+
+### Overview
+
+Google Apps Script web app. Source in **`docs/backend.md`** — this is the canonical source of truth and must be **manually copied** into the GAS script editor and deployed as a new version. It is not deployed from this repo.
+
+### Deployment workflow
+
+1. Edit `docs/backend.md`
+2. Copy the JS content into the GAS editor (script.google.com)
+3. **Deploy → Manage deployments → edit → New version**
+4. The endpoint URL never changes between versions
+
+### Endpoints
+
+- `doGet` — all reads: `weekData`, `listTrips`, `getTrip`, `listDrivers`, `listBuses`, `getBusAssignments`, `getChecklist`, `listLog`, `batchUnavailability`, `saveWeekNote`
+- `doPost` — all writes: `create`, `update`, `delete`, `setChecklist`, `uploadItineraryPdf`
+- All writes acquire a `LockService` script lock and call `invalidateWeekCache_()` (clears all cached weeks)
+- `setChecklist` does NOT invalidate week cache (checklist data is not in weekData)
+
+### Data model (Google Sheets)
+
+8 sheets, defined in the `HEADERS` constant in `docs/backend.md`:
+
+| Sheet | Key columns |
+|-------|-------------|
+| `Trips` | `tripKey` (PK), all trip fields |
+| `BusAssignments` | `tripKey` (FK), `busNumber`, `busId`, `driver1-4`, `driver1-4Status`, `driver1-4Pay` |
+| `Drivers` | `driverId`, `driverName`, `active`, `priority` |
+| `Buses` | `busId`, `busName`, `hasLift`, `hasSleeper`, `active` |
+| `WeekNotes` | `WeekStart="global"`, `Notes`, `LastUpdated` |
+| `Unavailability` | `driverName`, `dateYmd` |
+| `Checklist` | `tripKey`, `date`, `envelope`, `reminder`, `driverInfo`, `fuelCard`, `hos` |
+| `Log` | `timestamp`, `tripKey`, `tripId`, `action`, `field`, `oldValue`, `newValue` |
+
+`tripKey` is the primary key for trips (timestamp-random string). `tripId` is a human-readable ID (`TRIP-YYYYMMDD-0001`) generated at create time and never changes.
+
+### Backend utility functions (reuse these)
+
+- `readAllAsObjects_(sheet, headers)` — reads all rows as objects
+- `findRowIndexByValue_(sheet, headerName, value)` — finds a row by column value
+- `updateRowByHeaders_(sheet, headers, rowIndex, obj)` — updates a row in place
+- `appendRowByHeaders_(sheet, headers, obj)` — appends a new row
+- `openModalA11y` / `closeModalA11y` — modal focus management (frontend)
+- `withLock_(fn)` — wraps a function in a script lock (backend)
+- `invalidateWeekCache_()` — clears all GAS CacheService week entries (backend)
+
+---
+
+## Modal system
+
+All modals use `openModalA11y(el, preferredFocusEl)` / `closeModalA11y(el)` from `utils.js`. These handle:
+- `el.hidden` toggle
+- Focus save/restore via `modalReturnFocusMap`
+- `requestAnimationFrame` focus on open
+
+A single consolidated Escape handler in `wireEvents()` (`events.js`) covers all 7 modals in priority order. Do not add per-modal `document.addEventListener("keydown")` for Escape.
+
+---
+
+## CSS Design System (Rux UI)
+
+Full spec in `docs/RUX_UI.md`. **3-tier token architecture**, all with `--rux-` prefix:
 
 ```
-Tier 1  --rux-{category}-{key}      Primitives: raw oklch seeds and numeric scales
-Tier 2  --rux-{category}-{n|role}   Semantics: surface levels, text/border/status roles
-Tier 3  --rux-{comp}-{property}     Components: element-scoped, consume Tier 2 only
+Tier 1  --rux-{category}-{key}      Primitives (color seeds, spacing, radius, size scales)
+Tier 2  --rux-{category}-{n|role}   Semantics (surface levels, text/border/status roles)
+Tier 3  --rux-{comp}-{property}     Components (element-scoped, consume Tier 2 only)
 ```
 
-**Naming rules:**
-- Use full readable words for category and property names — no arbitrary abbreviations
-- One exception: `bg` for background (universally understood)
-- Short component prefixes (`btn`, `fld`, `trp`) act as unique namespaces, not decoded words
-- Use full color names in seeds: `blue`, `gray`, `red` (not `blu`, `gry`, `red`)
+- Component CSS must only reference **Tier 3** tokens
+- Use `oklch()` for all color values
+- Use full readable words; only exception is `bg` for background
+- Short component prefixes (`btn`, `fld`, `trp`) are namespaces, not abbreviations
 
-**Tier 1 — Primitives:**
-```css
---rux-bg-blue, --rux-bg-gray, --rux-bg-red …   /* color seeds */
---rux-space-1  through --rux-space-7            /* 0.25rem → 1.5rem */
---rux-radius-1 through --rux-radius-4           /* 4px → 12px */
---rux-size-1   through --rux-size-8             /* 0.625rem → 1.5rem */
-```
+**Migration in progress**: `css/variables.css` and all component CSS files still use the old naming convention (pre-May 2026). New work should use the active convention. Don't mix conventions within a file.
 
-**Tier 2 — Semantics:**
-```css
---rux-bg-1 through --rux-bg-5                  /* surface elevation (word vs number distinguishes seeds from surfaces) */
---rux-text-1, --rux-text-2, --rux-text-3, --rux-text-accent
---rux-border-1, --rux-border-2, --rux-border-3
---rux-status-error, --rux-status-success, --rux-status-warn
-```
+Old → new examples: `--rux-surface-panel` → `--rux-bg-3`, `--tripbar-height` → `--rux-trp-height`, `--btn-background` → `--rux-btn-bg-primary`
 
-**Tier 3 — Components (examples):**
-```css
---rux-btn-height, --rux-btn-radius, --rux-btn-padding
---rux-btn-font, --rux-btn-weight, --rux-btn-shadow
---rux-btn-bg-primary, --rux-btn-bg-secondary, --rux-btn-bg-danger
+---
 
---rux-fld-height, --rux-fld-radius, --rux-fld-bg
---rux-fld-padding, --rux-fld-font, --rux-fld-shadow
+## Key patterns to follow
 
---rux-trp-height, --rux-trp-radius, --rux-trp-bg
---rux-trp-border, --rux-trp-shadow
---rux-trp-row1-size, --rux-trp-row7-size, --rux-trp-row7-weight
-```
-
-Never reference Tier 1 tokens from component CSS. Use `oklch()` for all color values.
-
-**Optical radius nesting** (also in `docs/RUX_UI.md`): nested elements step down one radius level per 8px of gap. Use semantic aliases `--rux-radius-overlay / radius-surface / radius-section / radius-control / radius-badge`, not raw numeric values. Pair with `corner-shape: squircle` for Apple-style superellipse curves.
-
-### Known design system issues
-
-The naming convention was finalized in May 2026 with a breaking change.
-
-**Active convention:** `--rux-{category}-{key}` on all tiers, full readable words, `bg` for background. Tier 3 uses `--rux-{comp}-{property}` (e.g. `--rux-btn-height`, `--rux-trp-bg`, `--rux-fld-shadow`).
-
-**Old convention (being phased out):** Tier 1/2 used long-form names (`--rux-surface-panel`, `--rux-font-size-4`, `--rux-space-3`). Tier 3 had no `--rux-` prefix (`--tripbar-height`, `--btn-background`, `--field-bg`). Some tokens used `bkg` instead of `bg`.
-
-`css/variables.css` and all component CSS files still use old-convention names. `docs/RUX_UI.md` naming examples also reflect the old convention and will need a parallel update.
+- **No new per-element event listeners on dynamically rebuilt lists** — use event delegation on the stable parent container instead
+- **All `localStorage` calls must be wrapped in try/catch** — private browsing throws on access
+- **`state.pendingWrite` must be checked at the top of any save/delete handler**
+- **New trip fields**: add to `HEADERS.Trips` in `docs/backend.md`, `mapTripFromParams_`, `weekData_` object literal, `sanitizeWeekResp` in `utils.js`, and the trip form in `trip-form.js`
+- **New bus assignment fields**: add to `HEADERS.BusAssignments`, `replaceBusAssignments_`, `weekData_` assignment object, and `sanitizeWeekResp`
+- **Do not add Escape keydown listeners per-modal** — add to the consolidated handler in `wireEvents()`
