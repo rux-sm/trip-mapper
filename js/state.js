@@ -69,6 +69,7 @@ const state = {
   cardPanelAssignments: {},
 
   pendingRefreshDeferred: false,
+  pendingQuickEditSave: [],
   tripFormOpen: false,
   mutationId: 0,
   checklistWriteTs: {},

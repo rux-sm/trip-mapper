@@ -238,7 +238,7 @@ function truthyRequirement(v) {
 }
 
 function setRequirementTogglesFromTrip(t = {}) {
-  const ids = ["req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "reqWifi", "driverInfoSent", "tripReminderSent", "tripReviewed"];
+  const ids = ["req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "reqWifi", "driverInfoSent", "tripReminderSent"];
   ids.forEach((id) => {
     const btn = document.getElementById(id);
     if (!btn) return;
@@ -404,7 +404,6 @@ function sanitizeWeekResp(resp) {
         quotedPrice: asStr(t?.quotedPrice).replace(/^\$/, ""),
         driverInfoSent: !!t?.driverInfoSent && t?.driverInfoSent !== "false",
         tripReminderSent: !!t?.tripReminderSent && t?.tripReminderSent !== "false",
-        tripReviewed: !!t?.tripReviewed && t?.tripReviewed !== "false",
         tripMiles: asStr(t?.tripMiles),
         datePaid: asStr(t?.datePaid).trim().slice(0, 10),
         notes: asStr(t?.notes),

@@ -668,6 +668,7 @@ function clearTripInfoCardForNextTrip() {
 
   // Form has been cleared intentionally; mark as not dirty.
   state.tripFormDirty = false;
+  refreshShortcutRow();
 }
 
 
@@ -869,6 +870,23 @@ function populateFormFromData(t, assigns) {
   syncBusSelectEmptyState();
   refreshEmptyStateUI();
   if (typeof syncEmptyFields === "function") syncEmptyFields();
+  refreshShortcutRow();
+}
+
+function refreshShortcutRow() {
+  const key = dom.tripKey?.value;
+  const pdfUrl = key ? (state.tripByKey?.[key]?.itineraryPdfUrl || "") : "";
+  const pdfBtn = dom.shortcutPdfBtn;
+  if (!pdfBtn) return;
+  const glyph = pdfBtn.querySelector(".material-symbols-outlined");
+  const label = pdfBtn.querySelector(".shortcut-pdf-label");
+  if (pdfUrl) {
+    if (glyph) glyph.textContent = "picture_as_pdf";
+    if (label) label.textContent = "View PDF";
+  } else {
+    if (glyph) glyph.textContent = "upload_file";
+    if (label) label.textContent = "Upload PDF";
+  }
 }
 
 async function openTripForEdit(tripKey) {
@@ -917,6 +935,7 @@ async function openTripForEdit(tripKey) {
   } else {
     // Panel is closed — blank the form while we fetch
     if (dom.tripForm) dom.tripForm.reset();
+    refreshShortcutRow();
     state.busRows.forEach((r) => {
       r.busSel.value = "None";
       r.d1Sel.value = "None"; r.d1StatusSel.value = ""; if (r.d1Pay) r.d1Pay.value = "";

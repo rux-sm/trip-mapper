@@ -835,6 +835,52 @@ samp {
   gap: var(--rux-space-2);
 }
 
+/* ======================================================
+   TRIP ACTION ROW
+   ====================================================== */
+
+.trip-action-row {
+  position: absolute;
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  background: var(--rux-bg-3);
+  border: 1px solid var(--rux-border-1);
+  border-radius: var(--rux-radius-3);
+  box-shadow: 0 6px 24px oklch(0 0 0 / 0.5);
+  z-index: 10200;
+}
+
+.trip-action-row.is-hidden { display: none; }
+
+.trip-action-row__btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 10px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--rux-text-2);
+  background: transparent;
+  border: none;
+  border-radius: var(--rux-radius-2);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: background 120ms, color 120ms;
+  white-space: nowrap;
+}
+
+.trip-action-row__btn:hover {
+  background: var(--rux-bg-4);
+  color: var(--rux-text-1);
+}
+
+.trip-action-row__btn .material-symbols-outlined {
+  font-size: 18px;
+}
+
 .dropdown-menu[hidden],
 .dropdown__menu[hidden] {
   display: none;

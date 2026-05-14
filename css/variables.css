@@ -1,5 +1,4 @@
 :root {
-
   color-scheme: dark;
 
   /* ============================================================
@@ -11,46 +10,49 @@
   /* 1A. Color Seeds
   ──────────────────────────────────────────────────────────────── */
 
-  --rux-color-black:  oklch(0% 0 250);
-  --rux-color-white:  oklch(100% 0 250);
-  --rux-color-gray:   oklch(50% 0.006 250);
-  --rux-color-red:    oklch(50% 0.2 25);
+  --rux-color-black: oklch(0% 0 250);
+  --rux-color-white: oklch(100% 0 250);
+  --rux-color-gray: oklch(50% 0.006 250);
+  --rux-color-red: oklch(50% 0.2 25);
   --rux-color-orange: oklch(50% 0.2 65);
   --rux-color-yellow: oklch(50% 0.2 100);
-  --rux-color-green:  oklch(50% 0.2 155);
-  --rux-color-cyan:   oklch(50% 0.2 210);
-  --rux-color-blue:   oklch(50% 0.2 250);
+  --rux-color-green: oklch(50% 0.2 155);
+  --rux-color-cyan: oklch(50% 0.2 210);
+  --rux-color-blue: oklch(50% 0.2 250);
   --rux-color-purple: oklch(50% 0.2 300);
-  --rux-color-pink:   oklch(50% 0.2 350);
+  --rux-color-pink: oklch(50% 0.2 350);
 
   /* 1B. Font Families
   ──────────────────────────────────────────────────────────────── */
 
-  --rux-font-sans:  system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --rux-font-mono:  ui-monospace, "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --rux-font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --rux-font-mono:
+    ui-monospace, "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
   --rux-font-icons: "Material Symbols Outlined";
 
   /* 1C. Font Size Scale
   ──────────────────────────────────────────────────────────────── */
 
-  --rux-size-1: 0.625rem;   /* 10px */
-  --rux-size-2: 0.6875rem;  /* 11px */
-  --rux-size-3: 0.75rem;    /* 12px */
-  --rux-size-4: 0.875rem;   /* 14px */
-  --rux-size-5: 1rem;       /* 16px */
-  --rux-size-6: 1.125rem;   /* 18px */
-  --rux-size-7: 1.25rem;    /* 20px */
-  --rux-size-8: 1.5rem;     /* 24px */
+  --rux-size-1: 0.625rem; /* 10px */
+  --rux-size-2: 0.6875rem; /* 11px */
+  --rux-size-3: 0.75rem; /* 12px */
+  --rux-size-4: 0.875rem; /* 14px */
+  --rux-size-5: 1rem; /* 16px */
+  --rux-size-6: 1.125rem; /* 18px */
+  --rux-size-7: 1.25rem; /* 20px */
+  --rux-size-8: 1.5rem; /* 24px */
 
   /* 1D. Font Weight Scale
   ──────────────────────────────────────────────────────────────── */
 
-  --rux-weight-light:    300;
-  --rux-weight-regular:  400;
-  --rux-weight-medium:   500;
+  --rux-weight-light: 300;
+  --rux-weight-regular: 400;
+  --rux-weight-medium: 500;
   --rux-weight-semibold: 600;
-  --rux-weight-bold:     700;
-  --rux-weight-black:    900;
+  --rux-weight-bold: 700;
+  --rux-weight-black: 900;
 
   /* 1E. Line Height Scale
   ──────────────────────────────────────────────────────────────── */
@@ -64,13 +66,13 @@
   ──────────────────────────────────────────────────────────────── */
 
   --rux-space-0: 0;
-  --rux-space-1: 0.25rem;    /*  4px */
-  --rux-space-2: 0.375rem;   /*  6px */
-  --rux-space-3: 0.5rem;     /*  8px */
-  --rux-space-4: 0.75rem;    /* 12px */
-  --rux-space-5: 1rem;       /* 16px */
-  --rux-space-6: 1.25rem;    /* 20px */
-  --rux-space-7: 1.5rem;     /* 24px */
+  --rux-space-1: 0.25rem; /*  4px */
+  --rux-space-2: 0.375rem; /*  6px */
+  --rux-space-3: 0.5rem; /*  8px */
+  --rux-space-4: 0.75rem; /* 12px */
+  --rux-space-5: 1rem; /* 16px */
+  --rux-space-6: 1.25rem; /* 20px */
+  --rux-space-7: 1.5rem; /* 24px */
 
   /* 1G. Border Radius Scale
   ──────────────────────────────────────────────────────────────── */
@@ -95,7 +97,7 @@
   --rux-duration-3: 300ms;
 
   --rux-ease-1: cubic-bezier(0.2, 0, 0.38, 0.9); /* snappy UI interactions */
-  --rux-ease-2: cubic-bezier(0.4, 0, 0.2, 1);    /* larger motion / entrances */
+  --rux-ease-2: cubic-bezier(0.4, 0, 0.2, 1); /* larger motion / entrances */
 
   /* ============================================================
      TIER 2 — SEMANTIC TOKENS
@@ -104,7 +106,7 @@
      ============================================================ */
 
   /* 2A. Panel Header & Footer
-  ──────────────────────────────────────────────────────────────── */     
+  ──────────────────────────────────────────────────────────────── */
   --rux-header-height: 57px;
   --rux-header-padding-x: var(--rux-space-4);
   --rux-header-padding-y: var(--rux-space-4);
@@ -112,14 +114,12 @@
   --rux-header-bg: var(--rux-bg-3);
   --rux-header-shadow: var(--rux-panel-shadow-top);
 
-
   --rux-footer-height: 48px;
   --rux-footer-padding-x: var(--rux-space-4);
   --rux-footer-padding-y: var(--rux-space-4);
   --rux-footer-gap: var(--rux-space-4);
   --rux-footer-bg: var(--rux-bg-2);
   --rux-footer-shadow: var(--rux-panel-shadow-bottom);
-
 
   /* 2A. Surfaces
      Number suffix = elevation level. Higher = lighter in dark mode.
@@ -132,56 +132,58 @@
       46.76%   Scrollbar
   ──────────────────────────────────────────────────────────────── */
 
-  --rux-bg-1:       oklch(from var(--rux-color-gray) 0% c h);         /* App canvas — pure black */
-  --rux-bg-field:   oklch(from var(--rux-color-gray) 20% c h); 
-  --rux-bg-2:       oklch(from var(--rux-color-gray) 20% c h);     /* Panels, sidebar, inputs */
-  --rux-bg-3:       oklch(from var(--rux-color-gray) 20% c h);     /* Headers, footers, menus */
-  --rux-bg-4:       oklch(from var(--rux-color-gray) 26% c h);        /* Cards, grouped sections */
-  --rux-bg-5:       oklch(from var(--rux-color-gray) 32% c h);        /* Modals — highest elevation */
-  --rux-bg-overlay: oklch(from var(--rux-color-gray) 70% c h);        /* Scrim / backdrop */
+  --rux-bg-1: oklch(from var(--rux-color-gray) 0% c h); /* App canvas — pure black */
+  --rux-bg-field: oklch(from var(--rux-color-gray) 20% c h);
+  --rux-bg-2: oklch(from var(--rux-color-gray) 20% c h); /* Panels, sidebar, inputs */
+  --rux-bg-3: oklch(from var(--rux-color-gray) 20% c h); /* Headers, footers, menus */
+  --rux-bg-4: oklch(from var(--rux-color-gray) 26% c h); /* Cards, grouped sections */
+  --rux-bg-5: oklch(from var(--rux-color-gray) 32% c h); /* Modals — highest elevation */
+  --rux-bg-overlay: oklch(from var(--rux-color-gray) 70% c h); /* Scrim / backdrop */
+  --rux-bg-schedule-headers: oklch(from var(--rux-color-gray) 26% c h);
+  --rux-bg-schedule: oklch(from var(--rux-color-gray) 20% c h); /* App canvas — pure black */
 
   /* 2B. Accent & Status Colors
   ──────────────────────────────────────────────────────────────── */
 
-  --rux-color-accent:                oklch(from var(--rux-color-blue) 75% c h);
+  --rux-color-accent: oklch(from var(--rux-color-blue) 75% c h);
 
-  --rux-status-red:                  oklch(from var(--rux-color-red)    90% .3 h);
-  --rux-status-red-alpha:            oklch(from var(--rux-color-red)    l c h / 15%);
-  --rux-status-yellow:               oklch(from var(--rux-color-yellow) 90% .3 h);
-  --rux-status-yellow-alpha:         oklch(from var(--rux-color-yellow) l c h / 15%);
-  --rux-status-green:                oklch(from var(--rux-color-green)  90% .3 h);
-  --rux-status-green-alpha:          oklch(from var(--rux-color-green)  l c h / 15%);
-  --rux-status-blue:                 oklch(from var(--rux-color-blue)   90% .3 h);
-  --rux-status-blue-alpha:           oklch(from var(--rux-color-blue)   l c h / 15%);
-  --rux-status-orange:               oklch(from var(--rux-color-orange) 90% .3 h);
-  --rux-status-orange-alpha:         oklch(from var(--rux-color-orange) l c h / 15%);
-  --rux-status-cyan:                 oklch(from var(--rux-color-cyan)   90% .3 h);
-  --rux-status-cyan-alpha:           oklch(from var(--rux-color-cyan)   l c h / 15%);
-  --rux-status-purple:               oklch(from var(--rux-color-purple) 90% .3 h);
-  --rux-status-purple-alpha:         oklch(from var(--rux-color-purple) l c h / 15%);
-  --rux-status-pink:                 oklch(from var(--rux-color-pink)   90% .3 h);
-  --rux-status-pink-alpha:           oklch(from var(--rux-color-pink)   l c h / 15%);
-  --rux-status-auto:                 oklch(from var(--rux-color-red)    90% .3 h);
-  --rux-status-auto-alpha:           oklch(from var(--rux-color-red)    l c h / 15%);
-  --rux-status-auto-confirmed:       oklch(from var(--rux-color-blue)   90% .3 h);
-  --rux-status-auto-confirmed-alpha: oklch(from var(--rux-color-blue)   l c h / 15%);
-  --rux-status-one-way:              oklch(from var(--rux-color-accent) 90% .3 h);
-  --rux-status-one-way-alpha:        oklch(from var(--rux-color-accent) l c h / 15%);
-  --rux-status-gray:                 oklch(from var(--rux-color-gray)   90% .3 h);
-  --rux-status-gray-alpha:           oklch(from var(--rux-color-gray)   l c h / 50%);
+  --rux-status-red: oklch(from var(--rux-color-red) 90% 0.3 h);
+  --rux-status-red-alpha: oklch(from var(--rux-color-red) l c h / 15%);
+  --rux-status-yellow: oklch(from var(--rux-color-yellow) 90% 0.3 h);
+  --rux-status-yellow-alpha: oklch(from var(--rux-color-yellow) l c h / 15%);
+  --rux-status-green: oklch(from var(--rux-color-green) 90% 0.3 h);
+  --rux-status-green-alpha: oklch(from var(--rux-color-green) l c h / 15%);
+  --rux-status-blue: oklch(from var(--rux-color-blue) 90% 0.3 h);
+  --rux-status-blue-alpha: oklch(from var(--rux-color-blue) l c h / 0%);
+  --rux-status-orange: oklch(from var(--rux-color-orange) 90% 0.3 h);
+  --rux-status-orange-alpha: oklch(from var(--rux-color-orange) l c h / 15%);
+  --rux-status-cyan: oklch(from var(--rux-color-cyan) 90% 0.3 h);
+  --rux-status-cyan-alpha: oklch(from var(--rux-color-cyan) l c h / 15%);
+  --rux-status-purple: oklch(from var(--rux-color-purple) 90% 0.3 h);
+  --rux-status-purple-alpha: oklch(from var(--rux-color-purple) l c h / 15%);
+  --rux-status-pink: oklch(from var(--rux-color-pink) 90% 0.3 h);
+  --rux-status-pink-alpha: oklch(from var(--rux-color-pink) l c h / 15%);
+  --rux-status-auto: oklch(from var(--rux-color-red) 90% 0.3 h);
+  --rux-status-auto-alpha: oklch(from var(--rux-color-red) l c h / 15%);
+  --rux-status-auto-confirmed: oklch(from var(--rux-color-blue) 90% 0.3 h);
+  --rux-status-auto-confirmed-alpha: oklch(from var(--rux-color-blue) l c h / 15%);
+  --rux-status-one-way: oklch(from var(--rux-color-accent) 90% 0.3 h);
+  --rux-status-one-way-alpha: oklch(from var(--rux-color-accent) l c h / 15%);
+  --rux-status-gray: oklch(from var(--rux-color-gray) 90% 0.3 h);
+  --rux-status-gray-alpha: oklch(from var(--rux-color-gray) l c h / 50%);
 
   /* 2C. Text Roles
   ──────────────────────────────────────────────────────────────── */
 
-  --rux-text-1:           var(--rux-color-white);
-  --rux-text-2:           oklch(from var(--rux-color-gray) 72% c h);
-  --rux-text-3:           oklch(45% 0.014 250);
+  --rux-text-1: var(--rux-color-white);
+  --rux-text-2: oklch(from var(--rux-color-gray) 72% c h);
+  --rux-text-3: oklch(45% 0.014 250);
   --rux-text-placeholder: oklch(from var(--rux-color-gray) 45% c h);
 
   /* 2D. Border Roles
   ──────────────────────────────────────────────────────────────── */
 
-  --rux-border-1: oklch(from var(--rux-color-white) l c h /  4%); /* Subtle */
+  --rux-border-1: oklch(from var(--rux-color-white) l c h / 4%); /* Subtle */
   --rux-border-2: oklch(from var(--rux-color-white) l c h / 10%); /* Default */
   --rux-border-3: oklch(from var(--rux-color-white) l c h / 24%); /* Strong */
 
@@ -190,26 +192,25 @@
      Prefer using --rux-radius-{n} directly in new component tokens.
   ──────────────────────────────────────────────────────────────── */
 
-  --rux-radius-control: var(--rux-radius-2);  /* inputs, selects — 6px */
-  --rux-radius-section: var(--rux-radius-5);  /* groups inside cards — 14px */
-  --rux-radius-surface: var(--rux-radius-3);  /* cards, panels — 8px */
-  --rux-radius-overlay: var(--rux-radius-4);  /* modals, popovers — 10px */
-  --rux-radius-badge:   var(--rux-radius-0);  /* chips, mini-badges — 0px */
+  --rux-radius-control: var(--rux-radius-2); /* inputs, selects — 6px */
+  --rux-radius-section: var(--rux-radius-5); /* groups inside cards — 14px */
+  --rux-radius-surface: var(--rux-radius-3); /* cards, panels — 8px */
+  --rux-radius-overlay: var(--rux-radius-4); /* modals, popovers — 10px */
+  --rux-radius-badge: var(--rux-radius-0); /* chips, mini-badges — 0px */
 
   /* 2F. Effects */
 
-  --focus-ring-color:   var(--rux-color-accent);
-  --focus-ring:         inset 0 0 0 2px var(--focus-ring-color);
-  --transition-fast:    var(--rux-duration-1) var(--rux-ease-1);
-  --overlay-hover:      oklch(0% 0 0 / 5%);
-  --text-shadow:        none;
+  --focus-ring-color: var(--rux-color-accent);
+  --focus-ring: inset 0 0 0 2px var(--focus-ring-color);
+  --transition-fast: var(--rux-duration-1) var(--rux-ease-1);
+  --overlay-hover: oklch(0% 0 0 / 5%);
+  --text-shadow: none;
 
   /* Surface inset highlight/bevel */
-  --rux-surface-highlight:     oklch(100% 0 0 / 20%);
-  --rux-surface-bevel:         oklch(0% 0 0 / 50%);
+  --rux-surface-highlight: oklch(100% 0 0 / 20%);
+  --rux-surface-bevel: oklch(0% 0 0 / 50%);
   --rux-surface-shadow-inset:
-    inset 0 2px 0 var(--rux-surface-highlight),
-    inset 0 -2px 0 var(--rux-surface-bevel);
+    inset 0 2px 0 var(--rux-surface-highlight), inset 0 -2px 0 var(--rux-surface-bevel);
 
   /* Elevation scale — outer drop shadows */
   --rux-shadow-1: 0 1px 3px oklch(0% 0 0 / 40%);
@@ -217,14 +218,13 @@
   --rux-shadow-3: 0 8px 16px oklch(0% 0 0 / 60%);
 
   /* Panel edge shadows */
-  --rux-panel-shadow-top:    0 8px 8px -8px oklch(0% 0 0 / 60%);
+  --rux-panel-shadow-top: 0 8px 8px -8px oklch(0% 0 0 / 60%);
   --rux-panel-shadow-bottom: 0 -8px 8px -8px oklch(0% 0 0 / 60%);
 
   /* Panel card directional drop shadows */
-  --card-shadow-left:  -4px 4px 12px oklch(0% 0 0 / 40%);
-  --card-shadow-right:  4px 4px 12px oklch(0% 0 0 / 40%);
+  --card-shadow-left: -4px 4px 12px oklch(0% 0 0 / 40%);
+  --card-shadow-right: 4px 4px 12px oklch(0% 0 0 / 40%);
 
   /* Layout */
   --rux-layout-spacing: var(--rux-space-4);
-
 }

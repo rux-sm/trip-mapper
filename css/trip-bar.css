@@ -1,83 +1,141 @@
+/* Register the action-row height as a typed <length> so the browser can
+   interpolate it inside grid-template-rows. Without @property the custom
+   property is an opaque string and grid-template-rows transitions snap. */
+@property --tripbar-action-row-height {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
 /* ── Tier 3 tokens ───────────────────────────────────────────────────────── */
 
 :root {
-  --tripbar-height:         99px;
-  --tripbar-radius:         7px;
-  --tripbar-lane-step:      100px;
+  --tripbar-height: 130px;
+  --tripbar-radius: 7px;
+  --tripbar-lane-step: 131px;
   --tripbar-bg-mix-percent: 100%;
-  --tripbar-dim-opacity:    0.60;
-  --tripbar-text-shadow:    0 1px 2px rgba(0, 0, 0, 1);
-  --tripbar-shadow-hover:   0 10px 20px rgba(0, 0, 0, 0.5), 0 6px 6px rgba(0, 0, 0, 0.3);
-  --tripbar-color:          var(--rux-status-blue-alpha);
-  --tripbar-border-color:   var(--rux-color-accent);
+  --tripbar-dim-opacity: 0.6;
+  --tripbar-shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.5), 0 6px 6px rgba(0, 0, 0, 0.3);
+  --tripbar-color: var(--rux-status-blue-alpha);
+  --tripbar-border-color: var(--rux-color-accent);
 
-  --tripbar-badge-text-color:   var(--rux-text-1);
-  --tripbar-r1-color:           var(--rux-text-1);
-  --tripbar-r2-color:           var(--rux-text-2);
-  --tripbar-r4-color:           var(--rux-text-1);
-  --tripbar-time-color:         var(--tripbar-r4-color);
-  --tripbar-time-color-flagged: var(--rux-status-yellow);
-  --tripbar-r5-color:           var(--rux-text-1);
-  --tripbar-r6-color:           var(--rux-text-2);
-  --tripbar-r7-color:           var(--rux-text-1);
+	/* Font Size */
+
+	--tripbar-r1-font-size: var(--rux-size-3);
+	--tripbar-r2-font-size: var(--rux-size-3);
+	--tripbar-r3-font-size: var(--rux-size-3);
+	--tripbar-r4-font-size: var(--rux-size-3);
+	--tripbar-r5-font-size: var(--rux-size-3);
+	--tripbar-r6-font-size: var(--rux-size-3);
+	--tripbar-r7-font-size: var(--rux-size-3);
+	--tripbar-r8-font-size: var(--rux-size-3);
+	--tripbar-icon-size: var(--rux-size-5);
+
+	/* Font Weight */
+
+	--tripbar-r1-font-weight: var(--rux-weight-medium);
+	--tripbar-r2-font-weight: var(--rux-weight-medium);
+	--tripbar-r3-font-weight: var(--rux-weight-medium);
+	--tripbar-r4-font-weight: var(--rux-weight-medium);
+	--tripbar-r5-font-weight: var(--rux-weight-medium);
+	--tripbar-r6-font-weight: var(--rux-weight-medium);
+	--tripbar-r7-font-weight: var(--rux-weight-medium);
+	--tripbar-r8-font-weight: var(--rux-weight-medium);
+	--tripbar-r9-font-weight: var(--rux-weight-medium);
+
+	/* Font Color */
+
+	--tripbar-r1-color: var(--rux-text-1);
+	--tripbar-r2-color: var(--rux-text-2);
+	--tripbar-r3-color: var(--rux-text-2);
+	--tripbar-r4-color: var(--rux-text-1);
+	--tripbar-r5-color: var(--rux-text-1);
+	--tripbar-r6-color: var(--rux-status-green);
+	--tripbar-r7-color: var(--rux-text-1);
+	--tripbar-r8-color: var(--rux-text-1);
+	--tripbar-r9-color: var(--rux-text-1);
+
+	--tripbar-time-color: var(--tripbar-r4-color);
+	--tripbar-time-color-flagged: var(--rux-status-yellow);
+	--tripbar-badge-text-color: var(--rux-text-1);
+
+	/* Row Height */
+
+	--tripbar-r1-row-height: 16px;
+	--tripbar-r2-row-height: 16px;
+	--tripbar-r3-row-height: 16px;
+	--tripbar-r4-row-height: 16px;
+	--tripbar-r5-row-height: 16px;
+	--tripbar-r6-row-height: 16px;
+	--tripbar-r7-row-height: 16px;
+	--tripbar-r8-row-height: 16px;
+	--tripbar-r9-row-height: 16px; /* Action row */
+
+	/* Action row height is dynamic — it expands on select, so no static value here */
+	
+
+	/* Line Height */
+
+	--tripbar-r1-line-height: 16px;
+	--tripbar-r2-line-height: 16px;
+	--tripbar-r3-line-height: 16px;
+	--tripbar-r4-line-height: 16px;
+	--tripbar-r5-line-height: 16px;
+	--tripbar-r6-line-height: 16px;
+	--tripbar-r7-line-height: 16px;
+	--tripbar-r8-line-height: 16px;
+	--tripbar-r9-line-height: 16px;
+	
+	/* Letter Spacing */
+
+	--tripbar-r1-letter-spacing: 0.02em;
+	--tripbar-r2-letter-spacing: 0.02em;
+	--tripbar-r3-letter-spacing: 0.02em;
+	--tripbar-r4-letter-spacing: 0.02em;
+	--tripbar-r5-letter-spacing: 0.02em;
+	--tripbar-r6-letter-spacing: 0.02em;
+	--tripbar-r7-letter-spacing: 0.02em;
+	--tripbar-r8-letter-spacing: 0.02em;
+	--tripbar-r9-letter-spacing: 0.02em;
+
+	/* background */
+
+	--tripbar-r1-bg: transparent;
+	--tripbar-r1-bg-qty: var(--rux-color-gray-alpha);
+
+
 
   --tripbar-hover-brightness-from: 1.05;
-  --tripbar-hover-brightness-to:   1.15;
-  --tripbar-hover-saturate-from:   1;
-  --tripbar-hover-saturate-to:     1.25;
+  --tripbar-hover-brightness-to: 1.15;
+  --tripbar-hover-saturate-from: 1;
+  --tripbar-hover-saturate-to: 1.25;
 
-  --tripbar-inset:        0px;
-  --tripbar-inset-left:   0px;
-  --tripbar-inset-right:  1px;
-  --tripbar-inset-top:    0px;
+  --tripbar-inset: 0px;
+  --tripbar-inset-left: 0px;
+  --tripbar-inset-right: 1px;
+  --tripbar-inset-top: 0px;
   --tripbar-inset-bottom: 0px;
-  --tripbar-padding-x:    0px;
-  --tripbar-padding-y:    0px;
-  --tripbar-row-gap:      1px;
-  --tripbar-gap-inline:   2px;
-  --tripbar-gap-drivers:  6px;
+  --tripbar-padding-x: 0px;
+  --tripbar-padding-y: 0px;
+  --tripbar-row-gap: 0px;
+  --tripbar-gap-inline: 2px;
+  --tripbar-gap-drivers: 6px;
 
-  --tripbar-r1-font-size:      var(--rux-size-3);
-  --tripbar-r1-row-height:     14px;
-  --tripbar-r1-font-weight:    var(--rux-weight-medium);
-  --tripbar-r1-line-height:    14px;
-  --tripbar-r1-letter-spacing: 0.02em;
+  --tripbar-mini-badge: 12px;
+  --tripbar-badge-radius: 0;
+  --tripbar-danger-size: 16px;
+  --tripbar-danger-font: var(--rux-size-5);
+  --tripbar-danger-offset: 4px;
 
-  --tripbar-r2-font-size:      var(--rux-size-2);
-  --tripbar-r2-row-height:     12px;
-  --tripbar-r2-font-weight:    var(--rux-weight-medium);
-  --tripbar-r2-line-height:    12px;
-  --tripbar-r2-letter-spacing: 0.02em;
+  --tripbar-multi-bus-indent: 0px;
 
-  --tripbar-r3-row-height: 12px;
-
-  --tripbar-r4-font-size:      var(--rux-size-3);
-  --tripbar-r4-row-height:     13px;
-  --tripbar-r4-font-weight:    var(--rux-weight-medium);
-  --tripbar-r4-line-height:    13px;
-  --tripbar-r4-letter-spacing: 0em;
-
-  --tripbar-r5-row-height: 14px;
-
-  --tripbar-r6-font-size:      var(--rux-size-1);
-  --tripbar-r6-row-height:     12px;
-  --tripbar-r6-font-weight:    var(--rux-weight-regular);
-  --tripbar-r6-line-height:    12px;
-  --tripbar-r6-letter-spacing: 0.02em;
-
-  --tripbar-r7-font-size:      var(--rux-size-3);
-  --tripbar-r7-row-height:     14px;
-  --tripbar-r7-font-weight:    var(--rux-weight-bold);
-  --tripbar-r7-line-height:    14px;
-  --tripbar-r7-letter-spacing: 0.05em;
-
-  --tripbar-mini-badge:            14px;
-  --tripbar-badge-radius:          0;
-  --tripbar-danger-size:           16px;
-  --tripbar-danger-font:           var(--rux-size-2);
-  --tripbar-danger-offset:         4px;
-  --tripbar-multi-badge-font-size: var(--rux-size-1);
-  --tripbar-multi-bus-indent:      0px;
+  /* Expand / collapse animation timing — tune these to adjust the feel.
+     800ms was designed for a full bar-height grow; 240/180ms suit the
+     30px action-row slide that @property now drives. */
+  --tripbar-expand-duration: 240ms;
+  --tripbar-collapse-duration: 180ms;
+  --tripbar-expand-ease: cubic-bezier(0.2, 0, 0, 1); /* standard ease-out */
+  --tripbar-collapse-ease: cubic-bezier(0.4, 0, 1, 1); /* standard ease-in */
 }
 
 /* ==========================================================================
@@ -88,7 +146,15 @@
 .schedule-grid__trip-bar {
   display: grid;
   grid-template-rows:
-    var(--tripbar-r1-row-height) var(--tripbar-r2-row-height) var(--tripbar-r3-row-height) var(--tripbar-r4-row-height) var(--tripbar-r5-row-height) var(--tripbar-r6-row-height) var(--tripbar-r7-row-height);
+    [r1] var(--tripbar-r1-row-height)
+    [r2] var(--tripbar-r2-row-height)
+    [r3] var(--tripbar-r3-row-height)
+    [r4] var(--tripbar-r4-row-height)
+    [r5] var(--tripbar-r5-row-height)
+    [r6] var(--tripbar-r6-row-height)
+    [r7] var(--tripbar-r7-row-height)
+    [r8] var(--tripbar-r8-row-height)
+    [action] var(--tripbar-action-row-height, 0px);
   row-gap: var(--tripbar-row-gap);
   container-type: inline-size;
   align-content: center;
@@ -96,16 +162,18 @@
   z-index: 501;
   /* above sticky bus cell (500) so trip bar receives hover when overlapping */
   height: var(--tripbar-height);
-  max-height: var(--tripbar-height);
+  /* no max-height — JS grows the bar to collapsedPx + actionRowH + gap on expand */
   box-sizing: border-box;
   padding: var(--tripbar-padding-y) var(--tripbar-padding-x);
-  text-shadow: var(--tripbar-text-shadow);
 
   border-radius: var(--tripbar-radius);
   overflow: hidden;
   cursor: pointer;
   pointer-events: auto;
+  /* Collapse timing — overridden by .expanded rule for the open direction */
   transition:
+    height var(--tripbar-collapse-duration) var(--tripbar-collapse-ease),
+    --tripbar-action-row-height var(--tripbar-collapse-duration) var(--tripbar-collapse-ease),
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
     filter var(--transition-fast),
@@ -115,70 +183,45 @@
 
   --trip-accent-color: var(--rux-color-blue);
 
-  /* Background LCHA */
-  --tripbar-bg-l: 65%;
-  --tripbar-bg-c: 0.2;
-  --tripbar-bg-h: 0;
-  --tripbar-bg-a: 20%;
+  /* These two are overridden by :hover and :active */
+  --tripbar-bg-l: 26%;
+  --tripbar-bg-a: 100%;
 
-  /* Border LCHA */
-  --tripbar-border-l: 65%;
-  --tripbar-border-c: 0.2;
-  --tripbar-border-h: 0;
-  --tripbar-border-a: 100%;
-
-  /* Border-left LCHA */
-  --tripbar-border-left-l: 65%;
-  --tripbar-border-left-c: 0.2;
-  --tripbar-border-left-h: 0;
-  --tripbar-border-left-a: 100%;
-
-  /* Text LCHA */
-  --tripbar-text-l: 65%;
-  --tripbar-text-c: 0.2;
-  --tripbar-text-h: 0;
-  --tripbar-text-a: 100%;
-
-  --tripbar-bg: oklch(from var(--trip-accent-color) var(--tripbar-bg-l) var(--tripbar-bg-c) calc(h + var(--tripbar-bg-h)) / var(--tripbar-bg-a));
-  --tripbar-border-color: oklch(from var(--trip-accent-color) var(--tripbar-border-l) var(--tripbar-border-c) calc(h + var(--tripbar-border-h)) / var(--tripbar-border-a));
-  --tripbar-border-left-color: oklch(from var(--trip-accent-color) var(--tripbar-border-left-l) var(--tripbar-border-left-c) calc(h + var(--tripbar-border-left-h)) / var(--tripbar-border-left-a));
-  --tripbar-text-color: oklch(from var(--trip-accent-color) var(--tripbar-text-l) var(--tripbar-text-c) calc(h + var(--tripbar-text-h)) / var(--tripbar-text-a));
+  /* All three surfaces derived directly from the accent color */
+  --tripbar-bg: oklch(
+    from var(--trip-accent-color) var(--tripbar-bg-l) 0.1 h / var(--tripbar-bg-a)
+  );
+  --tripbar-border-left-color: oklch(from var(--trip-accent-color) 65% 0.2 h);
+  --tripbar-text-color: oklch(from var(--trip-accent-color) 65% 0.2 h);
 
   background: var(--tripbar-bg);
-  border: 1px solid var(--tripbar-border-color);
+  border: 1px solid var(--tripbar-border-left-color);
   border-left: 8px solid var(--tripbar-border-left-color);
 }
 
 /* Hover: subtle lift + gentle brighten */
 .schedule-grid__trip-bar:hover {
   z-index: 600;
-  --tripbar-bg-l: 55%;
-  --tripbar-bg-a: 28%;
+  --tripbar-bg-l: 30%;
+  --tripbar-bg-a: 100%;
   cursor: pointer;
-  transform: translateY(-0px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Active: press down */
 .schedule-grid__trip-bar:active {
-  transform: translateY(0px) scale(0.99);
-  --tripbar-bg-l: 55%;
-  --tripbar-bg-a: 20%;
+  --tripbar-bg-l: 25%;
+  --tripbar-bg-a: 100%;
+  border-color: var(--tripbar-border-left-color);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
-/* Selected: white borders + accent ring */
+/* Selected: border matches the left accent stripe */
 .schedule-grid__trip-bar.selected {
-  z-index: 600;
-  --tripbar-bg-l: 65%;
-  --tripbar-bg-a: 20%;
-  border-color: rgba(255, 255, 255, 1);
-  border-left-color: rgba(255, 255, 255, 1);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 6px 16px rgba(0, 0, 0, 0.4);
+  z-index: 9000;
+  --tripbar-bg-l: 35%;
+  --tripbar-bg-a: 100%;
+  border-color: var(--tripbar-border-left-color);
+   --tripbar-text-color: oklch(from var(--trip-accent-color) 100% 0 h);
 }
 
 .schedule-grid__trip-bar.danger::after {
@@ -208,13 +251,15 @@
   --tripbar-r3-color: var(--tripbar-text-color);
   --tripbar-r4-color: var(--tripbar-text-color);
   --tripbar-r5-color: var(--tripbar-text-color);
-  --tripbar-r6-color: var(--tripbar-text-color);
+  --tripbar-r6-color: var(--rux-status-green);
 
   --tripbar-badge-text-color: var(--rux-status-red);
   --tripbar-status-pending-bg: var(--rux-status-red-alpha);
-  --tripbar-status-pending-color: color-mix(in srgb,
-      var(--rux-status-red) 25%,
-      oklch(from var(--rux-color-gray) 8% c h));
+  --tripbar-status-pending-color: color-mix(
+    in srgb,
+    var(--rux-status-red) 25%,
+    oklch(from var(--rux-color-gray) 8% c h)
+  );
   --tripbar-status-ok-bg: var(--rux-color-red);
 
   &.out-of-service {
@@ -222,11 +267,13 @@
     --tripbar-r1-color: oklch(from var(--rux-color-gray) 60% c h);
     --tripbar-r6-color: oklch(from var(--rux-color-gray) 60% c h);
     --tripbar-badge-text-color: oklch(from var(--rux-color-gray) 45% c h);
-    background: repeating-linear-gradient(-45deg,
-        color-mix(in srgb, var(--rux-status-gray-alpha) 10%, transparent),
-        color-mix(in srgb, var(--rux-status-gray-alpha) 10%, transparent) 8px,
-        color-mix(in srgb, var(--rux-status-gray-alpha) 30%, transparent) 8px,
-        color-mix(in srgb, var(--rux-status-gray-alpha) 30%, transparent) 16px);
+    background: repeating-linear-gradient(
+      -45deg,
+      color-mix(in srgb, var(--rux-status-gray-alpha) 10%, transparent),
+      color-mix(in srgb, var(--rux-status-gray-alpha) 10%, transparent) 8px,
+      color-mix(in srgb, var(--rux-status-gray-alpha) 30%, transparent) 8px,
+      color-mix(in srgb, var(--rux-status-gray-alpha) 30%, transparent) 16px
+    );
     border: 1px solid color-mix(in srgb, var(--rux-status-gray-alpha) 0%, transparent);
     border-left: none;
 
@@ -271,22 +318,26 @@
   }
 
   &.one-way {
-    background: repeating-linear-gradient(-45deg,
-        color-mix(in srgb, var(--trip-accent-color) 25%, transparent),
-        color-mix(in srgb, var(--trip-accent-color) 25%, transparent) 8px,
-        color-mix(in srgb, var(--trip-accent-color) 5%, transparent) 8px,
-        color-mix(in srgb, var(--trip-accent-color) 5%, transparent) 16px);
+    background: repeating-linear-gradient(
+      -45deg,
+      color-mix(in srgb, var(--trip-accent-color) 25%, transparent),
+      color-mix(in srgb, var(--trip-accent-color) 25%, transparent) 8px,
+      color-mix(in srgb, var(--trip-accent-color) 5%, transparent) 8px,
+      color-mix(in srgb, var(--trip-accent-color) 5%, transparent) 16px
+    );
     border: 1px solid var(--tripbar-border-color);
     border-left: 7px solid var(--tripbar-border-left-color);
 
     &.selected {
       border-color: rgba(255, 255, 255, 1);
       border-left-color: rgba(255, 255, 255, 1);
-      background: repeating-linear-gradient(-45deg,
-          color-mix(in srgb, var(--trip-accent-color) 50%, transparent),
-          color-mix(in srgb, var(--trip-accent-color) 50%, transparent) 8px,
-          color-mix(in srgb, var(--trip-accent-color) 15%, transparent) 8px,
-          color-mix(in srgb, var(--trip-accent-color) 15%, transparent) 16px);
+      background: repeating-linear-gradient(
+        -45deg,
+        color-mix(in srgb, var(--trip-accent-color) 50%, transparent),
+        color-mix(in srgb, var(--trip-accent-color) 50%, transparent) 8px,
+        color-mix(in srgb, var(--trip-accent-color) 15%, transparent) 8px,
+        color-mix(in srgb, var(--trip-accent-color) 15%, transparent) 16px
+      );
     }
   }
 
@@ -321,7 +372,6 @@
   &.color-cyan {
     --trip-accent-color: var(--rux-color-cyan);
   }
-
 }
 
 /* Today highlight toggle — must come after color variants so border overrides win */
@@ -360,6 +410,10 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
 
 .schedule-grid__trip-bar__row--1 {
   grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
   position: relative;
 }
 
@@ -387,39 +441,50 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
   grid-row: 7;
 }
 
+.schedule-grid__trip-bar__row--8 {
+  grid-row: 8;
+}
+
+.schedule-grid__trip-bar__action-row {
+  grid-row: 9;
+}
+
 .schedule-grid__trip-bar__title {
-  display: block;
-  width: 100%;
+  /* Span the full row and center — badges float above via z-index */
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 0;
   margin: 0;
-  padding-inline: 18px;
-  min-width: 0;
   font-size: var(--tripbar-r1-font-size);
   font-weight: var(--tripbar-r1-font-weight);
   line-height: var(--tripbar-r1-line-height);
   letter-spacing: var(--tripbar-r1-letter-spacing);
   text-transform: uppercase;
   color: var(--tripbar-r1-color);
-  text-shadow: var(--text-shadow);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
+  padding-inline: 20px;
 }
 
 .schedule-grid__trip-bar__multi-badge {
-  position: absolute;
-  left: 0px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: var(--tripbar-multi-badge-font-size);
-  font-weight: 700;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  font-size: var(--tripbar-r1-font-size);
+  font-weight: 400;
   color: var(--tripbar-r1-color);
-  text-shadow: var(--text-shadow);
   border-radius: 999px;
+  background: var(--tripbar-r1-bg-qty);
   border: none;
+  width: 20px;
+  height: 20px;
   box-sizing: border-box;
-  height: 11px;
-  padding-inline: 2px;
+  height: 1;
+  padding-inline: 1px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -428,19 +493,33 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
   text-align: center;
 }
 
+/* The three pending-action status badges that live in row 1 top-right.
+   Always red — they only appear when something needs attention. */
+.schedule-grid__trip-bar__top-status-badges {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+  margin-left: auto; /* push to far right; title stays absolutely centered */
+  position: relative;
+  z-index: 1;
+}
+
+/* Three-class specificity beats any two-class mini-badge state rule */
+.schedule-grid__trip-bar__top-status-badges .schedule-grid__trip-bar__mini-badge.icon-status {
+  color: var(--rux-status-red);
+}
 
 .schedule-grid__trip-bar__paid-badge {
-  position: absolute;
-  right: 0px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  font-size: 1rem;
   font-weight: 400;
-  font-variation-settings: 'FILL' 0, 'opsz' 10;
+  font-variation-settings:
+    "FILL" 0,
+    "opsz" 10;
   color: var(--rux-status-green);
-  text-shadow: var(--text-shadow);
-  width: 14px;
-  height: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -451,9 +530,18 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
 }
 
 .schedule-grid__trip-bar__paid-badge.is-solid {
-  font-variation-settings: 'FILL' 1, 'opsz' 10;
+  font-variation-settings:
+    "FILL" 1,
+    "opsz" 10;
 }
 
+.schedule-grid__trip-bar__paid-badge.is-date {
+  font-family: var(--font-mono);
+  font-size: var(--tripbar-r1-font-size);
+  font-weight: 400;
+  width: auto;
+  letter-spacing: 0em;
+}
 
 .schedule-grid__trip-bar__sub {
   font-size: var(--tripbar-r2-font-size);
@@ -462,7 +550,6 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
   letter-spacing: var(--tripbar-r2-letter-spacing);
   text-transform: uppercase;
   color: var(--tripbar-r2-color);
-  text-shadow: var(--text-shadow);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -478,7 +565,6 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
   font-weight: var(--tripbar-r4-font-weight);
   line-height: var(--tripbar-r4-line-height);
   letter-spacing: var(--tripbar-r4-letter-spacing);
-  text-shadow: var(--text-shadow);
   text-transform: uppercase;
   color: var(--tripbar-r4-color);
   white-space: nowrap;
@@ -512,7 +598,7 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
 .schedule-grid__trip-bar__status-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: var(--tripbar-gap-inline);
   width: 100%;
 }
@@ -524,42 +610,125 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
   flex-shrink: 0;
 }
 
-/* REQ ICON and STATUS BADGE styling moved to _icons.css */
+.schedule-grid__trip-bar .icon-req {
+  color: var(--tripbar-text-color);
+}
+
+/* Action row — expands when bar is selected */
+.schedule-grid__trip-bar__action-row {
+  overflow: hidden;
+  display: flex;
+  background: var(--rux-color-green);
+  gap: var(--rux-space-3);
+  align-items: center;
+  justify-content: center;
+}
+
+.schedule-grid__trip-bar.expanded {
+  /* Expand timing — overrides the base collapse timing while this class is
+     present. Both height (JS-driven px→px) and --tripbar-action-row-height
+     (@property grid track) animate together with the same curve so the
+     bar grows and its content reveals in perfect lockstep. */
+  transition:
+    height var(--tripbar-expand-duration) var(--tripbar-expand-ease),
+    --tripbar-action-row-height var(--tripbar-expand-duration) var(--tripbar-expand-ease),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    filter var(--transition-fast),
+    border-color var(--transition-fast),
+    outline-color var(--transition-fast);
+
+  --tripbar-action-row-height: 30px;
+  /* overflow stays hidden — the bar grows by actionRowH + rowGapH while
+     the grid track grows by actionRowH, so content and bar boundary stay
+     in lockstep and nothing is ever clipped mid-animation. */
+  z-index: 600;
+  /* align-content intentionally kept as center (inherited from base) so content
+     doesn't snap-shift when the class is added — CSS can't transition align-content */
+}
+
+.schedule-grid__trip-bar__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: var(--tripbar-r9-color);
+  background: var(--rux-btn-bg-secondary);
+  border: none;
+  border-radius: var(--rux-btn-radius);
+  cursor: pointer;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 120ms ease,
+    background 100ms,
+    color 100ms;
+}
+
+.schedule-grid__trip-bar.expanded .schedule-grid__trip-bar__action-btn {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.schedule-grid__trip-bar__action-btn:hover {
+  background: oklch(100% 0 0 / 0.15);
+  color: oklch(100% 0 0);
+}
+
+.schedule-grid__trip-bar__action-btn .material-symbols-outlined {
+  font-size: 20px;
+  font-variation-settings: "wght" 400;
+}
+
+.schedule-grid__trip-bar__financial {
+	font-family: var(--font-mono);
+  font-size: var(--tripbar-r8-font-size);
+  font-weight: var(--tripbar-r8-font-weight);
+  line-height: var(--tripbar-r8-line-height);
+  letter-spacing: var(--tripbar-r8-letter-spacing);
+  color: var(--tripbar-text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  min-width: 0;
+}
 
 .schedule-grid__trip-bar__status-badges {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--tripbar-gap-inline);
-  flex: 1;
-  min-width: 0;
+  flex-shrink: 0;
 }
 
 .schedule-grid__trip-bar__mini-badge {
   /* Layout remains if needed, but styling is in .icon-status now */
-  color: color-mix(in srgb, var(--tripbar-text-color) 30%, transparent);
+  color: var(--tripbar-text-color);
 }
 
 /* MINI BADGE glyph styling moved to _icons.css */
 
 .schedule-grid__trip-bar__mini-badge.is-pending {
   background: transparent;
-  color: var(--rux-status-red);
+  color: var(--tripbar-text-color);
 }
 
 .schedule-grid__trip-bar__mini-badge.is-ok {
   background: transparent;
-  color: var(--tripbar-r5-color);
+  color: var(--tripbar-text-color);
 }
 
 .schedule-grid__trip-bar__mini-badge.is-blue {
   background: transparent;
-  color: var(--tripbar-r5-color);
+  color: var(--tripbar-text-color);
 }
 
 .schedule-grid__trip-bar__mini-badge.is-yellow {
   background: transparent;
-  color: var(--rux-status-yellow);
+  color: var(--tripbar-text-color);
 }
 
 .schedule-grid__trip-bar__mini-badge.has-pdf,
@@ -583,7 +752,7 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
 }
 
 .schedule-grid__trip-bar__mini-badge .schedule-grid__trip-bar__mini-badge-text {
-  color: var(--tripbar-badge-text-color);
+  color: var(--tripbar-text-color);
   background-color: transparent;
 }
 
@@ -593,16 +762,55 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
 }
 
 .schedule-grid__trip-bar__pre-drivers {
+	font-family: var(--font-mono);
   font-size: var(--tripbar-r6-font-size);
   font-weight: var(--tripbar-r6-font-weight);
   line-height: var(--tripbar-r6-line-height);
   letter-spacing: var(--tripbar-r6-letter-spacing);
   text-transform: uppercase;
   color: var(--tripbar-r6-color);
-  text-shadow: var(--text-shadow);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.schedule-grid__trip-bar__driver-pay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tripbar-gap-drivers, 6px);
+  font-size: var(--tripbar-r8-font-size);
+  font-weight: var(--tripbar-r8-font-weight);
+  line-height: var(--tripbar-r8-line-height);
+  letter-spacing: var(--tripbar-r8-letter-spacing);
+  color: var(--rux-status-green);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.schedule-grid__trip-bar__pay-slot {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Compact mode: collapse rows 5 (status), 6 (pre-drivers), 8 (pay) ── */
+
+body.bars-compact {
+  --tripbar-r5-row-height: 0px;
+  --tripbar-r7-row-height: 0px;
+  --tripbar-r8-row-height: 0px;
+  --tripbar-height: 82px;
+  --tripbar-lane-step: 83px;
+}
+
+/* When a bar is expanded in compact mode, restore the hidden rows. */
+body.bars-compact .schedule-grid__trip-bar.expanded {
+  --tripbar-r5-row-height: 16px;
+  --tripbar-r6-row-height: 16px;
+  --tripbar-r8-row-height: 16px;
 }
 
 .schedule-grid__trip-bar__drivers {
@@ -633,7 +841,6 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
   justify-content: center;
   text-transform: uppercase;
   color: var(--tripbar-r7-color);
-  text-shadow: var(--text-shadow);
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -656,13 +863,11 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
   overflow: hidden;
 }
 
-
 .schedule-grid__trip-bar.cont-right {
   border-inline-end: none;
   border-start-end-radius: 0;
   border-end-end-radius: 0;
 }
-
 
 /* ── Time row: scale down font on narrow bars so all 3 times stay visible ── */
 @container (max-width: 175px) {
@@ -678,14 +883,14 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
    when the bar is physically narrow — wide single-column bars still show data. */
 @container (max-width: 120px) {
   .schedule-grid__trip-bar.cont-single {
-
     /* Collapse all content rows — keep row 4 (time row) visible */
     .schedule-grid__trip-bar__row--1,
     .schedule-grid__trip-bar__row--2,
     .schedule-grid__trip-bar__row--3,
     .schedule-grid__trip-bar__row--5,
     .schedule-grid__trip-bar__row--6,
-    .schedule-grid__trip-bar__row--7 {
+    .schedule-grid__trip-bar__row--7,
+    .schedule-grid__trip-bar__row--8 {
       visibility: hidden;
       height: 0;
       margin: 0;

@@ -89,7 +89,12 @@ function wireDelegatedBarEvents() {
     // Needs to be loaded in the editor for saveBtn.click() to save this specific trip
     const wasOpenKey = dom.tripKey?.value;
     if (wasOpenKey !== capturedTripKey) {
-      if (!confirmDiscardIfDirty("You have unsaved changes. Loading this trip to remove its PDF will discard them. Continue?")) return;
+      if (
+        !confirmDiscardIfDirty(
+          "You have unsaved changes. Loading this trip to remove its PDF will discard them. Continue?",
+        )
+      )
+        return;
       toastShow("Loading trip to remove PDF...", "loading", {
         indeterminate: true,
         source: "pdf-delete",
@@ -99,6 +104,7 @@ function wireDelegatedBarEvents() {
 
     toastShow("Deleting PDF...", "loading", { indeterminate: true, source: "pdf-delete" });
     trip.itineraryPdfUrl = ""; // Clear from local state
+    refreshShortcutRow();
     if ($("itineraryPdfUrl")) $("itineraryPdfUrl").value = ""; // Clear from form so it submits empty
     if (trip.itineraryStatus === "Received") {
       trip.itineraryStatus = "Pending";
@@ -120,7 +126,12 @@ function wireDelegatedBarEvents() {
     const capturedTripKey = activeContextTripKey;
     closeTripContextMenu();
     if (dom.tripKey?.value !== capturedTripKey) {
-      if (!confirmDiscardIfDirty("You have unsaved changes. Loading this trip will discard them. Continue?")) return;
+      if (
+        !confirmDiscardIfDirty(
+          "You have unsaved changes. Loading this trip will discard them. Continue?",
+        )
+      )
+        return;
       await openTripForEdit(capturedTripKey);
     }
     $("contactStatus").value = "Not Required";
@@ -133,7 +144,12 @@ function wireDelegatedBarEvents() {
     const capturedTripKey = activeContextTripKey;
     closeTripContextMenu();
     if (dom.tripKey?.value !== capturedTripKey) {
-      if (!confirmDiscardIfDirty("You have unsaved changes. Loading this trip will discard them. Continue?")) return;
+      if (
+        !confirmDiscardIfDirty(
+          "You have unsaved changes. Loading this trip will discard them. Continue?",
+        )
+      )
+        return;
       await openTripForEdit(capturedTripKey);
     }
     $("itineraryStatus").value = "Not Required";
@@ -215,6 +231,7 @@ function wireDelegatedBarEvents() {
 
       toastHide(0, { source: "pdf-upload" });
       toast("PDF Uploaded ✓", "success", 1800);
+      refreshShortcutRow();
     } catch (err) {
       console.error(err);
       toastHide(0, { source: "pdf-upload" });
@@ -276,31 +293,97 @@ function wireDelegatedBarEvents() {
     container.addEventListener("contextmenu", (e) => handleScheduleInteraction(e, true));
 
     // 2. Click (Tap) - Mobile Only and specific icon clicks
-    container.addEventListener("click", (e) => {
-      // Always allow driver contact icon clicks (desktop and mobile)
-      const driverContactIcon = e.target.closest('[data-action="showDriverContact"]');
-      if (driverContactIcon) {
+    container.addEventListener("click", async (e) => {
+      // Action row button clicks (delegated)
+      const actionBtn = e.target.closest(".schedule-grid__trip-bar__action-btn");
+      if (actionBtn) {
         e.stopPropagation();
-        const tripBar = driverContactIcon.closest(".schedule-grid__trip-bar");
-        if (tripBar && tripBar.dataset.tripkey) {
-          openDriverContactModal(tripBar.dataset.tripkey);
+        const bar = actionBtn.closest(".schedule-grid__trip-bar");
+        const tripKey = bar?.dataset?.tripkey;
+        if (!tripKey) return;
+        const action = actionBtn.dataset.action;
+        if (action === "load") {
+          openTripForEdit(tripKey);
+        } else if (action === "pdf") {
+          if (actionBtn.dataset.pdfState === "view") {
+            const trip = state.tripByKey?.[tripKey];
+            if (trip?.itineraryPdfUrl) window.open(trip.itineraryPdfUrl, "_blank");
+          } else {
+            // Reuse the existing hidden file input + upload handler
+            state.pendingItineraryTripKey = tripKey;
+            dom.itineraryPdfInput?.click();
+          }
+        } else if (action === "driverContact") {
+          openDriverContactModal(tripKey);
+        } else if (action === "envelope") {
+          openEnvelopeModal(tripKey);
+        } else if (action === "more") {
+          const rect = bar.getBoundingClientRect();
+          showTripContextMenu(rect.left + rect.width / 2, rect.bottom + window.scrollY, tripKey);
         }
         return;
       }
 
-        // Selection (all devices)
+      // Selection (all devices)
       const clickedBar = e.target.closest(".schedule-grid__trip-bar");
       selectTripBar(clickedBar || null);
 
-      // Quick-edit popover on desktop left-click
+      // On desktop, expand only the clicked bar (not all bars for the trip)
       if (!isMobileOnly() && clickedBar) {
-        const tripKey = clickedBar.dataset.tripkey;
-        if (tripKey) {
-          if (quickEditTripKey === tripKey) {
-            closeQuickEditPopover();
-          } else {
-            showQuickEditPopover(tripKey, clickedBar);
-          }
+        const wasExpanded = clickedBar.classList.contains("expanded");
+
+        // Collapse any currently expanded bar — class removal switches the
+        // transition back to collapse timing; setting height back to the
+        // stored collapsed px animates the bar shut.
+        document.querySelectorAll(".schedule-grid__trip-bar.expanded").forEach((b) => {
+          b.classList.remove("expanded");
+          b.style.height = b.dataset.collapsedHeight || "";
+          delete b.dataset.collapsedHeight;
+          b.parentElement.style.zIndex = "";
+          const td = b.parentElement.parentElement;
+          if (td?.tagName === "TD") td.style.zIndex = "";
+        });
+
+        if (!wasExpanded) {
+          // 1. Snapshot the current rendered height as a concrete px value.
+          //    positionBarWithinOverlay sets style.height to calc() — browsers
+          //    won't reliably transition from calc()→px even when they resolve
+          //    to the same length, so we convert to px first.
+          const collapsedPx = clickedBar.getBoundingClientRect().height;
+          clickedBar.dataset.collapsedHeight = collapsedPx + "px";
+          clickedBar.style.height = collapsedPx + "px";
+
+          // 2. Flush layout so the browser commits collapsedPx as the
+          //    "before" state before we change timing and target height.
+          void clickedBar.offsetHeight;
+
+          // 3. Add class — switches transition to expand timing and sets
+          //    --tripbar-action-row-height: 30px for the grid track.
+          clickedBar.classList.add("expanded");
+
+          // Elevate both the .schedule-grid__row-bars overlay AND its parent <td>
+          // (.schedule-grid__cell has position:relative, so adding z-index creates
+          // a stacking context that clears the cell above all other row cells).
+          clickedBar.parentElement.style.zIndex = "50";
+          const expandedTd = clickedBar.parentElement.parentElement;
+          if (expandedTd?.tagName === "TD") expandedTd.style.zIndex = "50";
+
+          // 4. Read the action-row height now that .expanded is applied,
+          //    then grow the bar by exactly that amount + one row-gap.
+          //    The content grows by actionRowH; the bar grows by actionRowH +
+          //    rowGapH, so the two stay in lockstep — overflow:hidden never
+          //    clips anything mid-animation.
+          const cs = getComputedStyle(clickedBar);
+          const actionRowH = parseFloat(cs.getPropertyValue("--tripbar-action-row-height")) || 30;
+          const rowGapH = parseFloat(cs.getPropertyValue("--tripbar-row-gap")) || 0;
+          // In compact mode rows 5, 6 & 8 are 0px when collapsed but CSS restores them
+          // once .expanded is added, so we must account for their heights here.
+          const hiddenRowsH = document.body.classList.contains("bars-compact")
+            ? (parseFloat(cs.getPropertyValue("--tripbar-r5-row-height")) || 16) +
+              (parseFloat(cs.getPropertyValue("--tripbar-r6-row-height")) || 16) +
+              (parseFloat(cs.getPropertyValue("--tripbar-r8-row-height")) || 16)
+            : 0;
+          clickedBar.style.height = collapsedPx + hiddenRowsH + actionRowH + rowGapH + "px";
         }
         return;
       }
@@ -332,7 +415,6 @@ function wireDelegatedBarEvents() {
   });
 }
 
-
 // ======================================================
 // 35B) QUOTE CALCULATOR LOGIC — moved to quoteCalculator.js
 // ======================================================
@@ -346,16 +428,22 @@ function wireEvents() {
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
     const modalClosers = [
-      { el: dom.itineraryModal,            close: closeItineraryModal },
-      { el: dom.tripDetailsModal,          close: closeTripDetailsModal },
-      { el: dom.envelopeModal,             close: closeEnvelopeModal },
-      { el: dom.nextDayReportModal,        close: () => closeModalA11y(dom.nextDayReportModal) },
-      { el: dom.dailyMaintenancePlanModal, close: () => closeModalA11y(dom.dailyMaintenancePlanModal) },
-      { el: dom.driverWeekScheduleModal,   close: () => closeModalA11y(dom.driverWeekScheduleModal) },
-      { el: dom.driverContactModal,        close: () => closeModalA11y(dom.driverContactModal) },
+      { el: dom.itineraryModal, close: closeItineraryModal },
+      { el: dom.tripDetailsModal, close: closeTripDetailsModal },
+      { el: dom.envelopeModal, close: closeEnvelopeModal },
+      { el: dom.nextDayReportModal, close: () => closeModalA11y(dom.nextDayReportModal) },
+      {
+        el: dom.dailyMaintenancePlanModal,
+        close: () => closeModalA11y(dom.dailyMaintenancePlanModal),
+      },
+      { el: dom.driverWeekScheduleModal, close: () => closeModalA11y(dom.driverWeekScheduleModal) },
+      { el: dom.driverContactModal, close: () => closeModalA11y(dom.driverContactModal) },
     ];
     for (const { el, close } of modalClosers) {
-      if (el && !el.hidden) { close(); break; }
+      if (el && !el.hidden) {
+        close();
+        break;
+      }
     }
   });
 
@@ -395,13 +483,11 @@ function wireEvents() {
   };
   // Call once on load
   observeBusGrid();
-  ["paymentStatus", "driverStatus", "invoiceStatus"].forEach(
-    (id) => {
-      const el = $(id);
-      updateStatusSelect(el);
-      el.addEventListener("change", () => updateStatusSelect(el));
-    },
-  );
+  ["paymentStatus", "driverStatus", "invoiceStatus"].forEach((id) => {
+    const el = $(id);
+    updateStatusSelect(el);
+    el.addEventListener("change", () => updateStatusSelect(el));
+  });
 
   // Auto-Refresh
   setInterval(() => {
@@ -418,6 +504,44 @@ function wireEvents() {
   });
   dom.prevWeekBtn.addEventListener("click", () => changeWeek(-1));
   dom.nextWeekBtn.addEventListener("click", () => changeWeek(1));
+
+  // Compact bars toggle — hides rows 5 (status) and 6 (pre-drivers) until a bar is expanded.
+  (function initCompactBars() {
+    const btn = dom.compactBarsBtn;
+    if (!btn) return;
+
+    function applyCompact(compact) {
+      document.body.classList.toggle("bars-compact", compact);
+      btn.setAttribute("aria-pressed", String(compact));
+      const glyph = btn.querySelector(".material-symbols-outlined");
+      if (glyph) glyph.textContent = compact ? "unfold_more" : "unfold_less";
+      btn.title = compact ? "Show all rows" : "Compact bars";
+      btn.setAttribute("aria-label", btn.title);
+      // Bust the cached bar metrics so JS re-reads --tripbar-height on next render
+      state.barMetrics = null;
+      // Collapse any expanded bar before re-rendering
+      document.querySelectorAll(".schedule-grid__trip-bar.expanded").forEach((b) => {
+        b.classList.remove("expanded");
+        b.style.height = b.dataset.collapsedHeight || "";
+        delete b.dataset.collapsedHeight;
+        b.parentElement.style.zIndex = "";
+        const td = b.parentElement.parentElement;
+        if (td?.tagName === "TD") td.style.zIndex = "";
+      });
+      // Re-render so bars reposition against the new row height
+      _renderAgendaInner();
+      try { localStorage.setItem("barsCompact", compact ? "1" : "0"); } catch (_) {}
+    }
+
+    // Restore persisted state
+    try {
+      if (localStorage.getItem("barsCompact") === "1") applyCompact(true);
+    } catch (_) {}
+
+    btn.addEventListener("click", () => {
+      applyCompact(!document.body.classList.contains("bars-compact"));
+    });
+  })();
 
   dom.agendaLeftBtn?.addEventListener("click", () => {
     if (dom.weekPicker) {
@@ -621,7 +745,9 @@ function wireEvents() {
       // Optional: change icon style/color if active
       dom.waitingListBtn.classList.toggle("active", visible);
     }
-    try { localStorage.setItem("waitingListVisible", visible ? "1" : "0"); } catch { }
+    try {
+      localStorage.setItem("waitingListVisible", visible ? "1" : "0");
+    } catch {}
   }
 
   // Init
@@ -640,7 +766,7 @@ function wireEvents() {
     const todayKeys = new Set(
       (state.trips || [])
         .filter((t) => t.tripColor !== "Out of Service" && t.departureDate === todayYMD)
-        .map((t) => String(t.tripKey))
+        .map((t) => String(t.tripKey)),
     );
     document.querySelectorAll(".schedule-grid__trip-bar").forEach((bar) => {
       bar.classList.toggle("today-highlighted", todayKeys.has(bar.dataset.tripkey));
@@ -652,7 +778,8 @@ function wireEvents() {
     if (active) {
       applyTodayHighlight();
     } else {
-      document.querySelectorAll(".schedule-grid__trip-bar.today-highlighted")
+      document
+        .querySelectorAll(".schedule-grid__trip-bar.today-highlighted")
         .forEach((bar) => bar.classList.remove("today-highlighted"));
     }
     dom.todayHighlightBtn?.setAttribute("aria-pressed", String(active));
@@ -668,6 +795,34 @@ function wireEvents() {
 
   dom.itineraryModal.addEventListener("click", (e) => {
     if (e.target.closest("[data-close]")) closeItineraryModal();
+  });
+
+  dom.shortcutEnvelopeBtn?.addEventListener("click", () => {
+    const key = dom.tripKey.value;
+    if (!key) {
+      toast("Save the trip first.", "warning", 2000);
+      return;
+    }
+    openEnvelopeModal(key);
+  });
+
+  dom.shortcutItineraryBtn?.addEventListener("click", () => {
+    openItineraryModal();
+  });
+
+  dom.shortcutPdfBtn?.addEventListener("click", () => {
+    const key = dom.tripKey.value;
+    if (!key) {
+      toast("Save the trip first.", "warning", 2000);
+      return;
+    }
+    const trip = state.tripByKey?.[key];
+    if (trip?.itineraryPdfUrl) {
+      window.open(trip.itineraryPdfUrl, "_blank");
+    } else {
+      state.pendingItineraryTripKey = key;
+      dom.itineraryPdfInput.click();
+    }
   });
   dom.itinerarySaveBtn.addEventListener("click", closeItineraryModal);
   dom.itineraryCopyBtn.addEventListener("click", async () => {
@@ -733,7 +888,6 @@ function wireEvents() {
     checkDriverDoubleBookings();
   });
 
-
   dom.newBtn.addEventListener("click", () => {
     // Warn if clearing while there are unsaved trip changes
     if (state.tripFormDirty) {
@@ -779,7 +933,7 @@ function wireEvents() {
     resetTripFormUI();
 
     const _pwDep2 = tripDate ? parseYMD(tripDate) : null;
-    const _pwWs2  = _pwDep2 ? startOfWeek(_pwDep2) : null;
+    const _pwWs2 = _pwDep2 ? startOfWeek(_pwDep2) : null;
     const writeWeekKey = _pwWs2 ? weekKey(ymd(_pwWs2), ymd(addDays(_pwWs2, 6))) : null;
 
     state.pendingWrite = {
@@ -794,7 +948,8 @@ function wireEvents() {
 
     const formBody = new URLSearchParams({ action: "delete", tripKey: key, tripId });
 
-    api.saveTrip(formBody)
+    api
+      .saveTrip(formBody)
       .then(() => {
         state.weekCache.clear();
       })
@@ -819,6 +974,11 @@ function wireEvents() {
         if (state.pendingRefreshDeferred) {
           state.pendingRefreshDeferred = false;
           refreshWeekData({ silent: true });
+        }
+        if (state.pendingQuickEditSave.length) {
+          const fn = state.pendingQuickEditSave.shift();
+          if (!state.pendingQuickEditSave.length) toastHide(0, { source: "quick-edit-queue" });
+          fn();
         }
       });
   });
@@ -960,7 +1120,7 @@ function wireEvents() {
     let contactStatusValue = $("contactStatus").value;
     const AUTO_DERIVE_CONTACT = ["", "Pending", "Received"];
     if (contactStatusValue !== "Not Required" && AUTO_DERIVE_CONTACT.includes(contactStatusValue)) {
-      contactStatusValue = (envelopeContact && envelopePhone) ? "Received" : "Pending";
+      contactStatusValue = envelopeContact && envelopePhone ? "Received" : "Pending";
       $("contactStatus").value = contactStatusValue;
     }
 
@@ -984,9 +1144,9 @@ function wireEvents() {
         // Preserve explicit user choices (e.g. "Assigned") instead of silently forcing to Pending.
         const AUTO_DERIVE_ITINERARY = ["", "Pending", "Received"];
         if (!AUTO_DERIVE_ITINERARY.includes(cur)) return cur;
-        const hasPdf = !!(existingTrip?.itineraryPdfUrl);
-        const hasContent = !!(dom.itineraryField?.value?.trim());
-        const derived = (hasPdf || hasContent) ? "Received" : "Pending";
+        const hasPdf = !!existingTrip?.itineraryPdfUrl;
+        const hasContent = !!dom.itineraryField?.value?.trim();
+        const derived = hasPdf || hasContent ? "Received" : "Pending";
         $("itineraryStatus").value = derived;
         return derived;
       })(),
@@ -1009,7 +1169,7 @@ function wireEvents() {
       paymentType: $("paymentType")?.value || "",
       estimatedMileage: $("estimatedMileage")?.value || "",
       drivingHours: $("drivingHours")?.value || "",
-      onDutyHours:  $("onDutyHours")?.value  || "",
+      onDutyHours: $("onDutyHours")?.value || "",
       quotedPrice: $("quotedPrice")?.value || "",
       tripMiles: $("tripMiles")?.value || "",
       datePaid: $("datePaid")?.value || "",
@@ -1031,7 +1191,6 @@ function wireEvents() {
       reqWifi: $("reqWifi")?.getAttribute("aria-pressed") === "true",
       driverInfoSent: $("driverInfoSent")?.getAttribute("aria-pressed") === "true",
       tripReminderSent: $("tripReminderSent")?.getAttribute("aria-pressed") === "true",
-      tripReviewed: $("tripReviewed")?.getAttribute("aria-pressed") === "true",
     };
 
     // Proactive Conflict Check
@@ -1068,7 +1227,19 @@ function wireEvents() {
     dom.saveBtn.disabled = true;
 
     // Sync requirement toggles to hidden inputs so backend receives them
-    ["req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "reqWifi", "driverInfoSent", "tripReminderSent", "tripReviewed"].forEach((id) => {
+    [
+      "req56Pass",
+      "reqSleeper",
+      "reqLift",
+      "reqRelief",
+      "reqRelief2",
+      "reqCoDriver",
+      "reqHotel",
+      "reqFuelCard",
+      "reqWifi",
+      "driverInfoSent",
+      "tripReminderSent",
+    ].forEach((id) => {
       const btn = $(id);
       const hidden = $(id + "Value");
       if (btn && hidden) {
@@ -1090,7 +1261,7 @@ function wireEvents() {
     const formBody = new URLSearchParams(new FormData(dom.tripForm));
 
     const _pwDep = parseYMD(optimisticTrip.departureDate);
-    const _pwWs  = _pwDep ? startOfWeek(_pwDep) : null;
+    const _pwWs = _pwDep ? startOfWeek(_pwDep) : null;
     const writeWeekKey = _pwWs ? weekKey(ymd(_pwWs), ymd(addDays(_pwWs, 6))) : null;
 
     state.pendingWrite = {
@@ -1107,7 +1278,8 @@ function wireEvents() {
     resetTripFormUI();
     toast("Saved ✓", "success", 1200);
 
-    api.saveTrip(formBody)
+    api
+      .saveTrip(formBody)
       .then((resp) => {
         if (resp.trip) {
           const sKey = String(resp.trip.tripKey || key);
@@ -1115,7 +1287,9 @@ function wireEvents() {
           const idx = state.trips.findIndex((t) => String(t.tripKey) === sKey);
           if (idx >= 0) state.trips[idx] = resp.trip;
           if (resp.assignments) {
-            state.assignmentsByTripKey[sKey] = resp.assignments.map(normalizeAssignment).filter(Boolean);
+            state.assignmentsByTripKey[sKey] = resp.assignments
+              .map(normalizeAssignment)
+              .filter(Boolean);
           }
           scheduleAgendaReflow();
           updateDriverWeekIfVisible();
@@ -1149,6 +1323,11 @@ function wireEvents() {
           state.pendingRefreshDeferred = false;
           refreshWeekData({ silent: true });
         }
+        if (state.pendingQuickEditSave.length) {
+          const fn = state.pendingQuickEditSave.shift();
+          if (!state.pendingQuickEditSave.length) toastHide(0, { source: "quick-edit-queue" });
+          fn();
+        }
       });
   });
 
@@ -1161,9 +1340,7 @@ function wireEvents() {
     // Reset custom selects to placeholder so triggers sync (form.reset doesn't fire change)
     setSelectToPlaceholder("busesNeeded");
     setSelectToPlaceholder("tripColor");
-    ["paymentStatus", "driverStatus", "invoiceStatus"].forEach(
-      setSelectToPlaceholder,
-    );
+    ["paymentStatus", "driverStatus", "invoiceStatus"].forEach(setSelectToPlaceholder);
 
     dom.busesNeeded.value = "";
     syncBusSegButtons();
@@ -1174,10 +1351,18 @@ function wireEvents() {
     // Reset bus/driver selects and sync triggers
     state.busRows.forEach((r) => {
       r.busSel.value = "None";
-      r.d1Sel.value = "None"; r.d1StatusSel.value = ""; if (r.d1Pay) r.d1Pay.value = "";
-      r.d2Sel.value = "None"; r.d2StatusSel.value = ""; if (r.d2Pay) r.d2Pay.value = "";
-      r.d3Sel.value = "None"; r.d3StatusSel.value = ""; if (r.d3Pay) r.d3Pay.value = "";
-      r.d4Sel.value = "None"; r.d4StatusSel.value = ""; if (r.d4Pay) r.d4Pay.value = "";
+      r.d1Sel.value = "None";
+      r.d1StatusSel.value = "";
+      if (r.d1Pay) r.d1Pay.value = "";
+      r.d2Sel.value = "None";
+      r.d2StatusSel.value = "";
+      if (r.d2Pay) r.d2Pay.value = "";
+      r.d3Sel.value = "None";
+      r.d3StatusSel.value = "";
+      if (r.d3Pay) r.d3Pay.value = "";
+      r.d4Sel.value = "None";
+      r.d4StatusSel.value = "";
+      if (r.d4Pay) r.d4Pay.value = "";
       r.busSel.dispatchEvent(new Event("change", { bubbles: true }));
       r.d1Sel.dispatchEvent(new Event("change", { bubbles: true }));
       r.d2Sel.dispatchEvent(new Event("change", { bubbles: true }));
@@ -1186,15 +1371,14 @@ function wireEvents() {
     });
     syncBusSelectEmptyState();
 
-    ["paymentStatus", "driverStatus", "invoiceStatus"].forEach(
-      (id) => updateStatusSelect($(id)),
-    );
+    ["paymentStatus", "driverStatus", "invoiceStatus"].forEach((id) => updateStatusSelect($(id)));
     updateInvoiceNumberVisibility();
 
     // Form has just been reset after save/delete; treat as clean.
     state.tripFormDirty = false;
     state.tripFormOpen = false;
     if (typeof syncEmptyFields === "function") syncEmptyFields();
+    refreshShortcutRow();
   }
 
   function clearCacheForCurrentView() {
@@ -1218,7 +1402,6 @@ function wireEvents() {
   dom.tripDetailsModal?.addEventListener("click", (e) => {
     if (e.target.closest("[data-close-details]")) closeTripDetailsModal();
   });
-
 
   // Toggle buttons — click toggles aria-pressed
   // Skip bus-seg buttons: they're a single-select segmented control with their
@@ -1327,7 +1510,6 @@ function wireSettingsMenu() {
   });
 }
 
-
 // ── Top-level event wiring (report/envelope/driver modals) ──
 if (dom.dailyMaintenancePlanDateInput) {
   dom.dailyMaintenancePlanDateInput.addEventListener("change", (e) => {
@@ -1359,9 +1541,11 @@ dom.copyDriverWeekScheduleBtn?.addEventListener("click", async () => {
     toast("Copy failed — please select and copy manually.");
   }
 });
-document.getElementById("closeDriverWeekScheduleBtn")
+document
+  .getElementById("closeDriverWeekScheduleBtn")
   ?.addEventListener("click", () => closeModalA11y(dom.driverWeekScheduleModal));
-document.getElementById("closeDriverWeekScheduleBackdrop")
+document
+  .getElementById("closeDriverWeekScheduleBackdrop")
   ?.addEventListener("click", () => closeModalA11y(dom.driverWeekScheduleModal));
 
 // Driver Contact events

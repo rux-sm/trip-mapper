@@ -8,7 +8,7 @@ function showScheduleRenderToastDelayed() {
 
   // Header status progress is now owned by week-load/trip-load pipelines.
   // Keep this timer for render lifecycle parity, but do not emit standalone render notices.
-  scheduleRenderToastTimer = setTimeout(() => { }, 120);
+  scheduleRenderToastTimer = setTimeout(() => {}, 120);
 }
 
 function hideScheduleRenderToast() {
@@ -31,7 +31,13 @@ function setBarsHidden(hidden) {
 // 17) BAR ELEMENT REUSE HELPERS
 // ======================================================
 function clearBarsNow() {
-  dom.agendaBody?.querySelectorAll(".schedule-grid__row-bars").forEach((b) => (b.innerHTML = ""));
+  dom.agendaBody?.querySelectorAll(".schedule-grid__row-bars").forEach((b) => {
+    b.innerHTML = "";
+    // Reset any z-index left over from an expanded bar that was cleared mid-expansion.
+    b.style.zIndex = "";
+    const td = b.parentElement;
+    if (td?.tagName === "TD") td.style.zIndex = "";
+  });
   state.barElByKey?.clear?.();
 }
 
@@ -42,6 +48,13 @@ function barKey(tripKey, busId, driver1, driver2) {
 function pruneOldBars(pass) {
   for (const [k, el] of state.barElByKey) {
     if (el._renderPass !== pass) {
+      // If the bar was expanded when pruned, restore its parent containers'
+      // z-index so they don't stay permanently elevated.
+      if (el.classList.contains("expanded") && el.parentElement) {
+        el.parentElement.style.zIndex = "";
+        const td = el.parentElement.parentElement;
+        if (td?.tagName === "TD") td.style.zIndex = "";
+      }
       el.remove();
       state.barElByKey.delete(k);
     }
@@ -342,7 +355,16 @@ function positionBarWithinOverlay(bar, bars, col, startIdx, endIdx, overrides) {
   bar.style.left = `${leftPx}px`;
   bar.style.width = `${widthPx}px`;
   bar.style.top = `${insetT}px`;
-  bar.style.height = `calc(100% - ${insetT + insetB}px)`;
+  if (bar.classList.contains("expanded")) {
+    // Don't overwrite style.height while the bar is animating open or
+    // sitting expanded — the JS expand handler owns height at this point.
+    // Keep dataset.collapsedHeight current so the close animation snaps
+    // back to the right size if the layout changed (e.g. resize).
+    const parentH = bar.parentElement?.getBoundingClientRect().height ?? 0;
+    bar.dataset.collapsedHeight = `${Math.max(0, parentH - insetT - insetB)}px`;
+  } else {
+    bar.style.height = `calc(100% - ${insetT + insetB}px)`;
+  }
 }
 
 // ======================================================
@@ -446,6 +468,12 @@ function renderAgenda() {
     }
     toast("Render error - try refreshing", "danger", 3000);
   }
+}
+
+function formatDateShort(dateStr) {
+  const d = parseYMD(dateStr);
+  if (!d) return String(dateStr || "");
+  return `${d.getMonth() + 1}/${d.getDate()}`;
 }
 
 function _renderAgendaInner() {
@@ -565,7 +593,7 @@ function _renderAgendaInner() {
     return (h * 60 + m) / 1440;
   }
 
-  const busDayArrivals = {};   // "busId:dayIdx" → [{frac, tripKey, isSingleDay}]
+  const busDayArrivals = {}; // "busId:dayIdx" → [{frac, tripKey, isSingleDay}]
   const busDayDepartures = {}; // "busId:dayIdx" → [{frac, tripKey, isSingleDay}]
 
   for (const t of visibleTrips) {
@@ -573,7 +601,7 @@ function _renderAgendaInner() {
     const tArrY = ymd(t._arr);
     const tIsSD = tDepY === tArrY;
     const tStart = tDepY < weekStart ? weekStart : tDepY;
-    const tEnd   = tArrY > weekEnd   ? weekEnd   : tArrY;
+    const tEnd = tArrY > weekEnd ? weekEnd : tArrY;
     const tSi = weekIndex.get(tStart);
     const tEi = weekIndex.get(tEnd);
     if (tSi == null || tEi == null) continue;
@@ -584,12 +612,20 @@ function _renderAgendaInner() {
       if (t.arrivalTime) {
         const frac = timeToFrac(t.arrivalTime);
         if (frac != null)
-          (busDayArrivals[`${tBusId}:${tEi}`] ||= []).push({ frac, tripKey: t.tripKey, isSingleDay: tIsSD });
+          (busDayArrivals[`${tBusId}:${tEi}`] ||= []).push({
+            frac,
+            tripKey: t.tripKey,
+            isSingleDay: tIsSD,
+          });
       }
       if (t.departureTime) {
         const frac = timeToFrac(t.departureTime);
         if (frac != null)
-          (busDayDepartures[`${tBusId}:${tSi}`] ||= []).push({ frac, tripKey: t.tripKey, isSingleDay: tIsSD });
+          (busDayDepartures[`${tBusId}:${tSi}`] ||= []).push({
+            frac,
+            tripKey: t.tripKey,
+            isSingleDay: tIsSD,
+          });
       }
     }
   }
@@ -604,17 +640,29 @@ function _renderAgendaInner() {
     const arrs = busDayArrivals[key];
     const deps = busDayDepartures[key];
 
-    let bestArrFrac = -Infinity, bestArrIsSD = false, bestArrTripKey = null;
-    let bestDepFrac = Infinity,  bestDepIsSD = false, bestDepTripKey = null;
+    let bestArrFrac = -Infinity,
+      bestArrIsSD = false,
+      bestArrTripKey = null;
+    let bestDepFrac = Infinity,
+      bestDepIsSD = false,
+      bestDepTripKey = null;
     let hasValidPair = false;
 
     for (const arr of arrs) {
       for (const dep of deps) {
         if (arr.tripKey === dep.tripKey) continue; // skip self-match (single-day trips)
-        if (arr.frac > dep.frac) continue;          // times overlap — not a handoff
+        if (arr.frac > dep.frac) continue; // times overlap — not a handoff
         hasValidPair = true;
-        if (arr.frac > bestArrFrac) { bestArrFrac = arr.frac; bestArrIsSD = arr.isSingleDay; bestArrTripKey = arr.tripKey; }
-        if (dep.frac < bestDepFrac) { bestDepFrac = dep.frac; bestDepIsSD = dep.isSingleDay; bestDepTripKey = dep.tripKey; }
+        if (arr.frac > bestArrFrac) {
+          bestArrFrac = arr.frac;
+          bestArrIsSD = arr.isSingleDay;
+          bestArrTripKey = arr.tripKey;
+        }
+        if (dep.frac < bestDepFrac) {
+          bestDepFrac = dep.frac;
+          bestDepIsSD = dep.isSingleDay;
+          bestDepTripKey = dep.tripKey;
+        }
       }
     }
     if (!hasValidPair) continue;
@@ -623,17 +671,26 @@ function _renderAgendaInner() {
     let depFrac = snapToThird(bestDepFrac);
 
     if (bestArrIsSD && bestDepIsSD) {
-      arrFrac = 0.5; depFrac = 0.5;
+      arrFrac = 0.5;
+      depFrac = 0.5;
     } else if (bestArrIsSD) {
-      arrFrac = 2 / 3; depFrac = Math.max(depFrac, 2 / 3);
+      arrFrac = 2 / 3;
+      depFrac = Math.max(depFrac, 2 / 3);
     } else if (bestDepIsSD) {
-      depFrac = 1 / 3; arrFrac = Math.min(arrFrac, 1 / 3);
+      depFrac = 1 / 3;
+      arrFrac = Math.min(arrFrac, 1 / 3);
     } else if (arrFrac > depFrac) {
-      arrFrac = 0.5; depFrac = 0.5;
+      arrFrac = 0.5;
+      depFrac = 0.5;
     }
 
     handoffByBus[hBusId] ||= {};
-    handoffByBus[hBusId][dayIdx] = { arrFrac, depFrac, arrTripKey: bestArrTripKey, depTripKey: bestDepTripKey };
+    handoffByBus[hBusId][dayIdx] = {
+      arrFrac,
+      depFrac,
+      arrTripKey: bestArrTripKey,
+      depTripKey: bestDepTripKey,
+    };
   }
   // ---- End handoff detection ----
 
@@ -644,7 +701,9 @@ function _renderAgendaInner() {
         const key = `${hBusId}|${dayStr}`;
         if (!cellCounts[key] || cellCounts[key] <= 1) continue;
         const items = cellItems?.[key] || [];
-        const keep = items.filter(it => it.tripKey !== ho.arrTripKey && it.tripKey !== ho.depTripKey);
+        const keep = items.filter(
+          (it) => it.tripKey !== ho.arrTripKey && it.tripKey !== ho.depTripKey,
+        );
         const removed = items.length - keep.length;
         if (removed > 0) {
           cellCounts[key] = Math.max(0, cellCounts[key] - removed);
@@ -664,7 +723,10 @@ function _renderAgendaInner() {
       let ok = true;
       for (let d = startIdx; d <= endIdx; d++) {
         if (d === exceptDay) continue;
-        if (occ[d]) { ok = false; break; }
+        if (occ[d]) {
+          ok = false;
+          break;
+        }
       }
       if (ok) {
         for (let d = startIdx; d <= endIdx; d++) {
@@ -728,8 +790,8 @@ function _renderAgendaInner() {
         bars = barsByRowIdx.get(rowIdx);
         // If this trip is the "departing" trip in a handoff on its first day,
         // skip that day in lane allocation so it shares lane 0 with the arriving trip.
-        const isHandoffDepTrip = depY >= weekStart &&
-          handoffByBus[busId]?.[startIdx]?.depTripKey === t.tripKey;
+        const isHandoffDepTrip =
+          depY >= weekStart && handoffByBus[busId]?.[startIdx]?.depTripKey === t.tripKey;
         lane = allocateLane(busId, startIdx, endIdx, isHandoffDepTrip ? startIdx : -1);
       }
 
@@ -764,20 +826,39 @@ function _renderAgendaInner() {
         const r6 = makeRow("6");
         const r7 = makeRow("7");
 
-        // Row 1: Multi-bus badge (top-left) + Title
+        // Action row — revealed at the bottom of the bar when expanded
+        const rAction = document.createElement("div");
+        rAction.className = "schedule-grid__trip-bar__action-row";
+        let pdfBtn = null;
+        [
+          { action: "load", icon: "edit", title: "Load trip" },
+          { action: "pdf", icon: "upload_file", title: "Attach itinerary PDF" },
+          { action: "driverContact", icon: "contacts", title: "Driver contact info" },
+          { action: "envelope", icon: "mail_outline", title: "Envelope" },
+          { action: "more", icon: "more_horiz", title: "More options" },
+        ].forEach(({ action, icon, title }) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "schedule-grid__trip-bar__action-btn";
+          btn.dataset.action = action;
+          btn.title = title;
+          btn.setAttribute("aria-label", title);
+          btn.innerHTML = `<span class="material-symbols-outlined" aria-hidden="true">${icon}</span>`;
+          rAction.appendChild(btn);
+          if (action === "pdf") pdfBtn = btn;
+        });
+
+        // Row 1: [multiBadge] [title] [top-status badges] [paidBadge]
         const multiBadge = document.createElement("span");
         multiBadge.className = "schedule-grid__trip-bar__multi-badge";
         multiBadge.setAttribute("aria-hidden", "true");
         r1.appendChild(multiBadge);
 
-        const paidBadge = document.createElement("span");
-        paidBadge.className = "schedule-grid__trip-bar__paid-badge material-symbols-outlined is-hidden";
-        paidBadge.setAttribute("aria-hidden", "true");
-        paidBadge.textContent = "check_circle";
-        r1.appendChild(paidBadge);
         const line1 = document.createElement("div");
         line1.className = "schedule-grid__trip-bar__title";
         r1.appendChild(line1);
+
+        // paidBadge and r1TopBadges are appended after bI/bC/b$ are created below
 
         // Row 2: Customer (sub)
         const line2 = document.createElement("div");
@@ -820,53 +901,42 @@ function _renderAgendaInner() {
           return b;
         }
 
-        const bI = makeMini("attach_file_off", true); // Itinerary
-        bI.addEventListener("click", (e) => {
-          if (bI.classList.contains("has-pdf")) {
-            e.stopPropagation();
-            const tk = bar.dataset.tripkey;
-            const trip = state.tripByKey?.[tk];
-            if (trip && trip.itineraryPdfUrl) {
-              window.open(trip.itineraryPdfUrl, "_blank");
-            }
-          }
-        });
+        const bI = makeMini("attach_file_off", true); // Itinerary — status indicator only
         const bC = makeMini("phone_enabled", true); // Contact
         const b$ = makeMini("description", true); // Payment / Approval
         const bD1 = makeMini("person", true); // Driver 1
         const bD2 = makeMini("person", true); // Driver 2 (co-driver)
         const bD3 = makeMini("emergency_home", true); // Relief 1
         const bD4 = makeMini("emergency_home", true); // Relief 2
-        const bInv = makeMini("attach_money", true); // Invoice
-        const invText = document.createElement("span");
-        invText.className = "schedule-grid__trip-bar__mini-badge-text icon-invoice-text";
-        bInv.appendChild(invText);
-        bInv._text = invText;
-        // Hide the $ icon — show invoice number text only
-        const bInvGlyph = bInv.querySelector(".schedule-grid__trip-bar__badge-glyph");
-        if (bInvGlyph) bInvGlyph.style.display = "none";
-
-        bInv.classList.add("is-hidden"); // start hidden
-
-        const bReviewed = makeMini("task_alt", true); // Trip Reviewed
-        bReviewed.classList.add("is-hidden"); // hidden until reviewed
+        const financialSummary = document.createElement("span");
+        financialSummary.className = "schedule-grid__trip-bar__financial";
 
         const barReqIcons = document.createElement("div");
         barReqIcons.className = "schedule-grid__trip-bar__req-icons";
 
+        // bI, bC, b$ move to row 1 top-right — row 5 keeps only financial + req icons
         const statusBadgesWrap = document.createElement("div");
         statusBadgesWrap.className = "schedule-grid__trip-bar__status-badges";
-        statusBadgesWrap.append(barReqIcons, b$, bI, bC, bInv, bReviewed);
-        statusRow.append(statusBadgesWrap);
+        statusBadgesWrap.append(barReqIcons);
+        statusRow.append(financialSummary, statusBadgesWrap);
 
         r5.appendChild(statusRow);
 
-        // Row 6: Notes / pre-drivers
-        const preDriversRow = document.createElement("div");
-        preDriversRow.className = "schedule-grid__trip-bar__pre-drivers";
-        r6.appendChild(preDriversRow);
+        // Complete row 1: [title already appended] → top-status group → paidBadge
+        const r1TopBadges = document.createElement("div");
+        r1TopBadges.className = "schedule-grid__trip-bar__top-status-badges";
+        r1TopBadges.setAttribute("aria-hidden", "true");
+        r1TopBadges.append(b$, bI, bC);
+        r1.appendChild(r1TopBadges);
 
-        // Row 7: Drivers — each slot = [smiley icon] [name]
+        const paidBadge = document.createElement("span");
+        paidBadge.className =
+          "schedule-grid__trip-bar__paid-badge material-symbols-outlined is-hidden";
+        paidBadge.setAttribute("aria-hidden", "true");
+        paidBadge.textContent = "check_circle";
+        r1.appendChild(paidBadge);
+
+        // Row 6: Drivers — each slot = [icon] [name]
         const driversRow = document.createElement("div");
         driversRow.className = "schedule-grid__trip-bar__drivers";
 
@@ -899,14 +969,38 @@ function _renderAgendaInner() {
         d4Slot.appendChild(d4Name);
 
         driversRow.append(d1Slot, d2Slot, d3Slot, d4Slot);
-        r7.appendChild(driversRow);
+        r6.appendChild(driversRow);
 
-        // Append all 7 fixed rows to bar (critical)
-        bar.append(r1, r2, r3, r4, r5, r6, r7);
+        // Row 7: Driver pay
+        const r7pay = makeRow("7");
+        const driverPayRow = document.createElement("div");
+        driverPayRow.className = "schedule-grid__trip-bar__driver-pay";
+
+        const pay1Slot = document.createElement("span");
+        pay1Slot.className = "schedule-grid__trip-bar__pay-slot";
+        const pay2Slot = document.createElement("span");
+        pay2Slot.className = "schedule-grid__trip-bar__pay-slot";
+        const pay3Slot = document.createElement("span");
+        pay3Slot.className = "schedule-grid__trip-bar__pay-slot";
+        const pay4Slot = document.createElement("span");
+        pay4Slot.className = "schedule-grid__trip-bar__pay-slot";
+
+        driverPayRow.append(pay1Slot, pay2Slot, pay3Slot, pay4Slot);
+        r7pay.appendChild(driverPayRow);
+
+        // Row 8: Trip miles / invoice / notes
+        const r8 = makeRow("8");
+        const preDriversRow = document.createElement("div");
+        preDriversRow.className = "schedule-grid__trip-bar__pre-drivers";
+        r8.appendChild(preDriversRow);
+
+        // Append all rows — rAction is last (bottom of bar when expanded)
+        bar.append(r1, r2, r3, r4, r5, r6, r7, r8, rAction);
 
         // Keep your existing references working
         bar._multiBadge = multiBadge;
         bar._paidBadge = paidBadge;
+        bar._r1TopBadges = r1TopBadges;
         bar._reqIcons = barReqIcons;
         bar._line1 = line1;
         bar._line2 = line2;
@@ -915,14 +1009,15 @@ function _renderAgendaInner() {
         bar._center = center;
         bar._right = right;
         bar._bI = bI;
+        bar._pdfBtn = pdfBtn;
         bar._bC = bC;
         bar._b$ = b$;
         bar._bD1 = bD1;
         bar._bD2 = bD2;
         bar._bD3 = bD3;
         bar._bD4 = bD4;
-        bar._bInv = bInv;
-        bar._bReviewed = bReviewed;
+        bar._financialSummary = financialSummary;
+
         bar._preDrivers = preDriversRow;
         bar._drivers = driversRow;
         bar._d1Slot = d1Slot;
@@ -933,6 +1028,10 @@ function _renderAgendaInner() {
         bar._d2Name = d2Name;
         bar._d3Name = d3Name;
         bar._d4Name = d4Name;
+        bar._pay1 = pay1Slot;
+        bar._pay2 = pay2Slot;
+        bar._pay3 = pay3Slot;
+        bar._pay4 = pay4Slot;
 
         bar.dataset.tripkey = String(t.tripKey || "");
         bar.setAttribute("role", "button");
@@ -982,29 +1081,32 @@ function _renderAgendaInner() {
       if (bar._bI) setBadge(bar._bI, t.itineraryStatus);
       if (bar._bC) {
         setBadge(bar._bC, t.contactStatus);
-        const contactStatus = String(t.contactStatus || "").trim().toLowerCase();
-        bar._bC.classList.toggle("is-hidden", contactStatus === "not required" || contactStatus === "received");
+        const contactStatus = String(t.contactStatus || "")
+          .trim()
+          .toLowerCase();
+        bar._bC.classList.toggle(
+          "is-hidden",
+          contactStatus === "not required" || contactStatus === "received",
+        );
       }
       // Customer payment bar badge logic done below instead of generic setBadge
       if (bar._bD1) setBadge(bar._bD1, a.driver1Status || "Pending");
       if (bar._bD2) setBadge(bar._bD2, a.driver2Status || "Pending");
       if (bar._bD3) setBadge(bar._bD3, a.driver3Status || "Pending");
       if (bar._bD4) setBadge(bar._bD4, a.driver4Status || "Pending");
-      if (bar._bInv) setBadge(bar._bInv, t.invoiceStatus);
-      if (bar._bReviewed) {
-        const reviewed = !!t.tripReviewed && t.tripReviewed !== false;
-        bar._bReviewed.classList.toggle("is-hidden", !reviewed);
-        bar._bReviewed.classList.toggle("is-ok", reviewed);
-      }
 
       // Custom payment status icon based on value for trip bars
       if (bar._b$) {
-        const ps = String(t.paymentStatus || "").trim().toLowerCase();
-        const inv = String(t.invoiceStatus || "").trim().toLowerCase();
+        const ps = String(t.paymentStatus || "")
+          .trim()
+          .toLowerCase();
+        const inv = String(t.invoiceStatus || "")
+          .trim()
+          .toLowerCase();
         bar._b$.classList.remove("is-pending", "is-yellow", "is-blue", "is-ok", "is-hidden");
-        
+
         const glyph = bar._b$.querySelector(".schedule-grid__trip-bar__badge-glyph");
-        
+
         if (ps === "po received" || ps === "not required" || inv === "paid in full") {
           // PO received, not required, or paid in full -> hide icons
           bar._b$.classList.add("is-hidden");
@@ -1023,35 +1125,55 @@ function _renderAgendaInner() {
         }
       }
 
-      // Swap itinerary status icon when a PDF URL exists
+      // Itinerary badge — pure status indicator, no click behaviour (PDF is via action row).
+      // Hidden once the itinerary is confirmed (Received) or a PDF is attached, since the
+      // PDF action button already surfaces that state.
       if (bar._bI) {
-        const itinStatus = String(t.itineraryStatus || "").trim().toLowerCase();
-        bar._bI.classList.toggle("is-hidden", itinStatus === "not required");
-
+        const itinStatus = String(t.itineraryStatus || "")
+          .trim()
+          .toLowerCase();
+        const itinDone =
+          itinStatus === "not required" ||
+          itinStatus === "received" ||
+          !!t.itineraryPdfUrl;
+        bar._bI.classList.toggle("is-hidden", itinDone);
+        bar._bI.classList.remove("has-pdf");
         const glyph = bar._bI.querySelector(".schedule-grid__trip-bar__badge-glyph");
-        if (glyph) {
-          if (t.itineraryPdfUrl) {
-            glyph.textContent = "attach_file";
-            bar._bI.classList.add("has-pdf");
-            bar._bI.title = "Open itinerary PDF";
-          } else {
-            glyph.textContent = "attach_file_off";
-            bar._bI.classList.remove("has-pdf");
-            bar._bI.title = "Itinerary status";
-          }
+        if (glyph) glyph.textContent = t.itineraryPdfUrl ? "attach_file" : "attach_file_off";
+      }
+
+      // PDF action button — shows upload_file when no PDF, picture_as_pdf when one exists.
+      // Hidden when itinerary is Not Required and no PDF is attached.
+      if (bar._pdfBtn) {
+        const hasPdf = !!t.itineraryPdfUrl;
+        const notRequired =
+          String(t.itineraryStatus || "")
+            .trim()
+            .toLowerCase() === "not required";
+        bar._pdfBtn.classList.toggle("is-hidden", notRequired && !hasPdf);
+        const glyph = bar._pdfBtn.querySelector(".material-symbols-outlined");
+        if (hasPdf) {
+          if (glyph) glyph.textContent = "picture_as_pdf";
+          bar._pdfBtn.title = "Open itinerary PDF";
+          bar._pdfBtn.setAttribute("aria-label", "Open itinerary PDF");
+          bar._pdfBtn.dataset.pdfState = "view";
+        } else {
+          if (glyph) glyph.textContent = "upload_file";
+          bar._pdfBtn.title = "Attach itinerary PDF";
+          bar._pdfBtn.setAttribute("aria-label", "Attach itinerary PDF");
+          bar._pdfBtn.dataset.pdfState = "upload";
         }
       }
 
-      // Swap driver 1 status icon based on value
+      // Driver 1 status icon — static indicator only, contact opened via action row button
       if (bar._bD1) {
-        bar._bD1.classList.remove("is-hidden");
-        bar._bD1.classList.add("has-action");
+        bar._bD1.classList.remove("is-hidden", "has-action");
         const glyph = bar._bD1.querySelector(".schedule-grid__trip-bar__badge-glyph");
         if (glyph) {
           glyph.textContent = "person";
-          glyph.dataset.action = "showDriverContact";
-          glyph.dataset.tripkey = t.tripKey;
-          glyph.style.cursor = "pointer";
+          delete glyph.dataset.action;
+          delete glyph.dataset.tripkey;
+          glyph.style.cursor = "";
         }
       }
 
@@ -1060,14 +1182,8 @@ function _renderAgendaInner() {
         const needsD2 = t.reqCoDriver || (a.driver2 && a.driver2 !== "None");
         bar._d2Slot.classList.toggle("is-hidden", !needsD2);
         if (needsD2) {
-          bar._bD2.classList.add("has-action");
           const glyph = bar._bD2.querySelector(".schedule-grid__trip-bar__badge-glyph");
-          if (glyph) {
-            glyph.textContent = "person";
-            glyph.dataset.action = "showDriverContact";
-            glyph.dataset.tripkey = t.tripKey;
-            glyph.style.cursor = "pointer";
-          }
+          if (glyph) glyph.textContent = "person";
         }
       }
 
@@ -1076,14 +1192,8 @@ function _renderAgendaInner() {
         const needsD3 = t.reqRelief || (a.driver3 && a.driver3 !== "None");
         bar._d3Slot.classList.toggle("is-hidden", !needsD3);
         if (needsD3) {
-          bar._bD3.classList.add("has-action");
           const glyph = bar._bD3.querySelector(".schedule-grid__trip-bar__badge-glyph");
-          if (glyph) {
-            glyph.textContent = "emergency_home";
-            glyph.dataset.action = "showDriverContact";
-            glyph.dataset.tripkey = t.tripKey;
-            glyph.style.cursor = "pointer";
-          }
+          if (glyph) glyph.textContent = "emergency_home";
         }
       }
 
@@ -1092,43 +1202,28 @@ function _renderAgendaInner() {
         const needsD4 = t.reqRelief2 || (a.driver4 && a.driver4 !== "None");
         bar._d4Slot.classList.toggle("is-hidden", !needsD4);
         if (needsD4) {
-          bar._bD4.classList.add("has-action");
           const glyph = bar._bD4.querySelector(".schedule-grid__trip-bar__badge-glyph");
-          if (glyph) {
-            glyph.textContent = "emergency_home";
-            glyph.dataset.action = "showDriverContact";
-            glyph.dataset.tripkey = t.tripKey;
-            glyph.style.cursor = "pointer";
-          }
+          if (glyph) glyph.textContent = "emergency_home";
         }
       }
 
-      if (bar._bInv) {
-        const inv = String(t.invoiceStatus || "")
-          .trim()
-          .toLowerCase();
-        const showInv = inv === "invoiced" || inv === "deposit received" || inv === "paid in full";
-
-        bar._bInv.classList.toggle("is-hidden", !showInv);
-        // set number inside badge (right after icon)
-        const num = String(t.invoiceNumber || "").trim();
-        if (bar._bInv._text) bar._bInv._text.textContent = num;
-
-        // always show the white text box when invoice icon is visible (even if no number)
-        bar._bInv.classList.toggle("has-text", showInv);
+      if (bar._financialSummary) {
+        const miPart = t.estimatedMileage ? `${t.estimatedMileage} mi` : "— mi";
+        const pricePart = t.quotedPrice ? `$${t.quotedPrice}` : "$—";
+        bar._financialSummary.textContent = `${miPart} · ${pricePart}`;
       }
 
       // Requirement icons (left of status badges) from trip req flags
       const reqSpec = [
-        { key: "req56Pass",  icon: "tatami_seat" },
+        { key: "req56Pass", icon: "tatami_seat" },
         { key: "reqSleeper", icon: "airline_seat_flat" },
-        { key: "reqLift",    icon: "accessible" },
-        { key: "reqHotel",   icon: "apartment" },
+        { key: "reqLift", icon: "accessible" },
+        { key: "reqHotel", icon: "apartment" },
         { key: "reqFuelCard", icon: "credit_card" },
-        { key: "reqWifi",    icon: "wifi" },
+        { key: "reqWifi", icon: "wifi" },
       ];
       if (bar._reqIcons) {
-        const reqSig = reqSpec.map(({ key }) => t[key] ? "1" : "0").join("");
+        const reqSig = reqSpec.map(({ key }) => (t[key] ? "1" : "0")).join("");
         if (bar._reqSig !== reqSig) {
           bar._reqSig = reqSig;
           bar._reqIcons.innerHTML = "";
@@ -1153,23 +1248,34 @@ function _renderAgendaInner() {
       bar.classList.toggle("unconfirmed", isUnconfirmed);
 
       if (bar._paidBadge) {
-        const payment = String(t.paymentStatus || "").trim().toLowerCase();
-        const invoice = String(t.invoiceStatus || "").trim().toLowerCase();
-        const isAllClear = payment === "po received" || payment === "not required" || invoice === "paid in full";
+        const payment = String(t.paymentStatus || "")
+          .trim()
+          .toLowerCase();
+        const invoice = String(t.invoiceStatus || "")
+          .trim()
+          .toLowerCase();
+        const isAllClear =
+          payment === "po received" || payment === "not required" || invoice === "paid in full";
 
-        if (isAllClear) {
+        if (isAllClear && t.datePaid) {
+          // Show paid date instead of checkmark icon
+          bar._paidBadge.classList.remove(
+            "material-symbols-outlined",
+            "is-hidden",
+            "is-alert",
+            "is-solid",
+          );
+          bar._paidBadge.classList.add("is-date");
+          bar._paidBadge.textContent = `pd ${formatDateShort(t.datePaid)}`;
+        } else if (isAllClear) {
+          bar._paidBadge.classList.add("material-symbols-outlined");
+          bar._paidBadge.classList.remove("is-hidden", "is-alert", "is-solid", "is-date");
           bar._paidBadge.textContent = "check_circle";
-          bar._paidBadge.classList.remove("is-hidden", "is-alert");
-        } else if (!isUnconfirmed) {
-          bar._paidBadge.textContent = "error";
-          bar._paidBadge.classList.remove("is-hidden");
-          bar._paidBadge.classList.add("is-alert");
         } else {
           bar._paidBadge.classList.add("is-hidden");
-          bar._paidBadge.classList.remove("is-alert");
+          bar._paidBadge.classList.remove("is-alert", "is-date");
         }
-        bar.classList.toggle("has-paid-badge", isAllClear || !isUnconfirmed);
-        bar._paidBadge.classList.toggle("is-solid", Boolean(t.datePaid));
+        bar.classList.toggle("has-paid-badge", isAllClear);
       }
 
       const ds = String(effectiveDriverStatus || "")
@@ -1260,31 +1366,31 @@ function _renderAgendaInner() {
         const tArr = formatTime12(arrTime);
         const tSpot = formatTime12(spotTime);
 
-        bar._left.textContent = tDep || "--";
-        bar._center.textContent = tSpot || "--";
-        bar._right.textContent = tArr || "--";
+        bar._left.textContent = tDep || "—";
+        bar._center.textContent = tSpot || "—";
+        bar._right.textContent = tArr || "—";
 
-        bar._left.dataset.severity   = getTimeSeverity(depTime,  "depart");
+        bar._left.dataset.severity = getTimeSeverity(depTime, "depart");
         bar._center.dataset.severity = "normal";
-        bar._right.dataset.severity  = getTimeSeverity(arrTime,  "arrive");
+        bar._right.dataset.severity = getTimeSeverity(arrTime, "arrive");
       } else {
         // Multi-Day:
         // Left side shows Dep Time (only if this bar is the trip start)
         // Right side shows Arr Time (only if this bar is the trip end)
         if (isStartDay) {
-          bar._left.textContent = formatTime12(depTime) || "--";
-          bar._center.textContent = formatTime12(spotTime) || "--";
-          bar._left.dataset.severity   = getTimeSeverity(depTime,  "depart");
+          bar._left.textContent = formatTime12(depTime) || "—";
+          bar._center.textContent = formatTime12(spotTime) || "—";
+          bar._left.dataset.severity = getTimeSeverity(depTime, "depart");
           bar._center.dataset.severity = "normal";
         } else {
           bar._left.textContent = "";
           bar._center.textContent = "";
-          bar._left.dataset.severity   = "normal";
+          bar._left.dataset.severity = "normal";
           bar._center.dataset.severity = "normal";
         }
 
         if (isEndDay) {
-          bar._right.textContent = formatTime12(arrTime) || "--";
+          bar._right.textContent = formatTime12(arrTime) || "—";
           bar._right.dataset.severity = getTimeSeverity(arrTime, "arrive");
         } else {
           bar._right.textContent = "";
@@ -1292,22 +1398,35 @@ function _renderAgendaInner() {
         }
       }
 
-      bar._preDrivers.textContent = t.notes ? clipText(t.notes, 500) : "";
+      if (bar._preDrivers) {
+        const miPart = t.tripMiles ? `${t.tripMiles} mi` : "— mi";
+        const invPart = t.invoiceNumber ? `INV ${t.invoiceNumber}` : "INV —";
+        const parts = [miPart, invPart];
+        if (t.notes) parts.push(clipText(t.notes, 80));
+        bar._preDrivers.textContent = parts.join(" · ");
+      }
 
       bar._d1Name.textContent = d1;
-      bar._d2Name.textContent = (d2 && d2 !== "—") ? d2 : "";
-      bar._d3Name.textContent = (d3 && d3 !== "—") ? d3 : "";
-      bar._d4Name.textContent = (d4 && d4 !== "—") ? d4 : "";
+      bar._d2Name.textContent = d2 && d2 !== "—" ? d2 : "";
+      bar._d3Name.textContent = d3 && d3 !== "—" ? d3 : "";
+      bar._d4Name.textContent = d4 && d4 !== "—" ? d4 : "";
+
+      // Row 8: driver pay — show value if set, "$—" placeholder if driver assigned but no pay, empty if no driver
+      if (bar._pay1) bar._pay1.textContent = d1 && d1 !== "—" ? (a.driver1Pay || "$—") : "";
+      if (bar._pay2) bar._pay2.textContent = d2 && d2 !== "—" ? (a.driver2Pay || "$—") : "";
+      if (bar._pay3) bar._pay3.textContent = d3 && d3 !== "—" ? (a.driver3Pay || "$—") : "";
+      if (bar._pay4) bar._pay4.textContent = d4 && d4 !== "—" ? (a.driver4Pay || "$—") : "";
 
       positionBarWithinOverlay(bar, bars, col, startIdx, endIdx);
 
       // Handoff split: proportional allocation when another trip starts/ends on the same bus
       // on this day. Takes priority over the fixed half-day logic for the shared day.
       const busHandoff = handoffByBus[busId];
-      const endHandoff   = busHandoff?.[endIdx];
+      const endHandoff = busHandoff?.[endIdx];
       const startHandoff = busHandoff?.[startIdx];
-      const activeHandoffEnd   = endHandoff   && isEndDay   && endHandoff.arrTripKey   === t.tripKey;
-      const activeHandoffStart = startHandoff && isStartDay && startHandoff.depTripKey === t.tripKey;
+      const activeHandoffEnd = endHandoff && isEndDay && endHandoff.arrTripKey === t.tripKey;
+      const activeHandoffStart =
+        startHandoff && isStartDay && startHandoff.depTripKey === t.tripKey;
 
       if (activeHandoffEnd) {
         const clip = (1 - endHandoff.arrFrac) * (col.widths[endIdx] ?? 0);
@@ -1317,11 +1436,7 @@ function _renderAgendaInner() {
         delete bar.dataset.handoffArr;
         // Half-day truncation: shorten bar to 1/3 of last column if trip returns 4AM–11:59AM
         const isHalfDayReturn =
-          !isActualSingleDay &&
-          isEndDay &&
-          !!arrTime &&
-          arrTime >= "04:00" &&
-          arrTime < "12:00";
+          !isActualSingleDay && isEndDay && !!arrTime && arrTime >= "04:00" && arrTime < "12:00";
         bar.classList.toggle("half-day-return", isHalfDayReturn);
         if (isHalfDayReturn) {
           const currentWidth = parseFloat(bar.style.width) || 0;
@@ -1332,17 +1447,13 @@ function _renderAgendaInner() {
 
       if (activeHandoffStart) {
         const shift = startHandoff.depFrac * (col.widths[startIdx] ?? 0);
-        bar.style.left  = `${(parseFloat(bar.style.left) || 0) + shift}px`;
+        bar.style.left = `${(parseFloat(bar.style.left) || 0) + shift}px`;
         bar.style.width = `${Math.max(0, (parseFloat(bar.style.width) || 0) - shift)}px`;
         bar.dataset.handoffDep = String(startHandoff.depFrac);
       } else {
         delete bar.dataset.handoffDep;
         // Half-day departure: shift bar right by 2/3 of first column if trip departs after 10PM
-        const isHalfDayDepart =
-          !isActualSingleDay &&
-          isStartDay &&
-          !!depTime &&
-          depTime >= "22:00";
+        const isHalfDayDepart = !isActualSingleDay && isStartDay && !!depTime && depTime >= "22:00";
         bar.classList.toggle("half-day-depart", isHalfDayDepart);
         if (isHalfDayDepart) {
           const firstColW = col.widths[startIdx] ?? 0;
@@ -1374,7 +1485,7 @@ function _renderAgendaInner() {
 
     // Waiting list row grows to fit stacked trips; others use single row height
     const isWaitingList = busId === "WAITING_LIST";
-    
+
     // FIX: Using 'step' (110px) instead of 'rowH' (100px) for the waiting list height
     // to ensure there is enough vertical room for the stacked bars + their gaps.
     const effectiveRowH = isWaitingList ? Math.max(1, laneCount) * step : rowH;
@@ -1395,7 +1506,7 @@ function _renderAgendaInner() {
       const lane = Number(bar.dataset.lane);
       if (!Number.isFinite(lane)) continue;
 
-      let topPx = isWaitingList ? (lane * step) : (top0 + lane * step);
+      let topPx = isWaitingList ? lane * step : top0 + lane * step;
       // Clamp to ensure bar stays within its row bounds
       topPx = Math.max(0, Math.min(topPx, maxTop));
       bar.style.top = `${Math.round(topPx)}px`; // <— snap
@@ -1495,7 +1606,9 @@ function _renderAgendaInner() {
           const key = `${hBusId}|${dayStr}`;
           if (!cc[key] || cc[key] <= 1) continue;
           const items = ci[key] || [];
-          const keep = items.filter(it => it.tripKey !== ho.arrTripKey && it.tripKey !== ho.depTripKey);
+          const keep = items.filter(
+            (it) => it.tripKey !== ho.arrTripKey && it.tripKey !== ho.depTripKey,
+          );
           const removed = items.length - keep.length;
           if (removed > 0) {
             cc[key] = Math.max(0, cc[key] - removed);
@@ -1554,4 +1667,3 @@ function _renderAgendaInner() {
     else setTimeout(run, 0);
   }
 }
-

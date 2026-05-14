@@ -35,7 +35,7 @@
     inset 0 2px 4px oklch(0% 0 0 / 50%),
     inset 0 1px 2px oklch(0% 0 0 / 30%);*/
 
---rux-btn-icon-size: var(--rux-size-6);
+  --rux-btn-icon-size: var(--rux-size-6);
   --rux-btn-icon-fill: 1;
   --rux-btn-icon-wght: 400;
   --rux-btn-icon-grad: 0;

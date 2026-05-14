@@ -18,6 +18,9 @@ const dom = {
   saveBtn: $("saveBtn"),
   deleteBtn: $("deleteBtn"),
   newBtn: $("newBtn"),
+  shortcutEnvelopeBtn:  $("shortcutEnvelopeBtn"),
+  shortcutItineraryBtn: $("shortcutItineraryBtn"),
+  shortcutPdfBtn:       $("shortcutPdfBtn"),
   requirementsSection:
     document.querySelector('[data-js="trip-requirements-section"]') || $("requirementsSection"),
   itineraryModal: $("itineraryModal"),
@@ -58,6 +61,7 @@ const dom = {
   todayBtn: $("todayBtn"),
   prevWeekBtn: $("prevWeekBtn"),
   nextWeekBtn: $("nextWeekBtn"),
+  compactBarsBtn: $("compactBarsBtn"),
 
   conflictPanel:
     document.querySelector('[data-js="schedule-conflict-panel"]') || $("conflictPanel"),

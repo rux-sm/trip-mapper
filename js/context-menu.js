@@ -13,21 +13,24 @@ function selectDriverBars(driverName) {
   // Clear existing trip bar selection
   if (selectedTripBar) {
     const prevKey = selectedTripBar.dataset.tripkey;
-    document.querySelectorAll(`.schedule-grid__trip-bar[data-tripkey="${CSS.escape(prevKey)}"]`)
-      .forEach(el => el.classList.remove("selected"));
+    document
+      .querySelectorAll(`.schedule-grid__trip-bar[data-tripkey="${CSS.escape(prevKey)}"]`)
+      .forEach((el) => el.classList.remove("selected"));
     document.body.classList.remove("trip-bar-selected");
     selectedTripBar = null;
   }
 
   // Clear previous driver name highlight
-  document.querySelectorAll(".driver-week__name-cell.is-selected")
-    .forEach(el => el.classList.remove("is-selected"));
+  document
+    .querySelectorAll(".driver-week__name-cell.is-selected")
+    .forEach((el) => el.classList.remove("is-selected"));
 
   // Toggle off if same driver clicked again
   if (selectedDriverName === driverName) {
     selectedDriverName = null;
-    document.querySelectorAll(".schedule-grid__trip-bar.selected")
-      .forEach(el => el.classList.remove("selected"));
+    document
+      .querySelectorAll(".schedule-grid__trip-bar.selected")
+      .forEach((el) => el.classList.remove("selected"));
     document.body.classList.remove("driver-filter-active");
     return;
   }
@@ -36,16 +39,18 @@ function selectDriverBars(driverName) {
   document.body.classList.add("driver-filter-active");
 
   // Highlight the name cell
-  document.querySelectorAll(`.driver-week__name-cell[data-driver-name="${CSS.escape(driverName)}"]`)
-    .forEach(el => el.classList.add("is-selected"));
+  document
+    .querySelectorAll(`.driver-week__name-cell[data-driver-name="${CSS.escape(driverName)}"]`)
+    .forEach((el) => el.classList.add("is-selected"));
 
   // Clear any previously selected bars then select matching ones
-  document.querySelectorAll(".schedule-grid__trip-bar.selected")
-    .forEach(el => el.classList.remove("selected"));
+  document
+    .querySelectorAll(".schedule-grid__trip-bar.selected")
+    .forEach((el) => el.classList.remove("selected"));
 
-  document.querySelectorAll(".schedule-grid__trip-bar").forEach(bar => {
+  document.querySelectorAll(".schedule-grid__trip-bar").forEach((bar) => {
     const names = Array.from(bar.querySelectorAll(".schedule-grid__trip-bar__driver"))
-      .map(el => el.textContent.trim())
+      .map((el) => el.textContent.trim())
       .filter(Boolean);
     if (names.includes(driverName)) bar.classList.add("selected");
   });
@@ -56,22 +61,30 @@ function selectTripBar(barEl) {
   if (selectedDriverName) {
     selectedDriverName = null;
     document.body.classList.remove("driver-filter-active");
-    document.querySelectorAll(".driver-week__name-cell.is-selected")
-      .forEach(el => el.classList.remove("is-selected"));
+    document
+      .querySelectorAll(".driver-week__name-cell.is-selected")
+      .forEach((el) => el.classList.remove("is-selected"));
   }
 
-  // Toggle off if same trip clicked again
-  if (selectedTripBar && barEl?.dataset.tripkey === selectedTripBar.dataset.tripkey) {
+  // Toggle off only when clicking the exact same bar element (not a sibling
+  // bar of a multi-bus trip — clicking 2/2 when 1/2 is selected should
+  // select and expand 2/2 rather than deselecting the whole trip).
+  if (selectedTripBar && barEl === selectedTripBar) {
     const key = selectedTripBar.dataset.tripkey;
-    document.querySelectorAll(`.schedule-grid__trip-bar[data-tripkey="${CSS.escape(key)}"]`)
-      .forEach(el => el.classList.remove("selected"));
+    document
+      .querySelectorAll(`.schedule-grid__trip-bar[data-tripkey="${CSS.escape(key)}"]`)
+      .forEach((el) => el.classList.remove("selected"));
     document.body.classList.remove("trip-bar-selected");
-    document.querySelectorAll(
-      ".driver-week__cell--trip-highlight, .driver-week__header-cell--trip-highlight"
-    ).forEach(el => el.classList.remove(
-      "driver-week__cell--trip-highlight",
-      "driver-week__header-cell--trip-highlight"
-    ));
+    document
+      .querySelectorAll(
+        ".driver-week__cell--trip-highlight, .driver-week__header-cell--trip-highlight",
+      )
+      .forEach((el) =>
+        el.classList.remove(
+          "driver-week__cell--trip-highlight",
+          "driver-week__header-cell--trip-highlight",
+        ),
+      );
     const overlay = document.getElementById("driver-col-hl");
     if (overlay) overlay.hidden = true;
     selectedTripBar = null;
@@ -81,16 +94,21 @@ function selectTripBar(barEl) {
 
   if (selectedTripBar) {
     const prevKey = selectedTripBar.dataset.tripkey;
-    document.querySelectorAll(`.schedule-grid__trip-bar[data-tripkey="${CSS.escape(prevKey)}"]`)
-      .forEach(el => el.classList.remove("selected"));
+    document
+      .querySelectorAll(`.schedule-grid__trip-bar[data-tripkey="${CSS.escape(prevKey)}"]`)
+      .forEach((el) => el.classList.remove("selected"));
   }
   // Clear previous driver column highlights
-  document.querySelectorAll(
-    ".driver-week__cell--trip-highlight, .driver-week__header-cell--trip-highlight"
-  ).forEach(el => el.classList.remove(
-    "driver-week__cell--trip-highlight",
-    "driver-week__header-cell--trip-highlight"
-  ));
+  document
+    .querySelectorAll(
+      ".driver-week__cell--trip-highlight, .driver-week__header-cell--trip-highlight",
+    )
+    .forEach((el) =>
+      el.classList.remove(
+        "driver-week__cell--trip-highlight",
+        "driver-week__header-cell--trip-highlight",
+      ),
+    );
   const existingOverlay = document.getElementById("driver-col-hl");
   if (existingOverlay) existingOverlay.hidden = true;
 
@@ -101,8 +119,9 @@ function selectTripBar(barEl) {
   }
 
   const tripKey = selectedTripBar.dataset.tripkey;
-  document.querySelectorAll(`.schedule-grid__trip-bar[data-tripkey="${CSS.escape(tripKey)}"]`)
-    .forEach(el => el.classList.add("selected"));
+  document
+    .querySelectorAll(`.schedule-grid__trip-bar[data-tripkey="${CSS.escape(tripKey)}"]`)
+    .forEach((el) => el.classList.add("selected"));
   document.body.classList.add("trip-bar-selected");
   setLogFilter(tripKey);
 
@@ -117,12 +136,12 @@ function selectTripBar(barEl) {
   [
     ...(dom.driverWeekHeadRow?.querySelectorAll("[data-date]") ?? []),
     ...(dom.driverWeekBody?.querySelectorAll("[data-date]") ?? []),
-  ].forEach(el => {
+  ].forEach((el) => {
     if (!targetDates.has(el.dataset.date)) return;
     el.classList.add(
       el.tagName === "TH"
         ? "driver-week__header-cell--trip-highlight"
-        : "driver-week__cell--trip-highlight"
+        : "driver-week__cell--trip-highlight",
     );
   });
 
@@ -146,9 +165,9 @@ function selectTripBar(barEl) {
   const topRect = leftHeaderCell.getBoundingClientRect();
   const bottomRect = rightLastCell.getBoundingClientRect();
 
-  overlay.style.left   = `${topRect.left   - wrapRect.left - wrap.clientLeft + wrap.scrollLeft}px`;
-  overlay.style.top    = `${topRect.top    - wrapRect.top  - wrap.clientTop  + wrap.scrollTop}px`;
-  overlay.style.width  = `${bottomRect.right  - topRect.left}px`;
+  overlay.style.left = `${topRect.left - wrapRect.left - wrap.clientLeft + wrap.scrollLeft}px`;
+  overlay.style.top = `${topRect.top - wrapRect.top - wrap.clientTop + wrap.scrollTop}px`;
+  overlay.style.width = `${bottomRect.right - topRect.left}px`;
   overlay.style.height = `${bottomRect.bottom - topRect.top}px`;
 
   overlay.hidden = false;
@@ -266,13 +285,6 @@ function handleScheduleInteraction(e, isContext) {
     const tripKey = tripBar.dataset.tripkey;
     if (!tripKey) return;
 
-    // Handle "Driver Status" icon click
-    const driverContactIcon = e.target.closest('[data-action="showDriverContact"]');
-    if (driverContactIcon && !isContext) {
-      openDriverContactModal(tripKey);
-      return;
-    }
-
     selectTripBar(tripBar);
     showTripContextMenu(e.pageX, e.pageY, tripKey);
     return;
@@ -313,6 +325,7 @@ function handleScheduleInteraction(e, isContext) {
 }
 
 // ======================================================
+// ======================================================
 // 34B) TRIP BAR QUICK-EDIT POPOVER
 // ======================================================
 
@@ -321,9 +334,9 @@ let quickEditDirty = false;
 let pendingQuickEdits = { tripEdits: {}, assignEdits: [] };
 
 function mergeAssignEdits(base, incoming) {
-  const result = base.map(e => ({ ...e }));
-  incoming.forEach(edit => {
-    const existing = result.find(e => e.busNumber === edit.busNumber);
+  const result = base.map((e) => ({ ...e }));
+  incoming.forEach((edit) => {
+    const existing = result.find((e) => e.busNumber === edit.busNumber);
     if (existing) Object.assign(existing, edit);
     else result.push({ ...edit });
   });
@@ -331,10 +344,10 @@ function mergeAssignEdits(base, incoming) {
 }
 
 const QUICK_EDIT_TABS = [
-  { id: "details",   label: "Trip"      },
-  { id: "billing",   label: "Billing"   },
-  { id: "bus",       label: "Dispatch"  },
-  { id: "envelope",  label: "Envelope"  },
+  { id: "details", label: "Trip" },
+  { id: "billing", label: "Billing" },
+  { id: "bus", label: "Dispatch" },
+  { id: "envelope", label: "Envelope" },
   { id: "checklist", label: "Checklist" },
 ];
 
@@ -353,15 +366,37 @@ function renderQuickEditTab(tabId, trip, assigns) {
 
   if (tabId === "billing") {
     const fields = [
-      { label: "Contract",       key: "paymentStatus",  type: "select", options: [["",""],["Pending Quote","Unconfirmed"],["Contract Signed","Contract Signed"],["PO Received","PO Received"],["Not Required","Not Required"]] },
-      { label: "Invoice",        key: "invoiceStatus",  type: "select", options: [["",""],["Pending Invoice","Pending"],["Invoiced","Invoiced"],["Deposit Received","Deposit Paid"],["Paid in Full","Paid in Full"]] },
-      { label: "Invoice #",      key: "invoiceNumber",  type: "text"   },
-      { label: "PO / Payment",   key: "paymentType",    type: "text"   },
-      { label: "Est. Mileage",   key: "estimatedMileage", type: "text"   },
-      { label: "Quoted Price",   key: "quotedPrice",      type: "text"   },
-      { label: "Trip Miles",     key: "tripMiles",        type: "text"   },
-      { label: "Date Paid",      key: "datePaid",         type: "date"   },
-      { label: "Notes",          key: "notes",            type: "text"   },
+      {
+        label: "Contract",
+        key: "paymentStatus",
+        type: "select",
+        options: [
+          ["", ""],
+          ["Pending Quote", "Unconfirmed"],
+          ["Contract Signed", "Contract Signed"],
+          ["PO Received", "PO Received"],
+          ["Not Required", "Not Required"],
+        ],
+      },
+      {
+        label: "Invoice",
+        key: "invoiceStatus",
+        type: "select",
+        options: [
+          ["", ""],
+          ["Pending Invoice", "Pending"],
+          ["Invoiced", "Invoiced"],
+          ["Deposit Received", "Deposit Paid"],
+          ["Paid in Full", "Paid in Full"],
+        ],
+      },
+      { label: "Invoice #", key: "invoiceNumber", type: "text" },
+      { label: "PO / Payment", key: "paymentType", type: "text" },
+      { label: "Est. Mileage", key: "estimatedMileage", type: "text" },
+      { label: "Quoted Price", key: "quotedPrice", type: "text" },
+      { label: "Trip Miles", key: "tripMiles", type: "text" },
+      { label: "Date Paid", key: "datePaid", type: "date" },
+      { label: "Notes", key: "notes", type: "text" },
     ];
     fields.forEach(({ label, key, type, options }) => {
       const wrap = document.createElement("div");
@@ -376,7 +411,8 @@ function renderQuickEditTab(tabId, trip, assigns) {
         input.className = "trip-quick-edit__select";
         options.forEach(([val, txt]) => {
           const o = document.createElement("option");
-          o.value = val; o.textContent = txt;
+          o.value = val;
+          o.textContent = txt;
           input.appendChild(o);
         });
         input.value = trip[key] || "";
@@ -390,7 +426,6 @@ function renderQuickEditTab(tabId, trip, assigns) {
       wrap.appendChild(input);
       body.appendChild(wrap);
     });
-
   } else if (tabId === "bus") {
     if (!assigns.length) {
       const empty = document.createElement("span");
@@ -401,9 +436,9 @@ function renderQuickEditTab(tabId, trip, assigns) {
     }
 
     const STATUS_STATES = [
-      { value: "Pending",   icon: "schedule",    cls: "status-pending"  },
-      { value: "Assigned",  icon: "pending",      cls: "status-assigned" },
-      { value: "Confirmed", icon: "check_circle", cls: "status-ok"       },
+      { value: "Pending", icon: "schedule", cls: "status-pending" },
+      { value: "Assigned", icon: "pending", cls: "status-assigned" },
+      { value: "Confirmed", icon: "check_circle", cls: "status-ok" },
     ];
 
     const makeStatusCycle = (currentValue, busNumber, statusKey) => {
@@ -413,13 +448,13 @@ function renderQuickEditTab(tabId, trip, assigns) {
       btn.dataset.statusKey = statusKey;
       btn.dataset.value = currentValue || "Pending";
       const sync = () => {
-        const s = STATUS_STATES.find(st => st.value === btn.dataset.value) || STATUS_STATES[0];
+        const s = STATUS_STATES.find((st) => st.value === btn.dataset.value) || STATUS_STATES[0];
         btn.innerHTML = `<span class="material-symbols-outlined">${s.icon}</span>`;
         btn.className = `driver-status-cycle ${s.cls}`;
       };
       sync();
       btn.addEventListener("click", () => {
-        const cur = STATUS_STATES.findIndex(st => st.value === btn.dataset.value);
+        const cur = STATUS_STATES.findIndex((st) => st.value === btn.dataset.value);
         btn.dataset.value = STATUS_STATES[(cur + 1) % STATUS_STATES.length].value;
         sync();
       });
@@ -435,11 +470,35 @@ function renderQuickEditTab(tabId, trip, assigns) {
 
       // One row per assigned driver
       const slots = [
-        { name: a.driver1, pay: a.driver1Pay, status: a.driver1Status, payKey: "driver1Pay", statusKey: "driver1Status" },
-        { name: a.driver2, pay: a.driver2Pay, status: a.driver2Status, payKey: "driver2Pay", statusKey: "driver2Status" },
-        { name: a.driver3, pay: a.driver3Pay, status: a.driver3Status, payKey: "driver3Pay", statusKey: "driver3Status" },
-        { name: a.driver4, pay: a.driver4Pay, status: a.driver4Status, payKey: "driver4Pay", statusKey: "driver4Status" },
-      ].filter(s => s.name && s.name !== "None" && s.name !== "");
+        {
+          name: a.driver1,
+          pay: a.driver1Pay,
+          status: a.driver1Status,
+          payKey: "driver1Pay",
+          statusKey: "driver1Status",
+        },
+        {
+          name: a.driver2,
+          pay: a.driver2Pay,
+          status: a.driver2Status,
+          payKey: "driver2Pay",
+          statusKey: "driver2Status",
+        },
+        {
+          name: a.driver3,
+          pay: a.driver3Pay,
+          status: a.driver3Status,
+          payKey: "driver3Pay",
+          statusKey: "driver3Status",
+        },
+        {
+          name: a.driver4,
+          pay: a.driver4Pay,
+          status: a.driver4Status,
+          payKey: "driver4Pay",
+          statusKey: "driver4Status",
+        },
+      ].filter((s) => s.name && s.name !== "None" && s.name !== "");
 
       slots.forEach(({ name, pay, status, payKey, statusKey }) => {
         const row = document.createElement("div");
@@ -465,13 +524,12 @@ function renderQuickEditTab(tabId, trip, assigns) {
         body.appendChild(row);
       });
     });
-
   } else if (tabId === "envelope") {
     const fields = [
-      { label: "Pick Up Address",    key: "envelopePickup"       },
-      { label: "Trip Contact",       key: "envelopeTripContact"  },
-      { label: "Contact Phone",      key: "envelopeTripPhone"    },
-      { label: "Driver Instructions",key: "envelopeTripNotes"    },
+      { label: "Pick Up Address", key: "envelopePickup" },
+      { label: "Trip Contact", key: "envelopeTripContact" },
+      { label: "Contact Phone", key: "envelopeTripPhone" },
+      { label: "Driver Instructions", key: "envelopeTripNotes" },
     ];
     fields.forEach(({ label, key }) => {
       const wrap = document.createElement("div");
@@ -488,19 +546,17 @@ function renderQuickEditTab(tabId, trip, assigns) {
       wrap.appendChild(input);
       body.appendChild(wrap);
     });
-
   } else if (tabId === "checklist") {
     const items = [
-      { key: "tripReminderSent", label: "Reminder Sent",  icon: "notifications" },
-      { key: "driverInfoSent",   label: "Driver Info Sent", icon: "send"         },
-      { key: "tripReviewed",     label: "Reviewed",         icon: "task_alt"     },
+      { key: "tripReminderSent", label: "Reminder Sent", icon: "notifications" },
+      { key: "driverInfoSent", label: "Driver Info Sent", icon: "send" },
     ];
     const row = document.createElement("div");
     row.className = "trip-quick-edit__toggle-row";
     items.forEach(({ key, label, icon }) => {
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = `rux-btn rux-btn--toggle${key === "tripReviewed" ? " rux-btn--toggle-reviewed" : ""}`;
+      btn.className = "rux-btn rux-btn--toggle";
       const isOn = !!trip[key] && trip[key] !== false && trip[key] !== "false";
       btn.setAttribute("aria-pressed", String(isOn));
       btn.dataset.key = key;
@@ -512,21 +568,30 @@ function renderQuickEditTab(tabId, trip, assigns) {
       row.appendChild(btn);
     });
     body.appendChild(row);
-
   } else if (tabId === "details") {
     const fields = [
-      { label: "Destination",  key: "destination",   readonly: true },
-      { label: "Customer",     key: "customer",      readonly: true },
-      { label: "Departure",    key: "departureDate", readonly: true },
-      { label: "Arrival",      key: "arrivalDate",   readonly: true },
-      { label: "Name",         key: "contactName",   type: "text"   },
-      { label: "Phone",        key: "phone",         type: "tel"    },
-      { label: "Depart Time",  key: "departureTime", type: "time"   },
-      { label: "Spot Time",    key: "spotTime",      type: "time"   },
-      { label: "Arrival Time", key: "arrivalTime",   type: "time"   },
-      { label: "Trip Color",   key: "tripColor",     type: "select",
-        options: [["","None"],["blue","Blue"],["green","Green"],["one-way","One-Way"],["out-of-service","Out of Service"]] },
-      { label: "Buses",        key: "busesNeeded",   readonly: true },
+      { label: "Destination", key: "destination", readonly: true },
+      { label: "Customer", key: "customer", readonly: true },
+      { label: "Departure", key: "departureDate", readonly: true },
+      { label: "Arrival", key: "arrivalDate", readonly: true },
+      { label: "Name", key: "contactName", type: "text" },
+      { label: "Phone", key: "phone", type: "tel" },
+      { label: "Depart Time", key: "departureTime", type: "time" },
+      { label: "Spot Time", key: "spotTime", type: "time" },
+      { label: "Arrival Time", key: "arrivalTime", type: "time" },
+      {
+        label: "Trip Color",
+        key: "tripColor",
+        type: "select",
+        options: [
+          ["", "None"],
+          ["blue", "Blue"],
+          ["green", "Green"],
+          ["one-way", "One-Way"],
+          ["out-of-service", "Out of Service"],
+        ],
+      },
+      { label: "Buses", key: "busesNeeded", readonly: true },
     ];
     fields.forEach(({ label, key, readonly, type, options }) => {
       const wrap = document.createElement("div");
@@ -546,7 +611,8 @@ function renderQuickEditTab(tabId, trip, assigns) {
         sel.dataset.key = key;
         options.forEach(([v, t]) => {
           const o = document.createElement("option");
-          o.value = v; o.textContent = t;
+          o.value = v;
+          o.textContent = t;
           sel.appendChild(o);
         });
         sel.value = trip[key] || "";
@@ -567,8 +633,9 @@ function renderQuickEditTab(tabId, trip, assigns) {
 function showQuickEditPopover(tripKey, barEl) {
   const trip = state.tripByKey?.[String(tripKey)];
   if (!trip) return;
-  const assigns = (state.assignmentsByTripKey?.[String(tripKey)] || [])
-    .filter(a => a.busId && a.busId !== "None");
+  const assigns = (state.assignmentsByTripKey?.[String(tripKey)] || []).filter(
+    (a) => a.busId && a.busId !== "None",
+  );
 
   quickEditTripKey = tripKey;
   quickEditDirty = false;
@@ -591,14 +658,21 @@ function showQuickEditPopover(tripKey, barEl) {
     btn.addEventListener("click", () => {
       const current = collectQuickEditData();
       Object.assign(pendingQuickEdits.tripEdits, current.tripEdits);
-      pendingQuickEdits.assignEdits = mergeAssignEdits(pendingQuickEdits.assignEdits, current.assignEdits);
+      pendingQuickEdits.assignEdits = mergeAssignEdits(
+        pendingQuickEdits.assignEdits,
+        current.assignEdits,
+      );
 
-      tabsEl.querySelectorAll(".trip-quick-edit__tab").forEach(b => b.classList.remove("is-active"));
+      tabsEl
+        .querySelectorAll(".trip-quick-edit__tab")
+        .forEach((b) => b.classList.remove("is-active"));
       btn.classList.add("is-active");
 
       const mergedTrip = { ...trip, ...pendingQuickEdits.tripEdits };
-      const mergedAssigns = assigns.map(a => {
-        const edit = pendingQuickEdits.assignEdits.find(e => String(e.busNumber) === String(a.busNumber));
+      const mergedAssigns = assigns.map((a) => {
+        const edit = pendingQuickEdits.assignEdits.find(
+          (e) => String(e.busNumber) === String(a.busNumber),
+        );
         return edit ? { ...a, ...edit } : a;
       });
       renderQuickEditTab(tab.id, mergedTrip, mergedAssigns);
@@ -610,13 +684,15 @@ function showQuickEditPopover(tripKey, barEl) {
   el.classList.remove("is-hidden");
 
   // Position
-  const scrollX = window.scrollX, scrollY = window.scrollY;
+  const scrollX = window.scrollX,
+    scrollY = window.scrollY;
   const barRect = barEl.getBoundingClientRect();
-  const popW = 320, popH = el.offsetHeight;
+  const popW = 320,
+    popH = el.offsetHeight;
   const arrow = el.querySelector(".trip-quick-edit__arrow");
 
   let left = barRect.right + 10 + scrollX;
-  let top  = barRect.top  + scrollY;
+  let top = barRect.top + scrollY;
   arrow.classList.remove("arrow-right");
 
   if (left + popW > window.innerWidth + scrollX - 16) {
@@ -629,14 +705,14 @@ function showQuickEditPopover(tripKey, barEl) {
   if (top < scrollY + 8) top = scrollY + 8;
 
   el.style.left = `${left}px`;
-  el.style.top  = `${top}px`;
+  el.style.top = `${top}px`;
 }
 
 function collectQuickEditData() {
   const body = $("quickEditBody");
   if (!body) return { tripEdits: {}, assignEdits: [] };
   const tripEdits = {};
-  body.querySelectorAll("[data-key]").forEach(el => {
+  body.querySelectorAll("[data-key]").forEach((el) => {
     if (el.tagName === "SELECT" || el.tagName === "INPUT") {
       tripEdits[el.dataset.key] = el.value;
     } else if (el.tagName === "BUTTON" && el.dataset.key) {
@@ -644,11 +720,14 @@ function collectQuickEditData() {
     }
   });
   const assignEdits = [];
-  body.querySelectorAll("[data-bus-number]").forEach(el => {
+  body.querySelectorAll("[data-bus-number]").forEach((el) => {
     const bn = String(el.dataset.busNumber);
-    let entry = assignEdits.find(a => a.busNumber === bn);
-    if (!entry) { entry = { busNumber: bn }; assignEdits.push(entry); }
-    if (el.dataset.payKey)    entry[el.dataset.payKey]    = el.value;
+    let entry = assignEdits.find((a) => a.busNumber === bn);
+    if (!entry) {
+      entry = { busNumber: bn };
+      assignEdits.push(entry);
+    }
+    if (el.dataset.payKey) entry[el.dataset.payKey] = el.value;
     if (el.dataset.statusKey) entry[el.dataset.statusKey] = el.dataset.value;
   });
   return { tripEdits, assignEdits };
@@ -660,7 +739,28 @@ function saveQuickEdit() {
   if (!trip) return;
 
   if (state.pendingWrite || dom.saveBtn?.disabled) {
-    toast("Please wait for the current save to complete.", "warning", 2000);
+    if (!confirmDiscardIfDirty("You have unsaved trip changes. Save quick edit instead?")) return;
+
+    const current = collectQuickEditData();
+    const allTripEdits = { ...pendingQuickEdits.tripEdits, ...current.tripEdits };
+    const allAssignEdits = mergeAssignEdits(pendingQuickEdits.assignEdits, current.assignEdits);
+    const tripKey = quickEditTripKey;
+
+    closeQuickEditPopover();
+    toastShow("Saving changes…", "sync", { source: "quick-edit-queue" });
+
+    state.pendingQuickEditSave.push(() => {
+      const trip = state.tripByKey?.[String(tripKey)];
+      if (!trip) return;
+      const merged = { ...trip, ...allTripEdits };
+      const baseAssigns = (state.assignmentsByTripKey?.[String(merged.tripKey)] || []).map((a) => {
+        const edit = allAssignEdits.find((e) => String(e.busNumber) === String(a.busNumber));
+        return edit ? { ...a, ...edit } : a;
+      });
+      populateFormFromData(merged, baseAssigns);
+      state.tripFormDirty = true;
+      dom.saveBtn.click();
+    });
     return;
   }
 
@@ -673,8 +773,8 @@ function saveQuickEdit() {
   closeQuickEditPopover();
 
   const merged = { ...trip, ...allTripEdits };
-  const baseAssigns = (state.assignmentsByTripKey?.[String(merged.tripKey)] || []).map(a => {
-    const edit = allAssignEdits.find(e => String(e.busNumber) === String(a.busNumber));
+  const baseAssigns = (state.assignmentsByTripKey?.[String(merged.tripKey)] || []).map((a) => {
+    const edit = allAssignEdits.find((e) => String(e.busNumber) === String(a.busNumber));
     return edit ? { ...a, ...edit } : a;
   });
 
@@ -687,7 +787,9 @@ function wireQuickEditPopover() {
   $("quickEditSaveBtn")?.addEventListener("click", saveQuickEdit);
   $("quickEditCloseBtn")?.addEventListener("click", closeQuickEditPopover);
 
-  $("quickEditBody")?.addEventListener("input", () => { quickEditDirty = true; });
+  $("quickEditBody")?.addEventListener("input", () => {
+    quickEditDirty = true;
+  });
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && quickEditTripKey) closeQuickEditPopover();
@@ -697,11 +799,10 @@ function wireQuickEditPopover() {
     if (!quickEditTripKey) return;
     const el = $("tripQuickEdit");
     const path = e.composedPath ? e.composedPath() : [e.target];
-    const insidePopover = path.some(n => n === el);
-    const onBar = path.some(n => n?.classList?.contains?.("schedule-grid__trip-bar"));
+    const insidePopover = path.some((n) => n === el);
+    const onBar = path.some((n) => n?.classList?.contains?.("schedule-grid__trip-bar"));
     if (insidePopover || onBar) return;
     if (quickEditDirty && !confirm("Discard unsaved changes?")) return;
     closeQuickEditPopover();
   });
 }
-
