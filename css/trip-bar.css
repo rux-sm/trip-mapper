@@ -21,11 +21,11 @@
   --tripbar-padding-x: 0px;
   --tripbar-padding-y: 0px;
   --tripbar-row-gap:   0px;
-  --tripbar-inset:        1px;
-  --tripbar-inset-left:   1px;
-  --tripbar-inset-right:  1px;
-  --tripbar-inset-top:    1px;
-  --tripbar-inset-bottom: 1px;
+  --tripbar-inset:        2px;
+  --tripbar-inset-left:   3px;
+  --tripbar-inset-right:  3px;
+  --tripbar-inset-top:    2px;
+  --tripbar-inset-bottom: 2px;
 
   /* ── Hover animation ────────────────────────────────────────────────── */
 
@@ -94,21 +94,45 @@
 
   --tripbar-r1-row-height:     14px;
   --tripbar-r1-gap-above:       0px;
-  --tripbar-r1-margin-inline:   0px;
+  --tripbar-r1-margin-inline:   2px;
   --tripbar-r1-padding-inline:  0px;
   --tripbar-r1-gap:             2px;
   --tripbar-r1-font-size:      12px;
+  --tripbar-r1-max-width:      200px; /* prevent long destination names from pushing out bar width */
   --tripbar-r1-font-weight:    var(--rux-weight-bold);
   --tripbar-r1-line-height:    14px;
-  --tripbar-r1-letter-spacing: 0.02em;
+  --tripbar-r1-letter-spacing: -0.02em;
   --tripbar-r1-color:          var(--rux-text-1);
   --tripbar-r1-bg:             transparent;
-  --tripbar-r1-bg-qty:         var(--rux-color-gray-alpha); /* multi-bus qty badge */
-  --tripbar-r1-icon-size:      14px;
-  --tripbar-r1-icon-color:     var(--tripbar-r1-color);
+  --tripbar-r1-icon-size:      16px;
+  --tripbar-r1-icon-color:     /* color based on status */;
   --tripbar-r1-icon-fill:      0;
-  --tripbar-r1-icon-wght:      400;
+  --tripbar-r1-icon-wght:      500;
   --tripbar-r1-icon-opsz:      20;
+  --tripbar-r1-icon-grad:      25;
+
+  /* title text overlay */
+  --tripbar-r1-title-padding-inline: 20px;
+
+  /* multi-bus qty badge (circle showing bus count, left of title) */
+  --tripbar-r1-multi-badge-size:           20px;
+  --tripbar-r1-multi-badge-font-size:      var(--tripbar-r1-font-size);
+  --tripbar-r1-multi-badge-font-weight:    400;
+  --tripbar-r1-multi-badge-letter-spacing: -0.02em;
+  --tripbar-r1-multi-badge-color:          var(--tripbar-r1-color);
+  --tripbar-r1-multi-badge-bg:             var(--rux-color-gray-alpha);
+  --tripbar-r1-multi-badge-radius:         999px;
+  --tripbar-r1-multi-badge-padding-inline: 1px;
+
+  /* top-status badge group (b$  bI  bC — three mini icon badges, far right) */
+  --tripbar-r1-status-badge-gap: 1px;
+
+  /* date pill chips */
+  --tripbar-r1-date-size:        10px;
+  --tripbar-r1-date-font-weight: 400;
+  --tripbar-r1-date-radius:      var(--rux-radius-2);
+  --tripbar-r1-date-color:       var(--tripbar-r1-color);
+  --tripbar-r1-date-bg:          oklch(from var(--tripbar-r1-color) l c h / 15%);
 
   /* ── Row 2 — Customer ───────────────────────────────────────────────── */
 
@@ -117,6 +141,7 @@
   --tripbar-r2-margin-inline:   0px;
   --tripbar-r2-padding-inline:  0px;
   --tripbar-r2-gap:             2px;
+  --tripbar-r2-max-width:      200px; /* prevent long customer names from pushing out bar width */
   --tripbar-r2-font-size:      10px;
   --tripbar-r2-font-weight:    var(--rux-weight-bold);
   --tripbar-r2-line-height:    12px;
@@ -136,6 +161,7 @@
   --tripbar-r3-margin-inline:   0px;
   --tripbar-r3-padding-inline:  0px;
   --tripbar-r3-gap:             2px;
+  --tripbar-r3-max-width:      200px; /* prevent long contact names from pushing out bar width */
   --tripbar-r3-font-size:      10px;
   --tripbar-r3-font-weight:    var(--rux-weight-bold);
   --tripbar-r3-line-height:    12px;
@@ -150,22 +176,42 @@
 
   /* ── Row 4 — Notes / memo + req icons ──────────────────────────────── */
 
-  --tripbar-r4-row-height:     14px;
+  --tripbar-r4-row-height:     12px;
   --tripbar-r4-gap-above:       0px;
-  --tripbar-r4-margin-inline:   0px;
-  --tripbar-r4-padding-inline:  0px;
-  --tripbar-r4-gap:             4px;
-  --tripbar-r4-font-size:      var(--rux-size-1);
+  --tripbar-r4-margin-inline:   4px;
+  --tripbar-r4-padding-inline:  4px;
+  --tripbar-r4-gap:             6px;
+    --tripbar-r4-max-width:      200px; /* prevent long notes from pushing out bar width */
+  --tripbar-r4-font-size:      10px;
   --tripbar-r4-font-weight:    var(--rux-weight-medium);
-  --tripbar-r4-line-height:    14px;
+  --tripbar-r4-line-height:    12px;
   --tripbar-r4-letter-spacing: -0.04em;
   --tripbar-r4-color:          var(--rux-text-1);
   --tripbar-r4-bg:             transparent;
-  --tripbar-r4-icon-size:      12px;
-  --tripbar-r4-icon-color:     oklch(100% 0 0 / 0.75);
-  --tripbar-r4-icon-fill:      0;
-  --tripbar-r4-icon-wght:      400;
+  --tripbar-r4-icon-size:      16px;
+  --tripbar-r4-icon-color:     oklch(100% 0 0 / 1);
+  --tripbar-r4-icon-fill:      1;
+  --tripbar-r4-icon-wght:      500;
   --tripbar-r4-icon-opsz:      20;
+  --tripbar-r4-icon-grad:      25;
+
+  /* notes text overlay */
+  --tripbar-r4-notes-padding-inline: 4px;
+
+  /* paid badge — icon-only state (check_circle when paid, no date) */
+  --tripbar-r4-paid-size:      1rem;
+  --tripbar-r4-paid-color:     var(--rux-status-green);
+  --tripbar-r4-paid-icon-fill: 0;
+  --tripbar-r4-paid-icon-wght: 400;
+  --tripbar-r4-paid-icon-opsz: 10;
+
+  /* paid badge — date state (paid icon + formatted date) */
+  --tripbar-r4-paid-date-font-size:  var(--tripbar-r1-date-size);
+  --tripbar-r4-paid-date-gap:        2px;
+  --tripbar-r4-paid-date-icon-size:  14px;
+  --tripbar-r4-paid-date-icon-fill:  1;
+  --tripbar-r4-paid-date-icon-wght:  400;
+  --tripbar-r4-paid-date-icon-opsz:  20;
 
   /* ── Row 5 — Times (depart · spot · arrive) ─────────────────────────── */
 
@@ -173,14 +219,14 @@
   --tripbar-r5-gap-above:       0px;
   --tripbar-r5-margin-inline:   4px;
   --tripbar-r5-padding-inline:  4px;
-  --tripbar-r5-gap:             2px;
-  --tripbar-r5-font-size:      var(--rux-size-3);
+  --tripbar-r5-gap:             4px;
+  --tripbar-r5-font-size:      12px;
   --tripbar-r5-font-weight:    var(--rux-weight-bold);
   --tripbar-r5-line-height:    18px;
   --tripbar-r5-letter-spacing: -0.04em;
   --tripbar-r5-color:          var(--rux-text-1);
-  --tripbar-r5-bg:             oklch(100% 0 0 / 15%);
-  --tripbar-r5-icon-size:      14px;
+  --tripbar-r5-bg:             oklch(0% 0 0 / 30%);
+  --tripbar-r5-icon-size:      16px;
   --tripbar-r5-icon-color:     var(--tripbar-r5-color);
   --tripbar-r5-icon-fill:      0;
   --tripbar-r5-icon-wght:      400;
@@ -189,35 +235,41 @@
   /* ── Row 6 — Drivers ────────────────────────────────────────────────── */
 
   --tripbar-r6-row-height:     18px;
-  --tripbar-r6-gap-above:       0px;
+  --tripbar-r6-gap-above:       1px;
   --tripbar-r6-margin-inline:   4px;
   --tripbar-r6-padding-inline:  4px;
   --tripbar-r6-gap:             6px;
-  --tripbar-r6-font-size:      var(--rux-size-3);
+  --tripbar-r6-max-width:      200px; /* prevent driver names from pushing out bar width */
+  --tripbar-r6-font-size:      12px;
   --tripbar-r6-font-weight:    var(--rux-weight-bold);
   --tripbar-r6-line-height:    18px;
   --tripbar-r6-letter-spacing: -0.04em;
   --tripbar-r6-color:          var(--rux-text-1);
-  --tripbar-r6-bg:             oklch(100% 0 0 / 15%);
-  --tripbar-r6-icon-size:      20px;
-  --tripbar-r6-icon-color:     var(--tripbar-r6-color);
-  --tripbar-r6-icon-fill:      0;
-  --tripbar-r6-icon-wght:      400;
+  --tripbar-r6-bg:             oklch(0% 0 0 / 30%);
+  --tripbar-r6-icon-size:      16px;
+  --tripbar-r6-icon-color:     /* color based on status */;
+  --tripbar-r6-icon-fill:      1;
+  --tripbar-r6-icon-wght:      500;
   --tripbar-r6-icon-opsz:      20;
+  --tripbar-r6-icon-grad:      25;
+
+  /* driver slot (icon + name pair within a driver row) */
+  --tripbar-r6-slot-gap: 2px;
 
   /* ── Row 7 — Driver pay ─────────────────────────────────────────────── */
 
-  --tripbar-r7-row-height:     14px;
+  --tripbar-r7-row-height:     18px;
   --tripbar-r7-gap-above:       4px;   /* visual gap below drivers row */
   --tripbar-r7-margin-inline:   4px;
   --tripbar-r7-padding-inline:  0px;
-  --tripbar-r7-gap:             6px;
+  --tripbar-r7-gap:             6px;  
+  --tripbar-r7-max-width:        200px; /* prevent pay from pushing out bar width */
   --tripbar-r7-font-size:      var(--rux-size-1);
   --tripbar-r7-font-weight:    var(--rux-weight-medium);
-  --tripbar-r7-line-height:    14px;
+  --tripbar-r7-line-height:    18px;
   --tripbar-r7-letter-spacing: 0.02em;
   --tripbar-r7-color:          var(--rux-color-white);
-  --tripbar-r7-bg:             oklch(0% 0 0 / 30%);
+  --tripbar-r7-bg:             oklch(100% 0 0 / 30%);
   --tripbar-r7-icon-size:      12px;
   --tripbar-r7-icon-color:     var(--tripbar-r7-color);
   --tripbar-r7-icon-fill:      0;
@@ -226,17 +278,17 @@
 
   /* ── Row 8 — Estimate (est mi · quoted $ · req icons) ──────────────── */
 
-  --tripbar-r8-row-height:     12px;
-  --tripbar-r8-gap-above:       0px;
+  --tripbar-r8-row-height:     18px;
+  --tripbar-r8-gap-above:       1px;
   --tripbar-r8-margin-inline:   4px;
   --tripbar-r8-padding-inline:  0px;
   --tripbar-r8-gap:             4px;
   --tripbar-r8-font-size:      var(--rux-size-1);
   --tripbar-r8-font-weight:    var(--rux-weight-medium);
-  --tripbar-r8-line-height:    12px;
+  --tripbar-r8-line-height:    18px;
   --tripbar-r8-letter-spacing: 0.02em;
   --tripbar-r8-color:          var(--rux-color-white);
-  --tripbar-r8-bg:             oklch(0% 0 0 / 30%);
+  --tripbar-r8-bg:             oklch(100% 0 0 / 30%);
   --tripbar-r8-icon-size:      12px;
   --tripbar-r8-icon-color:     oklch(100% 0 0 / 0.75);
   --tripbar-r8-icon-fill:      0;
@@ -245,17 +297,17 @@
 
   /* ── Row 9 — Billing (trip mi · invoice # · billing fields) ────────── */
 
-  --tripbar-r9-row-height:     14px;
-  --tripbar-r9-gap-above:       0px;
+  --tripbar-r9-row-height:     18px;
+  --tripbar-r9-gap-above:       1px;
   --tripbar-r9-margin-inline:   4px;
   --tripbar-r9-padding-inline:  0px;
   --tripbar-r9-gap:             4px;
   --tripbar-r9-font-size:      var(--rux-size-1);
   --tripbar-r9-font-weight:    var(--rux-weight-semibold);
-  --tripbar-r9-line-height:    14px;
+  --tripbar-r9-line-height:    18px;
   --tripbar-r9-letter-spacing: 0.02em;
   --tripbar-r9-color:          var(--rux-color-white);
-  --tripbar-r9-bg:             oklch(0% 0 0 / 30%);
+  --tripbar-r9-bg:             oklch(100% 0 0 / 30%);
   --tripbar-r9-icon-size:      12px;
   --tripbar-r9-icon-color:     var(--tripbar-r9-color);
   --tripbar-r9-icon-fill:      0;
@@ -269,12 +321,16 @@
   --tripbar-r10-padding-inline: 0px;
   --tripbar-r10-gap:            var(--rux-space-3);
   --tripbar-r10-color:          var(--rux-text-1);
-  --tripbar-r10-bg:             oklch(25% 0 0 / 100%);
+  --tripbar-r10-bg:             oklch(0% 0 0 / 0%);
   --tripbar-r10-icon-size:      var(--rux-size-5);
   --tripbar-r10-icon-color:     var(--tripbar-r10-color);
   --tripbar-r10-icon-fill:      1;
   --tripbar-r10-icon-wght:      400;
   --tripbar-r10-icon-opsz:      20;
+  --tripbar-r10-btn-bg:         oklch(0% 0 0 / 50%);
+  --tripbar-r10-btn-height:     24px;
+  --tripbar-r10-btn-width:      24px;
+  --tripbar-r10-btn-radius:     var(--rux-radius-2);
 }
 
 /* ==========================================================================
@@ -351,7 +407,7 @@
   --tripbar-r2-color: var(--tripbar-text-color);
   --tripbar-r3-color: var(--tripbar-text-color);
   --tripbar-r4-color: var(--rux-text-1);
-  --tripbar-r5-color: var(--tripbar-text-color);
+  --tripbar-r5-color: oklch(100% 0 0 / 0.5);
   --tripbar-r6-color: var(--rux-text-1);
   /* r7 not overridden — uses --tripbar-r7-color from :root */
   /* r8 not overridden — uses --tripbar-r8-color from :root */
@@ -591,17 +647,17 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   margin-inline: var(--tripbar-r1-margin-inline);
   padding-inline: var(--tripbar-r1-padding-inline);
   background: var(--tripbar-r1-bg);
-  min-width: 0;
+  max-width: var(--tripbar-r1-max-width);
   position: relative;
 }
 
 .schedule-grid__trip-bar__row--1 .material-symbols-outlined {
   font-size: var(--tripbar-r1-icon-size);
-  color: var(--tripbar-r1-icon-color);
+  /* color based on status */;
   font-variation-settings:
     "FILL" var(--tripbar-r1-icon-fill),
     "wght" var(--tripbar-r1-icon-wght),
-    "GRAD" 0,
+    "GRAD" var(--tripbar-r1-icon-grad),
     "opsz" var(--tripbar-r1-icon-opsz);
 }
 
@@ -623,27 +679,27 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
-  padding-inline: 20px;
+  padding-inline: var(--tripbar-r1-title-padding-inline);
 }
 
 .schedule-grid__trip-bar__multi-badge {
   flex-shrink: 0;
   position: relative;
   z-index: 1;
-  font-size: var(--tripbar-r1-font-size);
-  font-weight: 400;
-  color: var(--tripbar-r1-color);
-  border-radius: 999px;
-  background: var(--tripbar-r1-bg-qty);
+  font-size: var(--tripbar-r1-multi-badge-font-size);
+  font-weight: var(--tripbar-r1-multi-badge-font-weight);
+  letter-spacing: var(--tripbar-r1-multi-badge-letter-spacing);
+  color: var(--tripbar-r1-multi-badge-color);
+  border-radius: var(--tripbar-r1-multi-badge-radius);
+  background: var(--tripbar-r1-multi-badge-bg);
   border: none;
-  width: 20px;
-  height: 20px;
+  width: var(--tripbar-r1-multi-badge-size);
+  height: var(--tripbar-r1-multi-badge-size);
   box-sizing: border-box;
-  padding-inline: 1px;
+  padding-inline: var(--tripbar-r1-multi-badge-padding-inline);
   display: flex;
   align-items: center;
   justify-content: center;
-  letter-spacing: -0.02em;
   line-height: 1;
   text-align: center;
 }
@@ -652,7 +708,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
 .schedule-grid__trip-bar__top-status-badges {
   display: flex;
   align-items: center;
-  gap: 1px;
+  gap: var(--tripbar-r1-status-badge-gap);
   flex-shrink: 0;
   margin-left: auto;
   position: relative;
@@ -666,17 +722,31 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
 
 .schedule-grid__trip-bar__paid-badge {
   flex-shrink: 0;
+  margin-inline-start: auto;
   position: relative;
   z-index: 1;
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: var(--tripbar-r4-paid-size);
+  font-weight: var(--tripbar-r4-paid-icon-wght);
   font-variation-settings:
-    "FILL" 0,
-    "opsz" 10;
-  color: var(--rux-status-green);
+    "FILL" var(--tripbar-r4-paid-icon-fill),
+    "wght" var(--tripbar-r4-paid-icon-wght),
+    "GRAD" 0,
+    "opsz" var(--tripbar-r4-paid-icon-opsz);
+  color: var(--tripbar-r4-paid-color);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Protect badge from row 4's generic icon token override */
+.schedule-grid__trip-bar__row--4 .schedule-grid__trip-bar__paid-badge.material-symbols-outlined {
+  font-size: var(--tripbar-r4-paid-size);
+  color: var(--tripbar-r4-paid-color);
+  font-variation-settings:
+    "FILL" var(--tripbar-r4-paid-icon-fill),
+    "wght" var(--tripbar-r4-paid-icon-wght),
+    "GRAD" 0,
+    "opsz" var(--tripbar-r4-paid-icon-opsz);
 }
 
 .schedule-grid__trip-bar__paid-badge.is-alert { color: var(--rux-status-red); }
@@ -684,15 +754,26 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
 .schedule-grid__trip-bar__paid-badge.is-solid {
   font-variation-settings:
     "FILL" 1,
-    "opsz" 10;
+    "wght" var(--tripbar-r4-paid-icon-wght),
+    "GRAD" 0,
+    "opsz" var(--tripbar-r4-paid-icon-opsz);
 }
 
 .schedule-grid__trip-bar__paid-badge.is-date {
-  font-family: var(--font-mono);
-  font-size: var(--tripbar-r1-font-size);
-  font-weight: 400;
+  font-size: var(--tripbar-r4-paid-date-font-size);
+  font-weight: var(--tripbar-r4-paid-icon-wght);
   width: auto;
   letter-spacing: 0em;
+  gap: var(--tripbar-r4-paid-date-gap);
+
+  & .material-symbols-outlined {
+    font-size: var(--tripbar-r4-paid-date-icon-size);
+    font-variation-settings:
+      "FILL" var(--tripbar-r4-paid-date-icon-fill),
+      "wght" var(--tripbar-r4-paid-date-icon-wght),
+      "GRAD" 0,
+      "opsz" var(--tripbar-r4-paid-date-icon-opsz);
+  }
 }
 
 /* ==========================================================================
@@ -706,6 +787,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   margin-inline: var(--tripbar-r2-margin-inline);
   padding-inline: var(--tripbar-r2-padding-inline);
   background: var(--tripbar-r2-bg);
+  max-width: var(--tripbar-r2-max-width);
 }
 
 .schedule-grid__trip-bar__row--2 .material-symbols-outlined {
@@ -741,6 +823,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   margin-inline: var(--tripbar-r3-margin-inline);
   padding-inline: var(--tripbar-r3-padding-inline);
   background: var(--tripbar-r3-bg);
+  max-width: var(--tripbar-r3-max-width);
 }
 
 .schedule-grid__trip-bar__row--3 .material-symbols-outlined {
@@ -759,21 +842,44 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
 
 .schedule-grid__trip-bar__row--4 {
   grid-row: 4;
+  justify-content: flex-start; /* req icons pin left */
+  position: relative;          /* notes centers absolutely within */
   gap: var(--tripbar-r4-gap);
   margin-top: var(--tripbar-r4-gap-above);
   margin-inline: var(--tripbar-r4-margin-inline);
   padding-inline: var(--tripbar-r4-padding-inline);
   background: var(--tripbar-r4-bg);
+  max-width: var(--tripbar-r4-max-width);
 }
 
 .schedule-grid__trip-bar__row--4 .material-symbols-outlined {
   font-size: var(--tripbar-r4-icon-size);
-  color: var(--tripbar-r4-icon-color);
+ 
   font-variation-settings:
     "FILL" var(--tripbar-r4-icon-fill),
     "wght" var(--tripbar-r4-icon-wght),
-    "GRAD" 0,
+    "GRAD" var(--tripbar-r4-icon-grad),
     "opsz" var(--tripbar-r4-icon-opsz);
+  
+}
+
+.schedule-grid__trip-bar__notes {
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 0;
+  font-size: var(--tripbar-r4-font-size);
+  font-weight: var(--tripbar-r4-font-weight);
+  line-height: var(--tripbar-r4-line-height);
+  letter-spacing: var(--tripbar-r4-letter-spacing);
+  color: var(--tripbar-r4-color);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  padding-inline: var(--tripbar-r4-notes-padding-inline);
 }
 
 /* ==========================================================================
@@ -790,6 +896,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   height: var(--tripbar-r5-row-height);
   line-height: var(--tripbar-r5-line-height);
   border-radius: var(--tripbar-radius) var(--tripbar-radius) 0 0;
+  border: none;
 }
 
 .schedule-grid__trip-bar__row--5 .material-symbols-outlined {
@@ -833,17 +940,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
 .schedule-grid__trip-bar__time--center { justify-content: center !important;     }
 .schedule-grid__trip-bar__time--right  { justify-content: flex-end !important;   }
 
-.schedule-grid__trip-bar__notes {
-  font-family: var(--font-mono);
-  font-size: var(--tripbar-r4-font-size);
-  font-weight: var(--tripbar-r4-font-weight);
-  line-height: var(--tripbar-r4-line-height);
-  letter-spacing: var(--tripbar-r4-letter-spacing);
-  color: var(--tripbar-r4-color);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+
 
 /* ==========================================================================
    Row 6 — Drivers
@@ -858,6 +955,8 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   background: var(--tripbar-r6-bg);
   border-radius: 0 0 var(--tripbar-radius) var(--tripbar-radius);
   height: var(--tripbar-r6-row-height);
+  border: none;
+  max-width: var(--tripbar-r6-max-width);
 }
 
 .schedule-grid__trip-bar__row--6 .material-symbols-outlined {
@@ -866,7 +965,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   font-variation-settings:
     "FILL" var(--tripbar-r6-icon-fill),
     "wght" var(--tripbar-r6-icon-wght),
-    "GRAD" 0,
+    "GRAD" var(--tripbar-r6-icon-grad),
     "opsz" var(--tripbar-r6-icon-opsz);
 }
 
@@ -880,7 +979,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
 .schedule-grid__trip-bar__driver-slot {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--tripbar-r6-slot-gap);
   min-width: 0;
 }
 
@@ -922,6 +1021,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   margin-top: var(--tripbar-r7-gap-above);
   margin-inline: var(--tripbar-r7-margin-inline);
   padding-inline: var(--tripbar-r7-padding-inline);
+  max-width: var(--tripbar-r7-max-width);
 }
 
 .schedule-grid__trip-bar__row--7 .material-symbols-outlined {
@@ -1021,7 +1121,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   grid-row: 9;
   overflow: hidden;
   background: var(--tripbar-r9-bg);
-  border-radius: 0 0 var(--rux-radius-2) var(--rux-radius-2);
+  border-radius: 0 0 var(--tripbar-radius) var(--tripbar-radius);
   margin-top: var(--tripbar-r9-gap-above);
   margin-inline: var(--tripbar-r9-margin-inline);
   padding-inline: var(--tripbar-r9-padding-inline);
@@ -1072,13 +1172,13 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 22px;
-  height: 22px;
+  width: var(--tripbar-r10-btn-width);
+  height: var(--tripbar-r10-btn-height);
   padding: 0;
   color: var(--tripbar-r10-color);
-  background: var(--rux-btn-bg-secondary);
+  background: var(--tripbar-r10-btn-bg);
   border: none;
-  border-radius: var(--rux-radius-2);
+  border-radius: var(--tripbar-r10-btn-radius);
   cursor: pointer;
   pointer-events: none;
   opacity: 0;

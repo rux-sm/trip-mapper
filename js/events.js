@@ -13,32 +13,6 @@ function wireDelegatedBarEvents() {
   });
 
   // Wire Context Actions
-  dom.ctxEditTripInfoBtn?.addEventListener("click", async () => {
-    if (activeContextTripKey) {
-      if (dom.tripKey.value !== activeContextTripKey) {
-        if (!confirmDiscardIfDirty()) return;
-        await openTripForEdit(activeContextTripKey);
-      }
-      openItineraryModal();
-      closeTripContextMenu();
-    }
-  });
-
-  dom.ctxEditBtn?.addEventListener("click", async () => {
-    if (!activeContextTripKey) return;
-    const tripKey = activeContextTripKey; // capture before menu close clears it
-    closeTripContextMenu();
-    if (!confirmDiscardIfDirty()) return;
-    await openTripForEdit(tripKey);
-  });
-
-  dom.ctxViewBtn?.addEventListener("click", () => {
-    if (activeContextTripKey) {
-      openTripDetailsModal(activeContextTripKey);
-      closeTripContextMenu();
-    }
-  });
-
   dom.ctxEnvelopeBtn?.addEventListener("click", () => {
     if (activeContextTripKey) {
       openEnvelopeModal(activeContextTripKey);
@@ -46,16 +20,6 @@ function wireDelegatedBarEvents() {
     }
   });
 
-  dom.ctxOpenItineraryPdfBtn?.addEventListener("click", () => {
-    if (!activeContextTripKey) return;
-    const trip = state.tripByKey?.[activeContextTripKey];
-    if (!trip || !trip.itineraryPdfUrl) {
-      toast("No itinerary PDF attached for this trip.", "info", 2000);
-      return;
-    }
-    window.open(trip.itineraryPdfUrl, "_blank");
-    closeTripContextMenu();
-  });
 
   dom.ctxAttachItineraryPdfBtn?.addEventListener("click", () => {
     if (!activeContextTripKey) return;
@@ -289,10 +253,7 @@ function wireDelegatedBarEvents() {
   });
 
   containers.forEach((container) => {
-    // 1. Context Menu (Right Click) - Desktop & Mobile Long Press
-    container.addEventListener("contextmenu", (e) => handleScheduleInteraction(e, true));
-
-    // 2. Click (Tap) - Mobile Only and specific icon clicks
+    // Click (Tap) - all devices and specific icon clicks
     container.addEventListener("click", async (e) => {
       // Action row button clicks (delegated)
       const actionBtn = e.target.closest(".schedule-grid__trip-bar__action-btn");
@@ -390,29 +351,15 @@ function wireDelegatedBarEvents() {
         return;
       }
 
-      // Only handle Taps on touch devices for the general context menu
-      if (isMobileOnly()) {
-        handleScheduleInteraction(e, false);
-      }
     });
 
-    // Keep Enter/Space for accessibility (default to Edit for now, or open menu?)
-    // Let's act like left click -> Open Menu
+    // Enter/Space — same as clicking the bar
     container.addEventListener("keydown", (e) => {
       if (e.key !== "Enter" && e.key !== " ") return;
       const bar = e.target.closest(".schedule-grid__trip-bar");
       if (!bar) return;
-
       e.preventDefault();
-      const tripKey = bar.dataset.tripkey;
-      if (!tripKey) return;
-
-      // Calculate center of bar for position
-      const rect = bar.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2 + window.scrollY;
-
-      showTripContextMenu(x, y, tripKey);
+      bar.click();
     });
   });
 }

@@ -166,11 +166,7 @@ const dom = {
 
   ctxMenu: $("tripContextMenu"),
   ctxHeader: $("ctxHeader"),
-  ctxEditBtn: $("ctxEditBtn"),
-  ctxViewBtn: $("ctxViewBtn"),
   ctxEnvelopeBtn: $("ctxEnvelopeBtn"),
-  ctxOpenItineraryPdfBtn: $("ctxOpenItineraryPdfBtn"),
-  ctxEditTripInfoBtn: $("ctxEditTripInfoBtn"),
   ctxAttachItineraryPdfBtn: $("ctxAttachItineraryPdfBtn"),
   ctxRemoveItineraryPdfBtn: $("ctxRemoveItineraryPdfBtn"),
   ctxContactNotRequiredBtn: $("ctxContactNotRequiredBtn"),

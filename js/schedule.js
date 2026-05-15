@@ -838,7 +838,7 @@ function _renderAgendaInner() {
           { action: "pdf", icon: "upload_file", title: "Attach itinerary PDF" },
           { action: "driverContact", icon: "chat", title: "Driver contact info" },
           { action: "envelope", icon: "mail_outline", title: "Envelope" },
-          { action: "tripReview", icon: "rate_review", title: "Trip review" },
+          { action: "tripReview", icon: "manage_search", title: "Trip review" },
           { action: "more", icon: "more_horiz", title: "More options" },
         ].forEach(({ action, icon, title }) => {
           const btn = document.createElement("button");
@@ -874,7 +874,7 @@ function _renderAgendaInner() {
         line3.className = "schedule-grid__trip-bar__sub schedule-grid__trip-bar__contact";
         r3.appendChild(line3);
 
-        // Row 4: Notes / memo + req icons
+        // Row 4: [req icons] [notes — centered absolute] [paid badge — right]
         const barReqIcons = document.createElement("div");
         barReqIcons.className = "schedule-grid__trip-bar__req-icons";
         const notesEl = document.createElement("div");
@@ -914,22 +914,23 @@ function _renderAgendaInner() {
         const b$ = makeMini("description", true); // Payment / Approval
         const bD1 = makeMini("person", true); // Driver 1
         const bD2 = makeMini("person", true); // Driver 2 (co-driver)
-        const bD3 = makeMini("emergency_home", true); // Relief 1
-        const bD4 = makeMini("emergency_home", true); // Relief 2
+        const bD3 = makeMini("autorenew", true); // Relief 1
+        const bD4 = makeMini("autorenew", true); // Relief 2
 
-        // Complete row 1: [title already appended] → top-status group → paidBadge
+        // Complete row 1: [title already appended] → top-status group
         const r1TopBadges = document.createElement("div");
         r1TopBadges.className = "schedule-grid__trip-bar__top-status-badges";
         r1TopBadges.setAttribute("aria-hidden", "true");
         r1TopBadges.append(b$, bI, bC);
         r1.appendChild(r1TopBadges);
 
+        // Row 4: paid badge sits at the right end
         const paidBadge = document.createElement("span");
         paidBadge.className =
           "schedule-grid__trip-bar__paid-badge material-symbols-outlined is-hidden";
         paidBadge.setAttribute("aria-hidden", "true");
         paidBadge.textContent = "check_circle";
-        r1.appendChild(paidBadge);
+        r4.appendChild(paidBadge);
 
         // Row 6: Drivers — each slot = [icon] [name]
         const driversRow = document.createElement("div");
@@ -1201,7 +1202,7 @@ function _renderAgendaInner() {
         bar._d3Slot.classList.toggle("is-hidden", !needsD3);
         if (needsD3) {
           const glyph = bar._bD3.querySelector(".schedule-grid__trip-bar__badge-glyph");
-          if (glyph) glyph.textContent = "emergency_home";
+          if (glyph) glyph.textContent = "autorenew";
         }
       }
 
@@ -1215,7 +1216,7 @@ function _renderAgendaInner() {
         bar._d4Slot.classList.toggle("is-hidden", !needsD4);
         if (needsD4) {
           const glyph = bar._bD4.querySelector(".schedule-grid__trip-bar__badge-glyph");
-          if (glyph) glyph.textContent = "emergency_home";
+          if (glyph) glyph.textContent = "autorenew";
         }
       }
 
@@ -1270,7 +1271,7 @@ function _renderAgendaInner() {
           payment === "po received" || payment === "not required" || invoice === "paid in full";
 
         if (isAllClear && t.datePaid) {
-          // Show paid date instead of checkmark icon
+          // Show paid icon + date
           bar._paidBadge.classList.remove(
             "material-symbols-outlined",
             "is-hidden",
@@ -1278,7 +1279,7 @@ function _renderAgendaInner() {
             "is-solid",
           );
           bar._paidBadge.classList.add("is-date");
-          bar._paidBadge.textContent = `pd ${formatDateShort(t.datePaid)}`;
+          bar._paidBadge.innerHTML = `<span class="material-symbols-outlined">paid</span>${formatDateShort(t.datePaid)}`;
         } else if (isAllClear) {
           bar._paidBadge.classList.add("material-symbols-outlined");
           bar._paidBadge.classList.remove("is-hidden", "is-alert", "is-solid", "is-date");
