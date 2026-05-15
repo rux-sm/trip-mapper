@@ -317,6 +317,8 @@ function wireDelegatedBarEvents() {
           openDriverContactModal(tripKey);
         } else if (action === "envelope") {
           openEnvelopeModal(tripKey);
+        } else if (action === "tripReview") {
+          openTripDetailsModal(tripKey);
         } else if (action === "more") {
           const rect = bar.getBoundingClientRect();
           showTripContextMenu(rect.left + rect.width / 2, rect.bottom + window.scrollY, tripKey);

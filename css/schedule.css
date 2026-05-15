@@ -2,7 +2,7 @@
 
 :root {
   /* Schedule grid dimensions */
-  --schedule-row-height: 131px;
+  --schedule-row-height: 135px;
   --bus-col-w: 32px;
   --week-picker-height: 32px;
   --day-row-h: 32px;
@@ -1359,7 +1359,7 @@ body.driver-filter-active .schedule-grid__trip-bar.selected {
 
 /* ── Compact bars mode: shrink schedule row height to match ── */
 body.bars-compact {
-  --schedule-row-height: 83px;
+  --schedule-row-height: 101px; /* lane-step + 1 — sets the actual visible bar height */
 }
 
 /* ==========================================================================

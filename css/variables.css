@@ -141,6 +141,7 @@
   --rux-bg-overlay: oklch(from var(--rux-color-gray) 70% c h); /* Scrim / backdrop */
   --rux-bg-schedule-headers: oklch(from var(--rux-color-gray) 26% c h);
   --rux-bg-schedule: oklch(from var(--rux-color-gray) 20% c h); /* App canvas — pure black */
+  --rux-bg-trip-bar: oklch(from var(--rux-color-gray) 32% c h); /* App canvas — pure black */
 
   /* 2B. Accent & Status Colors
   ──────────────────────────────────────────────────────────────── */

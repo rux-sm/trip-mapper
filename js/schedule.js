@@ -62,10 +62,13 @@ function pruneOldBars(pass) {
 }
 
 function getBarMetrics() {
-  const rootCss = getComputedStyle(document.documentElement);
-  const barH = parseFloat(rootCss.getPropertyValue("--tripbar-height")) || 100;
+  // Read from body, not documentElement — compact mode overrides
+  // --tripbar-height and --tripbar-lane-step on body.bars-compact,
+  // so getComputedStyle(documentElement) would miss those overrides.
+  const bodyCss = getComputedStyle(document.body);
+  const barH = parseFloat(bodyCss.getPropertyValue("--tripbar-height")) || 100;
 
-  let step = parseFloat(rootCss.getPropertyValue("--tripbar-lane-step"));
+  let step = parseFloat(bodyCss.getPropertyValue("--tripbar-lane-step"));
   if (!step || Number.isNaN(step)) step = barH + 10;
 
   return { barH, step };
@@ -833,8 +836,9 @@ function _renderAgendaInner() {
         [
           { action: "load", icon: "edit", title: "Load trip" },
           { action: "pdf", icon: "upload_file", title: "Attach itinerary PDF" },
-          { action: "driverContact", icon: "contacts", title: "Driver contact info" },
+          { action: "driverContact", icon: "chat", title: "Driver contact info" },
           { action: "envelope", icon: "mail_outline", title: "Envelope" },
+          { action: "tripReview", icon: "rate_review", title: "Trip review" },
           { action: "more", icon: "more_horiz", title: "More options" },
         ].forEach(({ action, icon, title }) => {
           const btn = document.createElement("button");
@@ -870,7 +874,14 @@ function _renderAgendaInner() {
         line3.className = "schedule-grid__trip-bar__sub schedule-grid__trip-bar__contact";
         r3.appendChild(line3);
 
-        // Row 4: Time row (left/right)
+        // Row 4: Notes / memo + req icons
+        const barReqIcons = document.createElement("div");
+        barReqIcons.className = "schedule-grid__trip-bar__req-icons";
+        const notesEl = document.createElement("div");
+        notesEl.className = "schedule-grid__trip-bar__notes";
+        r4.append(barReqIcons, notesEl);
+
+        // Row 5: Time row (depart · spot · arrive)
         const timeRow = document.createElement("div");
         timeRow.className = "schedule-grid__trip-bar__time-row";
         const left = document.createElement("span");
@@ -880,14 +891,7 @@ function _renderAgendaInner() {
         const right = document.createElement("span");
         right.className = "schedule-grid__trip-bar__time schedule-grid__trip-bar__time--right";
         timeRow.append(left, center, right);
-        r4.appendChild(timeRow);
-
-        // Row 5: Req icons + notes / memo
-        const barReqIcons = document.createElement("div");
-        barReqIcons.className = "schedule-grid__trip-bar__req-icons";
-        const notesEl = document.createElement("div");
-        notesEl.className = "schedule-grid__trip-bar__notes";
-        r5.append(barReqIcons, notesEl);
+        r5.appendChild(timeRow);
 
         // Badge helpers — used in r1 top-status group, r6 driver slots
         function makeMini(content, isIcon = false) {
@@ -1152,7 +1156,7 @@ function _renderAgendaInner() {
         bar._pdfBtn.classList.toggle("is-hidden", notRequired && !hasPdf);
         const glyph = bar._pdfBtn.querySelector(".material-symbols-outlined");
         if (hasPdf) {
-          if (glyph) glyph.textContent = "picture_as_pdf";
+          if (glyph) glyph.textContent = "attach_file";
           bar._pdfBtn.title = "Open itinerary PDF";
           bar._pdfBtn.setAttribute("aria-label", "Open itinerary PDF");
           bar._pdfBtn.dataset.pdfState = "view";
@@ -1186,9 +1190,14 @@ function _renderAgendaInner() {
         }
       }
 
-      // Relief 1 slot
+      // Relief 1 slot — hide if no driver assigned AND this bus's slot is confirmed
+      // (dispatcher marked relief not needed for this specific bus)
       if (bar._bD3) {
-        const needsD3 = t.reqRelief || (a.driver3 && a.driver3 !== "None");
+        const d3Assigned = a.driver3 && a.driver3 !== "None";
+        const d3ConfirmedEmpty =
+          !d3Assigned &&
+          (a.driver3Status || "").trim().toLowerCase() === "confirmed";
+        const needsD3 = (t.reqRelief || d3Assigned) && !d3ConfirmedEmpty;
         bar._d3Slot.classList.toggle("is-hidden", !needsD3);
         if (needsD3) {
           const glyph = bar._bD3.querySelector(".schedule-grid__trip-bar__badge-glyph");
@@ -1196,9 +1205,13 @@ function _renderAgendaInner() {
         }
       }
 
-      // Relief 2 slot
+      // Relief 2 slot — same logic as relief 1
       if (bar._bD4) {
-        const needsD4 = t.reqRelief2 || (a.driver4 && a.driver4 !== "None");
+        const d4Assigned = a.driver4 && a.driver4 !== "None";
+        const d4ConfirmedEmpty =
+          !d4Assigned &&
+          (a.driver4Status || "").trim().toLowerCase() === "confirmed";
+        const needsD4 = (t.reqRelief2 || d4Assigned) && !d4ConfirmedEmpty;
         bar._d4Slot.classList.toggle("is-hidden", !needsD4);
         if (needsD4) {
           const glyph = bar._bD4.querySelector(".schedule-grid__trip-bar__badge-glyph");
