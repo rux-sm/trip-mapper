@@ -1298,6 +1298,10 @@ function wireEvents() {
       })
       .catch((err) => {
         console.error(err);
+        if (err.name === "AbortError") {
+          toast("Save timed out — data may have saved. Reload to confirm.", "warning", 8000);
+          return;
+        }
         if (state.pendingWrite) {
           state.trips = state.pendingWrite.originalTrips;
           state.tripByKey = state.pendingWrite.originalTripByKey;

@@ -362,10 +362,11 @@ function positionBarWithinOverlay(bar, bars, col, startIdx, endIdx, overrides) {
     // sitting expanded — the JS expand handler owns height at this point.
     // Keep dataset.collapsedHeight current so the close animation snaps
     // back to the right size if the layout changed (e.g. resize).
-    const parentH = bar.parentElement?.getBoundingClientRect().height ?? 0;
-    bar.dataset.collapsedHeight = `${Math.max(0, parentH - insetT - insetB)}px`;
+    const { barH } = getBarMetricsCached();
+    bar.dataset.collapsedHeight = `${barH}px`;
   } else {
-    bar.style.height = `calc(100% - ${insetT + insetB}px)`;
+    const { barH } = getBarMetricsCached();
+    bar.style.height = `${barH}px`;
   }
 }
 

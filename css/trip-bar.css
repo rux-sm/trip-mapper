@@ -14,30 +14,104 @@
      BAR-LEVEL GLOBALS
      ════════════════════════════════════════════════════════════════════════ */
 
-  /* ── Geometry ────────────────────────────────────────────────────────── */
+  /* ════════════════════════════════════════════════════════════════════════
+     HEIGHT BUDGET — every token that adds vertical pixels to the bar
+     schedule-row-height (compact) = collapsed + inset-top + inset-bottom
+     ════════════════════════════════════════════════════════════════════════ */
 
-  --tripbar-height-collapsed: 100px; /* rows 1-6 */
-  --tripbar-height-expanded:  200px; /* rows 1-10 */
-  --tripbar-height-active:    230px; /* rows 1-11, including action bar */
-  --tripbar-lane-gap:           0px;
+  /* ── Bar heights ────────────────────────────────────────────────────── */
+  --tripbar-height-collapsed: 90px; /* rows 1-6 */
+  --tripbar-height-expanded:  160px; /* rows 1-10 */
+  --tripbar-height-active:    190px; /* rows 1-11, including action bar */
+
+  /* ── Outer insets (space between bar edge and row cell) ─────────────── */
+  --tripbar-inset-top:    4px;
+  --tripbar-inset-bottom: 4px;
+
+  /* ── Internal vertical spacing ──────────────────────────────────────── */
+  --tripbar-padding-y: 0px;
+  --tripbar-row-gap:   0px;
+
+  /* ── Row heights (CSS grid track sizes; r11 via @property above) ─────── */
+  --tripbar-r1-row-height:  14px;
+  --tripbar-r2-row-height:  11px;
+  --tripbar-r3-row-height:  11px;
+  --tripbar-r4-row-height:  15px;
+  --tripbar-r5-row-height:  19px;
+  --tripbar-r6-row-height:  17px;
+  --tripbar-r7-row-height:  17px;
+  --tripbar-r8-row-height:  17px;
+  --tripbar-r9-row-height:  17px;
+  --tripbar-r10-row-height: 17px;
+
+  /* ── Gap above each row (margin-top; adds to height budget) ─────────── */
+  --tripbar-r1-gap-above:   0px;
+  --tripbar-r2-gap-above:   0px;
+  --tripbar-r3-gap-above:   0px;
+  --tripbar-r4-gap-above:   1px;
+  --tripbar-r5-gap-above:   1px;
+  --tripbar-r6-gap-above:   1px;
+  --tripbar-r7-gap-above:   1px;
+  --tripbar-r8-gap-above:   1px;
+  --tripbar-r9-gap-above:   1px;
+  --tripbar-r10-gap-above:  1px;
+  --tripbar-r11-gap-above:  4px;
+
+    /* ── Line Height ─────────────────────────────────────────────────────── */
+
+  --tripbar-r1-line-height:  14px;
+  --tripbar-r2-line-height:  11px;
+  --tripbar-r3-line-height:  11px;
+  --tripbar-r4-line-height:  14px;
+  --tripbar-r5-line-height:  18px;
+  --tripbar-r6-line-height:  16px;
+  --tripbar-r7-line-height:  16px;   /* row-height − gap-above */
+  --tripbar-r8-line-height:  16px;   /* row-height − gap-above */
+  --tripbar-r9-line-height:  16px;   /* row-height − gap-above */
+  --tripbar-r10-line-height: 16px;   /* row-height − gap-above */
+
+    /* ── Font Size ───────────────────────────────────────────────────────── */
+
+  --tripbar-r1-font-size:  12px;
+  --tripbar-r2-font-size:  11px;
+  --tripbar-r3-font-size:  11px;
+  --tripbar-r4-font-size:  10px;
+  --tripbar-r5-font-size:  12px;
+  --tripbar-r6-font-size:  12px;
+  --tripbar-r7-font-size:  11px;
+  --tripbar-r8-font-size:  11px;
+  --tripbar-r9-font-size:  11px;
+  --tripbar-r10-font-size: 11px;
+
+    /* ── Font Weight ─────────────────────────────────────────────────────── */
+
+  --tripbar-r1-font-weight:  800;
+  --tripbar-r2-font-weight:  700;
+  --tripbar-r3-font-weight:  700;
+  --tripbar-r4-font-weight:  500;
+  --tripbar-r5-font-weight:  800;
+  --tripbar-r6-font-weight:  800;
+  --tripbar-r7-font-weight:  400;
+  --tripbar-r8-font-weight:  400;
+  --tripbar-r9-font-weight:  400;
+  --tripbar-r10-font-weight: 400;
+
+  /* ════════════════════════════════════════════════════════════════════════
+     GEOMETRY — width, radius, lane, horizontal insets (no height effect)
+     ════════════════════════════════════════════════════════════════════════ */
 
   --tripbar-height:     var(--tripbar-height-expanded);
+  --tripbar-lane-gap:   0px;
+  --tripbar-lane-step:  calc(var(--tripbar-height) + var(--tripbar-lane-gap));
   --tripbar-radius:     8px;
   --tripbar-row-radius: 6px;
-  --tripbar-lane-step:  calc(var(--tripbar-height) + var(--tripbar-lane-gap));
   --tripbar-max-width:  188px;
   --tripbar-min-width:  188px;
 
-  /* ── Bar-level layout ───────────────────────────────────────────────── */
-
-  --tripbar-padding-x:    0px;
-  --tripbar-padding-y:    0px;
-  --tripbar-row-gap:      0px;
-  --tripbar-inset:        0px;
-  --tripbar-inset-left:   4px;
-  --tripbar-inset-right:  6px;
-  --tripbar-inset-top:    4px;
-  --tripbar-inset-bottom: 4px;
+  --tripbar-padding-x:   0px;
+  --tripbar-inset:       0px;
+  --tripbar-inset-left:  4px;
+  --tripbar-inset-right: 6px;
 
   /* ── Hover animation ────────────────────────────────────────────────── */
 
@@ -87,8 +161,8 @@
             r10 Payment refs      r11 Action btns (height via @property)
 
      Token anatomy:
-       --tripbar-rN-row-height      grid track height (JS reads for bar sizing)
-       --tripbar-rN-gap-above       margin-top above this row
+       --tripbar-rN-row-height      → moved to HEIGHT BUDGET section above
+       --tripbar-rN-gap-above       → moved to HEIGHT BUDGET section above
        --tripbar-rN-gap             flex gap between items within the row
        --tripbar-rN-margin-inline   outer horizontal clearance
        --tripbar-rN-padding-inline  inner horizontal text inset
@@ -105,33 +179,6 @@
        --tripbar-rN-icon-opsz       opsz axis  20 | 24 | 40 | 48
        --tripbar-rN-icon-grad       GRAD axis  (rows that use it only)
      ════════════════════════════════════════════════════════════════════════ */
-
-  /* ── Row Heights (grid track sizes; r11 is @property-typed above) ───── */
-
-  --tripbar-r1-row-height:  15px;
-  --tripbar-r2-row-height:  13px;
-  --tripbar-r3-row-height:  13px;
-  --tripbar-r4-row-height:  15px;
-  --tripbar-r5-row-height:  19px;
-  --tripbar-r6-row-height:  15px;
-  --tripbar-r7-row-height:  22px;
-  --tripbar-r8-row-height:  19px;
-  --tripbar-r9-row-height:  19px;
-  --tripbar-r10-row-height: 19px;
-
-  /* ── Gap Above (margin-top spacing above each row) ───────────────────── */
-
-  --tripbar-r1-gap-above:   1px;
-  --tripbar-r2-gap-above:   1px;
-  --tripbar-r3-gap-above:   1px;
-  --tripbar-r4-gap-above:   1px;
-  --tripbar-r5-gap-above:   1px;
-  --tripbar-r6-gap-above:   1px;
-  --tripbar-r7-gap-above:   4px;
-  --tripbar-r8-gap-above:   1px;
-  --tripbar-r9-gap-above:   1px;
-  --tripbar-r10-gap-above:  1px;
-  --tripbar-r11-gap-above:  4px;
 
   /* ── Inner Gap (flex gap between items within a row) ─────────────────── */
 
@@ -175,44 +222,11 @@
   --tripbar-r10-padding-inline:  0px;
   --tripbar-r11-padding-inline:  0px;
 
-  /* ── Font Size ───────────────────────────────────────────────────────── */
 
-  --tripbar-r1-font-size:  11px;
-  --tripbar-r2-font-size:  11px;
-  --tripbar-r3-font-size:  11px;
-  --tripbar-r4-font-size:  11px;
-  --tripbar-r5-font-size:  11px;
-  --tripbar-r6-font-size:  11px;
-  --tripbar-r7-font-size:  11px;
-  --tripbar-r8-font-size:  11px;
-  --tripbar-r9-font-size:  11px;
-  --tripbar-r10-font-size: 11px;
 
-  /* ── Font Weight ─────────────────────────────────────────────────────── */
 
-  --tripbar-r1-font-weight:  600;
-  --tripbar-r2-font-weight:  600;
-  --tripbar-r3-font-weight:  600;
-  --tripbar-r4-font-weight:  500;
-  --tripbar-r5-font-weight:  600;
-  --tripbar-r6-font-weight:  600;
-  --tripbar-r7-font-weight:  400;
-  --tripbar-r8-font-weight:  400;
-  --tripbar-r9-font-weight:  400;
-  --tripbar-r10-font-weight: 400;
 
-  /* ── Line Height ─────────────────────────────────────────────────────── */
 
-  --tripbar-r1-line-height:  14px;
-  --tripbar-r2-line-height:  12px;
-  --tripbar-r3-line-height:  12px;
-  --tripbar-r4-line-height:  14px;
-  --tripbar-r5-line-height:  18px;
-  --tripbar-r6-line-height:  14px;
-  --tripbar-r7-line-height:  18px;   /* row-height − gap-above */
-  --tripbar-r8-line-height:  18px;   /* row-height − gap-above */
-  --tripbar-r9-line-height:  18px;   /* row-height − gap-above */
-  --tripbar-r10-line-height: 18px;   /* row-height − gap-above */
 
   /* ── Letter Spacing ──────────────────────────────────────────────────── */
 
@@ -229,10 +243,10 @@
 
   /* ── Text Color ──────────────────────────────────────────────────────── */
 
-  --tripbar-r1-color: oklch(from var(--trip-accent-color) 75% 0.1 h);
+  --tripbar-r1-color: oklch(from var(--trip-accent-color) 99% 0.1 h);
   --tripbar-r2-color:  var(--rux-text-2);
   --tripbar-r3-color:  var(--rux-text-2);
-  --tripbar-r4-color:  oklch(100% 0 0 / 0.75);
+  --tripbar-r4-color:  oklch(100% 0 0 / 0.1);
   /* r5 color is set per-instance in component rules (inherits from bar text) */
   --tripbar-r6-color:  var(--rux-text-1);
   --tripbar-r7-color:  var(--rux-color-white);
@@ -478,10 +492,10 @@
 
   /* ── Component color token overrides ──────────────────────────────────── */
 
-  --tripbar-r1-color: var(--tripbar-text-color);
-  --tripbar-r2-color: oklch(from var(--tripbar-text-color) l c h / 0.65);
-  --tripbar-r3-color: oklch(from var(--tripbar-text-color) l c h / 0.65);
-  --tripbar-r4-color: var(--rux-text-1);
+  --tripbar-r1-color: oklch(from var(--tripbar-text-color) 80% c h / 1);
+  --tripbar-r2-color: oklch(from var(--tripbar-text-color) 80% c h / 0.5);
+  --tripbar-r3-color: oklch(from var(--tripbar-text-color) 80% c h / 0.5);
+  --tripbar-r4-color: oklch(100% 0 0 / .75);;
   /* r5 inherits from bar text via component rules */
   --tripbar-r6-color: var(--rux-text-1);
   /* r7–r10 use :root values */
@@ -705,8 +719,8 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   --tripbar-r8-row-height:  19px;
   --tripbar-r9-row-height:  19px;
   --tripbar-r10-row-height: 19px;
-  --tripbar-r7-gap-above:    4px; /* restore gap when rows expand */
-  --tripbar-r11-gap-above:   1px;
+  --tripbar-r7-gap-above:   4px;
+  --tripbar-r10-gap-above:  1px;
 }
 
 /* ── Row base ─────────────────────────────────────────────────────────────── */
@@ -797,7 +811,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
+  line-height: var(--tripbar-r1-line-height);
   text-align: center;
 }
 
@@ -810,11 +824,13 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   margin-left: auto;
   position: relative;
   z-index: 1;
+  line-height: var(--tripbar-r1-line-height);
 }
 
 /* Three-class specificity beats any two-class mini-badge state rule */
 .schedule-grid__trip-bar__top-status-badges .schedule-grid__trip-bar__mini-badge.icon-status {
   color: var(--rux-status-red);
+  line-height: var(--tripbar-r1-line-height);
 }
 
 .schedule-grid__trip-bar__paid-badge {
@@ -833,6 +849,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: var(--tripbar-r1-line-height);
 }
 
 /* Protect badge from row 4's generic icon token override */
@@ -849,6 +866,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
 .schedule-grid__trip-bar__paid-badge.is-alert { color: var(--rux-status-red); }
 
 .schedule-grid__trip-bar__paid-badge.is-solid {
+  line-height: var(--tripbar-r1-line-height);
   font-variation-settings:
     "FILL" 1,
     "wght" var(--tripbar-r4-paid-icon-wght),
@@ -862,6 +880,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   width: auto;
   letter-spacing: 0em;
   gap: var(--tripbar-r4-paid-date-gap);
+  line-height: var(--tripbar-r1-line-height);
 
   & .material-symbols-outlined {
     font-size: var(--tripbar-r4-paid-date-icon-size);
@@ -1000,7 +1019,6 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   background: var(--tripbar-r5-bg);
   line-height: var(--tripbar-r5-line-height);
   border-radius: var(--tripbar-row-radius);
-  border: 1px solid var(--tripbar-r5-border-color);
 }
 
 .schedule-grid__trip-bar__row--5 .material-symbols-outlined {
@@ -1251,7 +1269,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   font-variation-settings:
     "FILL" var(--tripbar-r9-icon-fill),
     "wght" var(--tripbar-r9-icon-wght),
-    "GRAD" 0,
+    "GRAD" var(--tripbar-r9-icon-grad),
     "opsz" var(--tripbar-r9-icon-opsz);
 }
 

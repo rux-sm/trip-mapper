@@ -3,7 +3,7 @@
 :root {
   /* Schedule grid dimensions */
   --day-col-min-w: 224px;
-  --schedule-row-height: 200px;
+  --schedule-row-height: 170px;
   --bus-col-w: 32px;
   --week-picker-height: 32px;
   --day-row-h: 32px;
@@ -1374,7 +1374,7 @@ body.driver-filter-active .schedule-grid__trip-bar.selected {
 
 /* ── Compact bars mode: shrink schedule row height to match ── */
 body.bars-compact {
-  --schedule-row-height: 101px;
+  --schedule-row-height: calc(var(--tripbar-height-collapsed) + var(--tripbar-inset-top) + var(--tripbar-inset-bottom));
 }
 
 /* ==========================================================================
