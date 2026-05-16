@@ -375,6 +375,7 @@
   /* Collapse timing — overridden by .expanded rule for the open direction */
   transition:
     height var(--tripbar-collapse-duration) var(--tripbar-collapse-ease),
+    width  var(--tripbar-collapse-duration) var(--tripbar-collapse-ease),
     --tripbar-r10-row-height var(--tripbar-collapse-duration) var(--tripbar-collapse-ease),
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
@@ -565,6 +566,7 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
 .schedule-grid__trip-bar.expanded {
   transition:
     height var(--tripbar-expand-duration) var(--tripbar-expand-ease),
+    width  var(--tripbar-expand-duration) var(--tripbar-expand-ease),
     --tripbar-r10-row-height var(--tripbar-expand-duration) var(--tripbar-expand-ease),
     transform var(--transition-fast),
     box-shadow var(--transition-fast),

@@ -302,6 +302,10 @@ function wireDelegatedBarEvents() {
           b.classList.remove("expanded");
           b.style.height = b.dataset.collapsedHeight || "";
           delete b.dataset.collapsedHeight;
+          if (b.dataset.collapsedWidth) {
+            b.style.width = b.dataset.collapsedWidth;
+            delete b.dataset.collapsedWidth;
+          }
           b.parentElement.style.zIndex = "";
           const td = b.parentElement.parentElement;
           if (td?.tagName === "TD") td.style.zIndex = "";
@@ -323,6 +327,19 @@ function wireDelegatedBarEvents() {
           // 3. Add class — switches transition to expand timing and sets
           //    --tripbar-action-row-height: 30px for the grid track.
           clickedBar.classList.add("expanded");
+
+          // Shrink multi-day bars to a single column width on expand.
+          const sidx = parseInt(clickedBar.dataset.sidx ?? "0", 10);
+          const eidx = parseInt(clickedBar.dataset.eidx ?? "0", 10);
+          if (sidx !== eidx) {
+            clickedBar.dataset.collapsedWidth = clickedBar.style.width;
+            const col = getColMetricsCached();
+            const barCs = getComputedStyle(clickedBar);
+            const insetL = parseFloat(barCs.getPropertyValue("--tripbar-inset-left")) || 3;
+            const insetR = parseFloat(barCs.getPropertyValue("--tripbar-inset-right")) || 3;
+            const singleW = Math.max(0, (col.widths[sidx] ?? 0) - insetL - insetR);
+            clickedBar.style.width = singleW + "px";
+          }
 
           // Elevate both the .schedule-grid__row-bars overlay AND its parent <td>
           // (.schedule-grid__cell has position:relative, so adding z-index creates
