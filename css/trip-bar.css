@@ -22,7 +22,8 @@
   --tripbar-lane-gap:           0px;
 
   --tripbar-height:     var(--tripbar-height-expanded);
-  --tripbar-radius:     7px;
+  --tripbar-radius:     8px;
+  --tripbar-row-radius: 6px;
   --tripbar-lane-step:  calc(var(--tripbar-height) + var(--tripbar-lane-gap));
   --tripbar-max-width:  188px;
   --tripbar-min-width:  188px;
@@ -166,7 +167,7 @@
   --tripbar-r2-padding-inline:   0px;
   --tripbar-r3-padding-inline:   0px;
   --tripbar-r4-padding-inline:   4px;
-  --tripbar-r5-padding-inline:   4px;
+  --tripbar-r5-padding-inline:   6px;
   --tripbar-r6-padding-inline:   4px;
   --tripbar-r7-padding-inline:   0px;
   --tripbar-r8-padding-inline:   0px;
@@ -255,6 +256,8 @@
   --tripbar-r11-bg: oklch(0% 0 0 / 0%);
 
   /* ── Icon Size ───────────────────────────────────────────────────────── */
+
+  --tripbar-r5-border-color: oklch(100% 0 0 / 20%);
 
   --tripbar-r1-icon-size:  14px;
   --tripbar-r2-icon-size:  14px;
@@ -996,8 +999,8 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   padding-inline: var(--tripbar-r5-padding-inline);
   background: var(--tripbar-r5-bg);
   line-height: var(--tripbar-r5-line-height);
-  border-radius: var(--tripbar-r5-radius);
-  border: none;
+  border-radius: var(--tripbar-row-radius);
+  border: 1px solid var(--tripbar-r5-border-color);
 }
 
 .schedule-grid__trip-bar__row--5 .material-symbols-outlined {

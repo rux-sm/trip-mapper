@@ -3,7 +3,7 @@
 :root {
   /* Schedule grid dimensions */
   --day-col-min-w: 224px;
-  --schedule-row-height: 172px;
+  --schedule-row-height: 200px;
   --bus-col-w: 32px;
   --week-picker-height: 32px;
   --day-row-h: 32px;
