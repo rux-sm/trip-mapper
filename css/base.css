@@ -33,6 +33,7 @@
 .schedule-viewport::-webkit-scrollbar {
   width: 8px;
   height: 8px;
+  
 }
 
 .schedule-viewport::-webkit-scrollbar:vertical {
@@ -40,15 +41,17 @@
 }
 
 .schedule-viewport::-webkit-scrollbar:horizontal {
-  height: 8px;
+  height: 16px;
+  padding-inline: 10px;
+  
 }
 
 .schedule-viewport::-webkit-scrollbar-track {
-  background: var(--rux-bg-1);
+  background: var(--rux-bg-scrollbar-track);
 }
 
 .schedule-viewport::-webkit-scrollbar-thumb {
-  background-color: var(--rux-bg-3);
+  background-color: var(--rux-bg-scrollbar-thumb);
   border-radius: 20px;
   border: 1px solid var(--rux-bg-3);
   background-clip: padding-box;
@@ -56,7 +59,11 @@
 }
 
 .schedule-viewport::-webkit-scrollbar-thumb:hover {
-  background-color: var(--rux-bg-4);
+  background-color: var(--rux-bg-scrollbar-thumb-hover);
+}
+
+.schedule-viewport::-webkit-scrollbar-thumb:active {
+  background-color: var(--rux-bg-scrollbar-thumb-active);
 }
 
 /* Hide vertical scrollbars while preserving wheel/trackpad scrolling */

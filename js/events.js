@@ -354,14 +354,16 @@ function wireDelegatedBarEvents() {
           //    rowGapH, so the two stay in lockstep — overflow:hidden never
           //    clips anything mid-animation.
           const cs = getComputedStyle(clickedBar);
-          const actionRowH = parseFloat(cs.getPropertyValue("--tripbar-action-row-height")) || 30;
+          const actionRowH = parseFloat(cs.getPropertyValue("--tripbar-r11-row-height")) || 30;
           const rowGapH = parseFloat(cs.getPropertyValue("--tripbar-row-gap")) || 0;
-          // In compact mode rows 5, 6 & 8 are 0px when collapsed but CSS restores them
-          // once .expanded is added, so we must account for their heights here.
+          // In compact mode rows 5, 6, 8 & 10 are 0px when collapsed but CSS
+          // restores them once .expanded is added — account for their heights here.
           const hiddenRowsH = document.body.classList.contains("bars-compact")
-            ? (parseFloat(cs.getPropertyValue("--tripbar-r5-row-height")) || 16) +
-              (parseFloat(cs.getPropertyValue("--tripbar-r6-row-height")) || 16) +
-              (parseFloat(cs.getPropertyValue("--tripbar-r8-row-height")) || 16)
+            ? (parseFloat(cs.getPropertyValue("--tripbar-r5-row-height"))  || 0) +
+              (parseFloat(cs.getPropertyValue("--tripbar-r6-row-height"))  || 0) +
+              (parseFloat(cs.getPropertyValue("--tripbar-r8-row-height"))  || 0) +
+              (parseFloat(cs.getPropertyValue("--tripbar-r10-row-height")) || 0) +
+              (parseFloat(cs.getPropertyValue("--tripbar-r10-gap-above"))  || 0)
             : 0;
           clickedBar.style.height = collapsedPx + hiddenRowsH + actionRowH + rowGapH + "px";
         }
@@ -718,6 +720,9 @@ function wireEvents() {
       // Optional: change icon style/color if active
       dom.waitingListBtn.classList.toggle("active", visible);
     }
+    // Toggle bottom-radius seam fix — surface container handles corners when
+    // waiting list is visible; cell-level radii are suppressed via this class.
+    getScheduleGridWrapEl()?.classList.toggle("has-waiting-list", visible);
     try {
       localStorage.setItem("waitingListVisible", visible ? "1" : "0");
     } catch {}

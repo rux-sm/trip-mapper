@@ -1,7 +1,7 @@
-/* Register row 10 height as a typed <length> so the browser can interpolate
-   it inside grid-template-rows. Without @property the custom property is an
-   opaque string and grid-template-rows transitions snap. */
-@property --tripbar-r10-row-height {
+/* Register row 11 (action buttons) height as a typed <length> so the browser
+   can interpolate it inside grid-template-rows. Without @property the custom
+   property is an opaque string and grid-template-rows transitions snap. */
+@property --tripbar-r11-row-height {
   syntax: "<length>";
   inherits: false;
   initial-value: 0px;
@@ -10,24 +10,28 @@
 /* ── Tier 3 tokens ───────────────────────────────────────────────────────── */
 
 :root {
-  /* ── Bar geometry ───────────────────────────────────────────────────── */
+  /* ════════════════════════════════════════════════════════════════════════
+     BAR-LEVEL GLOBALS
+     ════════════════════════════════════════════════════════════════════════ */
 
-  --tripbar-height:     150px;
+  /* ── Geometry ────────────────────────────────────────────────────────── */
+
+  --tripbar-height:     200px;
   --tripbar-radius:       7px;
-  --tripbar-lane-step:  135px;
+  --tripbar-lane-step:  200px;
   --tripbar-max-width:  188px;
   --tripbar-min-width:  188px;
 
   /* ── Bar-level layout ───────────────────────────────────────────────── */
 
-  --tripbar-padding-x: 0px;
-  --tripbar-padding-y: 0px;
-  --tripbar-row-gap:   0px;
-  --tripbar-inset:        2px;
-  --tripbar-inset-left:   3px;
-  --tripbar-inset-right:  3px;
-  --tripbar-inset-top:    2px;
-  --tripbar-inset-bottom: 2px;
+  --tripbar-padding-x:    0px;
+  --tripbar-padding-y:    0px;
+  --tripbar-row-gap:      0px;
+  --tripbar-inset:        0px;
+  --tripbar-inset-left:   4px;
+  --tripbar-inset-right:  6px;
+  --tripbar-inset-top:    4px;
+  --tripbar-inset-bottom: 4px;
 
   /* ── Hover animation ────────────────────────────────────────────────── */
 
@@ -51,34 +55,37 @@
 
   /* ── Badge / icon globals (legacy — prefer per-row tokens below) ─────── */
 
-  --tripbar-mini-badge:      12px;
-  --tripbar-badge-radius:    0;
+  --tripbar-mini-badge:       12px;
+  --tripbar-badge-radius:     0;
   --tripbar-badge-text-color: var(--rux-text-1);
-  --tripbar-icon-size:       var(--rux-size-5);
+  --tripbar-icon-size:        var(--rux-size-5);
 
   /* ── Cross-file tokens ──────────────────────────────────────────────── */
-  /* Consumed by other CSS files — do not remove without checking         */
-  /* print.css, schedule.css, and base.css first.                        */
+  /* Consumed by print.css, schedule.css, base.css — do not remove       */
 
-  --tripbar-color:        var(--rux-status-blue-alpha); /* print.css           */
-  --tripbar-border-color: var(--rux-color-accent);      /* .one-way, print.css */
-  --tripbar-dim-opacity:  0.6;                          /* schedule.css        */
+  --tripbar-color:        var(--rux-status-blue-alpha); /* print.css  */
+  --tripbar-border-color: var(--rux-color-accent);      /* .one-way   */
+  --tripbar-dim-opacity:  0.6;                          /* schedule   */
 
-  /* Time row special tokens */
+  /* ── Time row special ───────────────────────────────────────────────── */
+
   --tripbar-time-color:         var(--tripbar-r5-color);
   --tripbar-time-color-flagged: var(--rux-status-yellow);
 
   /* ════════════════════════════════════════════════════════════════════════
-     PER-ROW TOKENS
-     Each row exposes the same set of properties. Change any token here
-     to restyle that row globally — no digging into component rules needed.
+     PER-ROW TOKENS — organized by property type, then by row
+
+     Rows:  r1 Destination title  r2 Customer     r3 Contact / phone
+            r4 Notes + req icons  r5 Times        r6 Drivers
+            r7 Driver pay         r8 Estimate     r9 Billing (INV)
+            r10 Payment refs      r11 Action btns (height via @property)
 
      Token anatomy:
-       --tripbar-rN-row-height      grid track height (JS reads this for bar sizing)
-       --tripbar-rN-gap-above       margin-top — visual gap above this row
-       --tripbar-rN-margin-inline   outer horizontal clearance (pulls bg away from edges)
-       --tripbar-rN-padding-inline  inner horizontal padding (text inset within bg)
-       --tripbar-rN-gap             flex gap between items inside the row
+       --tripbar-rN-row-height      grid track height (JS reads for bar sizing)
+       --tripbar-rN-gap-above       margin-top above this row
+       --tripbar-rN-gap             flex gap between items within the row
+       --tripbar-rN-margin-inline   outer horizontal clearance
+       --tripbar-rN-padding-inline  inner horizontal text inset
        --tripbar-rN-font-size       text size
        --tripbar-rN-font-weight     text weight
        --tripbar-rN-line-height     line height
@@ -86,37 +93,250 @@
        --tripbar-rN-color           text color
        --tripbar-rN-bg              row background
        --tripbar-rN-icon-size       icon font-size
-       --tripbar-rN-icon-color      icon color  (defaults to text color)
-       --tripbar-rN-icon-fill       Material Symbols FILL axis  0 = outline  1 = filled
-       --tripbar-rN-icon-wght       Material Symbols wght axis  100 – 700
-       --tripbar-rN-icon-opsz       Material Symbols opsz axis  20 | 24 | 40 | 48
+       --tripbar-rN-icon-color      icon color
+       --tripbar-rN-icon-fill       FILL axis  0 = outline  1 = filled
+       --tripbar-rN-icon-wght       wght axis  100–700
+       --tripbar-rN-icon-opsz       opsz axis  20 | 24 | 40 | 48
+       --tripbar-rN-icon-grad       GRAD axis  (rows that use it only)
      ════════════════════════════════════════════════════════════════════════ */
 
-  /* ── Row 1 — Destination title ──────────────────────────────────────── */
+  /* ── Row Heights (grid track sizes; r11 is @property-typed above) ───── */
 
-  --tripbar-r1-row-height:     16px;
-  --tripbar-r1-gap-above:       4px;
+  --tripbar-r1-row-height:  15px;
+  --tripbar-r2-row-height:  13px;
+  --tripbar-r3-row-height:  13px;
+  --tripbar-r4-row-height:  15px;
+  --tripbar-r5-row-height:  19px;
+  --tripbar-r6-row-height:  15px;
+  --tripbar-r7-row-height:  22px;
+  --tripbar-r8-row-height:  19px;
+  --tripbar-r9-row-height:  19px;
+  --tripbar-r10-row-height: 19px;
+
+  /* ── Gap Above (margin-top spacing above each row) ───────────────────── */
+
+  --tripbar-r1-gap-above:   1px;
+  --tripbar-r2-gap-above:   1px;
+  --tripbar-r3-gap-above:   1px;
+  --tripbar-r4-gap-above:   1px;
+  --tripbar-r5-gap-above:   1px;
+  --tripbar-r6-gap-above:   1px;
+  --tripbar-r7-gap-above:   4px;
+  --tripbar-r8-gap-above:   1px;
+  --tripbar-r9-gap-above:   1px;
+  --tripbar-r10-gap-above:  1px;
+  --tripbar-r11-gap-above:  4px;
+
+  /* ── Inner Gap (flex gap between items within a row) ─────────────────── */
+
+  --tripbar-r1-gap:  2px;
+  --tripbar-r2-gap:  2px;
+  --tripbar-r3-gap:  2px;
+  --tripbar-r4-gap:  6px;
+  --tripbar-r5-gap:  4px;
+  --tripbar-r6-gap:  6px;
+  --tripbar-r7-gap:  0px;              /* bullet separator in string; gap offsets centering */
+  --tripbar-r8-gap:  6px;
+  --tripbar-r9-gap:  4px;
+  --tripbar-r10-gap: 4px;
+  --tripbar-r11-gap: var(--rux-space-3);
+
+  /* ── Margin Inline (outer horizontal clearance) ──────────────────────── */
+
   --tripbar-r1-margin-inline:   2px;
-  --tripbar-r1-padding-inline:  4px;
-  --tripbar-r1-gap:             2px;
-  --tripbar-r1-font-size:      10px;
-  --tripbar-r1-max-width:      200px; /* prevent long destination names from pushing out bar width */
-  --tripbar-r1-font-weight:    var(--rux-weight-bold);
-  --tripbar-r1-line-height:    16px;
-  --tripbar-r1-letter-spacing: -0.02em;
-  --tripbar-r1-color:          var(--rux-text-1);
-  --tripbar-r1-bg:              oklch(0% 0 0 / 0%);
-  --tripbar-r1-icon-size:      16px;
-  --tripbar-r1-icon-color:     /* color based on status */;
-  --tripbar-r1-icon-fill:      0;
-  --tripbar-r1-icon-wght:      500;
-  --tripbar-r1-icon-opsz:      20;
-  --tripbar-r1-icon-grad:      25;
+  --tripbar-r2-margin-inline:   0px;
+  --tripbar-r3-margin-inline:   0px;
+  --tripbar-r4-margin-inline:   4px;
+  --tripbar-r5-margin-inline:   4px;
+  --tripbar-r6-margin-inline:   4px;
+  --tripbar-r7-margin-inline:   4px;
+  --tripbar-r8-margin-inline:   4px;
+  --tripbar-r9-margin-inline:   4px;
+  --tripbar-r10-margin-inline:  4px;
+  --tripbar-r11-margin-inline:  4px;
 
-  /* title text overlay */
+  /* ── Padding Inline (inner horizontal text inset) ────────────────────── */
+
+  --tripbar-r1-padding-inline:   4px;
+  --tripbar-r2-padding-inline:   0px;
+  --tripbar-r3-padding-inline:   0px;
+  --tripbar-r4-padding-inline:   4px;
+  --tripbar-r5-padding-inline:   4px;
+  --tripbar-r6-padding-inline:   4px;
+  --tripbar-r7-padding-inline:   0px;
+  --tripbar-r8-padding-inline:   0px;
+  --tripbar-r9-padding-inline:   0px;
+  --tripbar-r10-padding-inline:  0px;
+  --tripbar-r11-padding-inline:  0px;
+
+  /* ── Font Size ───────────────────────────────────────────────────────── */
+
+  --tripbar-r1-font-size:  11px;
+  --tripbar-r2-font-size:  11px;
+  --tripbar-r3-font-size:  11px;
+  --tripbar-r4-font-size:  11px;
+  --tripbar-r5-font-size:  11px;
+  --tripbar-r6-font-size:  11px;
+  --tripbar-r7-font-size:  11px;
+  --tripbar-r8-font-size:  11px;
+  --tripbar-r9-font-size:  11px;
+  --tripbar-r10-font-size: 11px;
+
+  /* ── Font Weight ─────────────────────────────────────────────────────── */
+
+  --tripbar-r1-font-weight:  600;
+  --tripbar-r2-font-weight:  600;
+  --tripbar-r3-font-weight:  600;
+  --tripbar-r4-font-weight:  500;
+  --tripbar-r5-font-weight:  600;
+  --tripbar-r6-font-weight:  600;
+  --tripbar-r7-font-weight:  400;
+  --tripbar-r8-font-weight:  400;
+  --tripbar-r9-font-weight:  400;
+  --tripbar-r10-font-weight: 400;
+
+  /* ── Line Height ─────────────────────────────────────────────────────── */
+
+  --tripbar-r1-line-height:  14px;
+  --tripbar-r2-line-height:  12px;
+  --tripbar-r3-line-height:  12px;
+  --tripbar-r4-line-height:  14px;
+  --tripbar-r5-line-height:  18px;
+  --tripbar-r6-line-height:  14px;
+  --tripbar-r7-line-height:  18px;   /* row-height − gap-above */
+  --tripbar-r8-line-height:  18px;   /* row-height − gap-above */
+  --tripbar-r9-line-height:  18px;   /* row-height − gap-above */
+  --tripbar-r10-line-height: 18px;   /* row-height − gap-above */
+
+  /* ── Letter Spacing ──────────────────────────────────────────────────── */
+
+  --tripbar-r1-letter-spacing:  -0.02em;
+  --tripbar-r2-letter-spacing:  -0.02em;
+  --tripbar-r3-letter-spacing:  -0.02em;
+  --tripbar-r4-letter-spacing:  -0.04em;
+  --tripbar-r5-letter-spacing:  -0.04em;
+  --tripbar-r6-letter-spacing:  -0.04em;
+  --tripbar-r7-letter-spacing:   0.02em;
+  --tripbar-r8-letter-spacing:   0.02em;
+  --tripbar-r9-letter-spacing:   0em;
+  --tripbar-r10-letter-spacing:  0em;
+
+  /* ── Text Color ──────────────────────────────────────────────────────── */
+
+  --tripbar-r1-color: oklch(from var(--trip-accent-color) 75% 0.1 h);
+  --tripbar-r2-color:  var(--rux-text-2);
+  --tripbar-r3-color:  var(--rux-text-2);
+  --tripbar-r4-color:  oklch(100% 0 0 / 0.75);
+  /* r5 color is set per-instance in component rules (inherits from bar text) */
+  --tripbar-r6-color:  var(--rux-text-1);
+  --tripbar-r7-color:  var(--rux-color-white);
+  --tripbar-r8-color:  var(--rux-color-white);
+  --tripbar-r9-color:  var(--rux-color-white);
+  --tripbar-r10-color: var(--rux-color-white);
+  --tripbar-r11-color: var(--rux-text-1);
+
+  /* ── Background ──────────────────────────────────────────────────────── */
+
+  --tripbar-r1-bg:  oklch(0% 0 0 / 0%);
+  --tripbar-r2-bg:  oklch(0% 0 0 / 0%);
+  --tripbar-r3-bg:  oklch(0% 0 0 / 0%);
+  --tripbar-r4-bg:  oklch(0% 0 0 / 0%);
+  --tripbar-r5-bg:  oklch(0% 0 0 / 50%);
+  --tripbar-r6-bg:  oklch(0% 0 0 / 0%);
+  --tripbar-r7-bg:  oklch(100% 0 0 / 25%);
+  --tripbar-r8-bg:  oklch(100% 0 0 / 25%);
+  --tripbar-r9-bg:  oklch(100% 0 0 / 25%);
+  --tripbar-r10-bg: oklch(100% 0 0 / 25%);
+  --tripbar-r11-bg: oklch(0% 0 0 / 0%);
+
+  /* ── Icon Size ───────────────────────────────────────────────────────── */
+
+  --tripbar-r1-icon-size:  14px;
+  --tripbar-r2-icon-size:  14px;
+  --tripbar-r3-icon-size:  14px;
+  --tripbar-r4-icon-size:  14px;
+  --tripbar-r5-icon-size:  14px;
+  --tripbar-r6-icon-size:  14px;
+  --tripbar-r7-icon-size:  14px;   /* icons not used on pay row */
+  --tripbar-r8-icon-size:  14px;
+  --tripbar-r9-icon-size:  14px;
+  --tripbar-r10-icon-size: 14px;
+  --tripbar-r11-icon-size: 16px;
+
+  /* ── Icon Color ──────────────────────────────────────────────────────── */
+
+  /* r1 and r6 icon color is set per-status in component rules */
+  --tripbar-r2-icon-color:  var(--tripbar-r2-color);
+  --tripbar-r3-icon-color:  var(--tripbar-r3-color);
+  --tripbar-r4-icon-color:  oklch(100% 0 0 / 1);
+  --tripbar-r5-icon-color:  var(--tripbar-r5-color);
+  --tripbar-r7-icon-color:  var(--tripbar-r7-color);
+  --tripbar-r8-icon-color:  oklch(100% 0 0 / 0.75);
+  --tripbar-r9-icon-color:  var(--tripbar-r9-color);
+  --tripbar-r10-icon-color: var(--tripbar-r10-color);
+  --tripbar-r11-icon-color: var(--rux-color-white);
+
+  /* ── Icon Fill (0 = outline, 1 = filled) ────────────────────────────── */
+
+  --tripbar-r1-icon-fill:  1;
+  --tripbar-r2-icon-fill:  1;
+  --tripbar-r3-icon-fill:  1;
+  --tripbar-r4-icon-fill:  1;
+  --tripbar-r5-icon-fill:  1;
+  --tripbar-r6-icon-fill:  1;
+  --tripbar-r7-icon-fill:  1;
+  --tripbar-r8-icon-fill:  1;
+  --tripbar-r9-icon-fill:  1;
+  --tripbar-r10-icon-fill: 1;
+  --tripbar-r11-icon-fill: 1;
+
+  /* ── Icon Weight (100–700) ───────────────────────────────────────────── */
+
+  --tripbar-r1-icon-wght:  500;
+  --tripbar-r2-icon-wght:  400;
+  --tripbar-r3-icon-wght:  400;
+  --tripbar-r4-icon-wght:  500;
+  --tripbar-r5-icon-wght:  400;
+  --tripbar-r6-icon-wght:  500;
+  --tripbar-r7-icon-wght:  400;
+  --tripbar-r8-icon-wght:  400;
+  --tripbar-r9-icon-wght:  400;
+  --tripbar-r10-icon-wght: 400;
+  --tripbar-r11-icon-wght: 400;
+
+  /* ── Icon Optical Size (20 | 24 | 40 | 48) ──────────────────────────── */
+
+  --tripbar-r1-icon-opsz:  20;
+  --tripbar-r2-icon-opsz:  20;
+  --tripbar-r3-icon-opsz:  20;
+  --tripbar-r4-icon-opsz:  20;
+  --tripbar-r5-icon-opsz:  20;
+  --tripbar-r6-icon-opsz:  20;
+  --tripbar-r7-icon-opsz:  20;
+  --tripbar-r8-icon-opsz:  20;
+  --tripbar-r9-icon-opsz:  20;
+  --tripbar-r10-icon-opsz: 20;
+  --tripbar-r11-icon-opsz: 20;
+
+  /* ── Icon Grad (only rows that use the GRAD axis) ────────────────────── */
+
+  --tripbar-r1-icon-grad:  25;
+  --tripbar-r4-icon-grad:  25;
+  --tripbar-r6-icon-grad:  25;
+  --tripbar-r11-icon-grad: 0;
+
+  /* ════════════════════════════════════════════════════════════════════════
+     ROW-SPECIFIC TOKENS
+     Sub-components and properties without a cross-row counterpart.
+     ════════════════════════════════════════════════════════════════════════ */
+
+  /* ── r1 — Title overlay + max-width ─────────────────────────────────── */
+
   --tripbar-r1-title-padding-inline: 20px;
+  --tripbar-r1-max-width:            200px;
 
-  /* multi-bus qty badge (circle showing bus count, left of title) */
+  /* ── r1 — Multi-bus count badge (left of title) ──────────────────────── */
+
   --tripbar-r1-multi-badge-size:           14px;
   --tripbar-r1-multi-badge-font-size:      10px;
   --tripbar-r1-multi-badge-font-weight:    700;
@@ -126,217 +346,54 @@
   --tripbar-r1-multi-badge-radius:         4px;
   --tripbar-r1-multi-badge-padding-inline: 4px;
 
-  /* top-status badge group (b$  bI  bC — three mini icon badges, far right) */
-  --tripbar-r1-status-badge-gap: 1px;
+  /* ── r1 — Top-status badge group (b$  bI  bC — far right of row 1) ──── */
 
-  /* date pill chips */
+  --tripbar-r1-status-badge-gap: 0px;
+
+  /* ── r1 — Date pill chips (departure / arrival labels) ───────────────── */
+
   --tripbar-r1-date-size:        10px;
   --tripbar-r1-date-font-weight: 400;
   --tripbar-r1-date-radius:      var(--rux-radius-2);
   --tripbar-r1-date-color:       var(--tripbar-r1-color);
   --tripbar-r1-date-bg:          oklch(from var(--tripbar-r1-color) l c h / 15%);
 
-  /* ── Row 2 — Customer ───────────────────────────────────────────────── */
+  /* ── r2, r3 — Text max-width guard ──────────────────────────────────── */
 
-  --tripbar-r2-row-height:     14px;
-  --tripbar-r2-gap-above:       0px;
-  --tripbar-r2-margin-inline:   0px;
-  --tripbar-r2-padding-inline:  0px;
-  --tripbar-r2-gap:             2px;
-  --tripbar-r2-max-width:      200px; /* prevent long customer names from pushing out bar width */
-  --tripbar-r2-font-size:      10px;
-  --tripbar-r2-font-weight:    var(--rux-weight-bold);
-  --tripbar-r2-line-height:    14px;
-  --tripbar-r2-letter-spacing: -0.02em;
-  --tripbar-r2-color:          var(--rux-text-2);
-  --tripbar-r2-bg:              oklch(0% 0 0 / 0%);
-  --tripbar-r2-icon-size:      12px;
-  --tripbar-r2-icon-color:     var(--tripbar-r2-color);
-  --tripbar-r2-icon-fill:      0;
-  --tripbar-r2-icon-wght:      400;
-  --tripbar-r2-icon-opsz:      20;
+  --tripbar-r2-max-width: 200px;
+  --tripbar-r3-max-width: 200px;
 
-  /* ── Row 3 — Contact name / phone ───────────────────────────────────── */
+  /* ── r4 — Notes text overlay ─────────────────────────────────────────── */
 
-  --tripbar-r3-row-height:     14px;
-  --tripbar-r3-gap-above:       0px;
-  --tripbar-r3-margin-inline:   0px;
-  --tripbar-r3-padding-inline:  0px;
-  --tripbar-r3-gap:             2px;
-  --tripbar-r3-max-width:      200px; /* prevent long contact names from pushing out bar width */
-  --tripbar-r3-font-size:      10px;
-  --tripbar-r3-font-weight:    var(--rux-weight-bold);
-  --tripbar-r3-line-height:    14px;
-  --tripbar-r3-letter-spacing: -0.02em;
-  --tripbar-r3-color:          var(--rux-text-2);
-  --tripbar-r3-bg:             oklch(0% 0 0 / 0%);
-  --tripbar-r3-icon-size:      12px;
-  --tripbar-r3-icon-color:     var(--tripbar-r3-color);
-  --tripbar-r3-icon-fill:      0;
-  --tripbar-r3-icon-wght:      400;
-  --tripbar-r3-icon-opsz:      20;
-
-  /* ── Row 4 — Notes / memo + req icons ──────────────────────────────── */
-
-  --tripbar-r4-row-height:     16px;
-  --tripbar-r4-gap-above:       0px;
-  --tripbar-r4-margin-inline:   4px;
-  --tripbar-r4-padding-inline:  4px;
-  --tripbar-r4-gap:             6px;
-  --tripbar-r4-max-width:      ; /* prevent long notes from pushing out bar width */
-  --tripbar-r4-font-size:      10px;
-  --tripbar-r4-font-weight:    var(--rux-weight-medium);
-  --tripbar-r4-line-height:    16px;
-  --tripbar-r4-letter-spacing: -0.04em;
-  --tripbar-r4-color:          var(--rux-text-1);
-  --tripbar-r4-bg:             oklch(0% 0 0 / 0%);
-  --tripbar-r4-icon-size:      16px;
-  --tripbar-r4-icon-color:     oklch(100% 0 0 / 1);
-  --tripbar-r4-icon-fill:      1;
-  --tripbar-r4-icon-wght:      500;
-  --tripbar-r4-icon-opsz:      20;
-  --tripbar-r4-icon-grad:      25;
-
-  /* notes text overlay */
   --tripbar-r4-notes-padding-inline: 4px;
 
-  /* paid badge — icon-only state (check_circle when paid, no date) */
+  /* ── r4 — Paid badge (icon-only: check when clear, paid when dated) ──── */
+
   --tripbar-r4-paid-size:      1rem;
   --tripbar-r4-paid-color:     var(--rux-status-green);
   --tripbar-r4-paid-icon-fill: 0;
   --tripbar-r4-paid-icon-wght: 400;
   --tripbar-r4-paid-icon-opsz: 10;
 
-  /* paid badge — date state (paid icon + formatted date) */
-  --tripbar-r4-paid-date-font-size:  var(--tripbar-r1-date-size);
-  --tripbar-r4-paid-date-gap:        2px;
-  --tripbar-r4-paid-date-icon-size:  14px;
-  --tripbar-r4-paid-date-icon-fill:  1;
-  --tripbar-r4-paid-date-icon-wght:  400;
-  --tripbar-r4-paid-date-icon-opsz:  20;
+  /* ── r5 — Border radius (pill shape on time row) ─────────────────────── */
 
-  /* ── Row 5 — Times (depart · spot · arrive) ─────────────────────────── */
+  --tripbar-r5-radius: 4px;
 
-  --tripbar-r5-row-height:     20px;
-  --tripbar-r5-gap-above:       4px;
-  --tripbar-r5-margin-inline:   4px;
-  --tripbar-r5-padding-inline:  4px;
-  --tripbar-r5-gap:             4px;
-  --tripbar-r5-font-size:      12px;
-  --tripbar-r5-radius:         4px;
-  --tripbar-r5-font-weight:    var(--rux-weight-bold);
-  --tripbar-r5-line-height:    20px;
-  --tripbar-r5-letter-spacing: -0.04em;
-  --tripbar-r5-color:          ;
-  --tripbar-r5-bg:             oklch(0% 0 0 / 25%);
-  --tripbar-r5-icon-size:      16px;
-  --tripbar-r5-icon-color:     var(--tripbar-r5-color);
-  --tripbar-r5-icon-fill:      0;
-  --tripbar-r5-icon-wght:      400;
-  --tripbar-r5-icon-opsz:      20;
+  /* ── r6 — Driver-slot gap (icon + name pair) + max-width ─────────────── */
 
-  /* ── Row 6 — Drivers ────────────────────────────────────────────────── */
+  --tripbar-r6-slot-gap:   2px;
+  --tripbar-r6-max-width: 200px;
 
-  --tripbar-r6-row-height:     18px;
-  --tripbar-r6-gap-above:       4px;
-  --tripbar-r6-margin-inline:   4px;
-  --tripbar-r6-padding-inline:  4px;
-  --tripbar-r6-gap:             6px;
-  --tripbar-r6-max-width:      200px; /* prevent driver names from pushing out bar width */
-  --tripbar-r6-font-size:      12px;
-  --tripbar-r6-font-weight:    var(--rux-weight-bold);
-  --tripbar-r6-line-height:    18px;
-  --tripbar-r6-letter-spacing: -0.04em;
-  --tripbar-r6-color:          var(--rux-text-1);
-  --tripbar-r6-bg:             oklch(0% 0 0 / 0%);
-  --tripbar-r6-icon-size:      16px;
-  --tripbar-r6-icon-color:     /* color based on status */;
-  --tripbar-r6-icon-fill:      1;
-  --tripbar-r6-icon-wght:      500;
-  --tripbar-r6-icon-opsz:      20;
-  --tripbar-r6-icon-grad:      25;
+  /* ── r7 — Max-width guard ────────────────────────────────────────────── */
 
-  /* driver slot (icon + name pair within a driver row) */
-  --tripbar-r6-slot-gap: 2px;
+  --tripbar-r7-max-width: 200px;
 
-  /* ── Row 7 — Driver pay ─────────────────────────────────────────────── */
+  /* ── r11 — Action button sizing ──────────────────────────────────────── */
 
-  --tripbar-r7-row-height:     22px;
-  --tripbar-r7-gap-above:       4px;   /* visual gap below drivers row */
-  --tripbar-r7-line-height:    18px;   /* row-height − gap-above */
-  --tripbar-r7-margin-inline:   4px;
-  --tripbar-r7-padding-inline:  0px;
-  --tripbar-r7-gap:             6px;
-  --tripbar-r7-max-width:        200px; /* prevent pay from pushing out bar width */
-  --tripbar-r7-font-size:      var(--rux-size-1);
-  --tripbar-r7-font-weight:    var(--rux-weight-medium);
-
-  --tripbar-r7-letter-spacing: 0.02em;
-  --tripbar-r7-color:          var(--rux-color-white);
-  --tripbar-r7-bg:             oklch(100% 0 0 / 30%);
-  --tripbar-r7-icon-size:      12px;
-  --tripbar-r7-icon-color:     var(--tripbar-r7-color);
-  --tripbar-r7-icon-fill:      0;
-  --tripbar-r7-icon-wght:      400;
-  --tripbar-r7-icon-opsz:      20;
-
-  /* ── Row 8 — Estimate (est mi · quoted $ · req icons) ──────────────── */
-
-  --tripbar-r8-row-height:     19px;
-  --tripbar-r8-gap-above:       1px;
-  --tripbar-r8-line-height:    18px;   /* row-height − gap-above */
-  --tripbar-r8-margin-inline:   4px;
-  --tripbar-r8-padding-inline:  0px;
-  --tripbar-r8-gap:             4px;
-  --tripbar-r8-font-size:      var(--rux-size-1);
-  --tripbar-r8-font-weight:    var(--rux-weight-medium);
-
-  --tripbar-r8-letter-spacing: 0.02em;
-  --tripbar-r8-color:          var(--rux-color-white);
-  --tripbar-r8-bg:             oklch(100% 0 0 / 30%);
-  --tripbar-r8-icon-size:      12px;
-  --tripbar-r8-icon-color:     oklch(100% 0 0 / 0.75);
-  --tripbar-r8-icon-fill:      0;
-  --tripbar-r8-icon-wght:      400;
-  --tripbar-r8-icon-opsz:      20;
-
-  /* ── Row 9 — Billing (trip mi · invoice # · billing fields) ────────── */
-
-  --tripbar-r9-row-height:     19px;
-  --tripbar-r9-gap-above:       1px;
-  --tripbar-r9-line-height:    18px;   /* row-height − gap-above */
-  --tripbar-r9-margin-inline:   4px;
-  --tripbar-r9-padding-inline:  0px;
-  --tripbar-r9-gap:             4px;
-  --tripbar-r9-font-size:      var(--rux-size-1);
-  --tripbar-r9-font-weight:    var(--rux-weight-semibold);
-
-  --tripbar-r9-letter-spacing: 0.02em;
-  --tripbar-r9-color:          var(--rux-color-white);
-  --tripbar-r9-bg:             oklch(100% 0 0 / 30%);
-  --tripbar-r9-icon-size:      12px;
-  --tripbar-r9-icon-color:     var(--tripbar-r9-color);
-  --tripbar-r9-icon-fill:      0;
-  --tripbar-r9-icon-wght:      400;
-  --tripbar-r9-icon-opsz:      20;
-
-  /* ── Row 10 — Action buttons (track height driven by @property above) ─ */
-
-  --tripbar-r10-gap-above:      4px;   /* visual gap below billing row */
-  --tripbar-r10-margin-inline:  4px;
-  --tripbar-r10-padding-inline: 0px;
-  --tripbar-r10-gap:            var(--rux-space-3);
-  --tripbar-r10-color:          var(--rux-text-1);
-  --tripbar-r10-bg:             oklch(0% 0 0 / 0%);
-  --tripbar-r10-icon-size:      var(--rux-size-5);
-  --tripbar-r10-icon-color:     var(--tripbar-r10-color);
-  --tripbar-r10-icon-fill:      1;
-  --tripbar-r10-icon-wght:      400;
-  --tripbar-r10-icon-opsz:      20;
-  --tripbar-r10-btn-bg:         oklch(0% 0 0 / 50%);
-  --tripbar-r10-btn-height:     24px;
-  --tripbar-r10-btn-width:      24px;
-  --tripbar-r10-btn-radius:     var(--rux-radius-2);
+  --tripbar-r11-btn-bg:     oklch(0% 0 0 / 25%);
+  --tripbar-r11-btn-height: 24px;
+  --tripbar-r11-btn-width:  24px;
+  --tripbar-r11-btn-radius: var(--rux-radius-2);
 }
 
 /* ==========================================================================
@@ -357,7 +414,8 @@
     [r7]  var(--tripbar-r7-row-height)
     [r8]  var(--tripbar-r8-row-height)
     [r9]  var(--tripbar-r9-row-height)
-    [r10] var(--tripbar-r10-row-height, 0px);
+    [r10] var(--tripbar-r10-row-height)
+    [r11] var(--tripbar-r11-row-height, 0px);
   row-gap: var(--tripbar-row-gap);
   container-type: inline-size;
   align-content: center;
@@ -372,11 +430,13 @@
   overflow: hidden;
   cursor: pointer;
   pointer-events: auto;
+    box-shadow:
+    0 0 0 1px oklch(from var(--trip-accent-color) 70% c h / 0.6);
   /* Collapse timing — overridden by .expanded rule for the open direction */
   transition:
     height var(--tripbar-collapse-duration) var(--tripbar-collapse-ease),
     width  var(--tripbar-collapse-duration) var(--tripbar-collapse-ease),
-    --tripbar-r10-row-height var(--tripbar-collapse-duration) var(--tripbar-collapse-ease),
+    --tripbar-r11-row-height var(--tripbar-collapse-duration) var(--tripbar-collapse-ease),
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
     filter var(--transition-fast),
@@ -387,7 +447,7 @@
   --trip-accent-color: var(--rux-color-blue);
 
 /* Adjusted Variables */
---tripbar-bg-l: 30%;   /* Lightness */
+--tripbar-bg-l: 35%;   /* Lightness */
 --tripbar-bg-c: 0.15;  /* Chroma (Saturation) - Try values between 0 and 0.3 */
 --tripbar-bg-h: none;  /* Hue - Use 'none' or 'h' to inherit from the accent */
 --tripbar-bg-a: 100%;  /* Alpha */
@@ -411,12 +471,12 @@
   /* ── Component color token overrides ──────────────────────────────────── */
 
   --tripbar-r1-color: var(--tripbar-text-color);
-  --tripbar-r2-color: var(--tripbar-text-color);
-  --tripbar-r3-color: var(--tripbar-text-color);
+  --tripbar-r2-color: oklch(from var(--tripbar-text-color) l c h / 0.65);
+  --tripbar-r3-color: oklch(from var(--tripbar-text-color) l c h / 0.65);
   --tripbar-r4-color: var(--rux-text-1);
-  --tripbar-r5-color: var(--oklch(from var(--tripbar-text-color) 75% 0.1 h));
+  /* r5 inherits from bar text via component rules */
   --tripbar-r6-color: var(--rux-text-1);
-  /* r7 not overridden — uses --tripbar-r7-color from :root */
+  /* r7–r10 use :root values */
   /* r8 not overridden — uses --tripbar-r8-color from :root */
   /* r9 not overridden — uses --tripbar-r9-color from :root */
 
@@ -455,7 +515,8 @@
     .schedule-grid__trip-bar__row--6,
     .schedule-grid__trip-bar__row--7,
     .schedule-grid__trip-bar__row--8,
-    .schedule-grid__trip-bar__row--9 {
+    .schedule-grid__trip-bar__row--9,
+    .schedule-grid__trip-bar__row--10 {
       visibility: hidden;
       height: 0;
       margin: 0;
@@ -480,11 +541,11 @@
       -45deg,
       color-mix(in srgb, var(--trip-accent-color) 25%, transparent),
       color-mix(in srgb, var(--trip-accent-color) 25%, transparent) 8px,
-      color-mix(in srgb, var(--trip-accent-color) 5%, transparent) 8px,
-      color-mix(in srgb, var(--trip-accent-color) 5%, transparent) 16px
+      color-mix(in srgb, var(--trip-accent-color) 50%, transparent) 8px,
+      color-mix(in srgb, var(--trip-accent-color) 50%, transparent) 16px
     );
-    border: 1px solid var(--tripbar-border-color);
-    border-left: 7px solid var(--tripbar-border-left-color);
+    border: none;
+    border-left:none;
 
     &.selected {
       border-color: rgba(255, 255, 255, 1);
@@ -567,14 +628,14 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
   transition:
     height var(--tripbar-expand-duration) var(--tripbar-expand-ease),
     width  var(--tripbar-expand-duration) var(--tripbar-expand-ease),
-    --tripbar-r10-row-height var(--tripbar-expand-duration) var(--tripbar-expand-ease),
+    --tripbar-r11-row-height var(--tripbar-expand-duration) var(--tripbar-expand-ease),
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
     filter var(--transition-fast),
     border-color var(--transition-fast),
     outline-color var(--transition-fast);
 
-  --tripbar-r10-row-height: 30px;
+  --tripbar-r11-row-height: 30px;
   z-index: 600;
   box-shadow:
     0 0 0 1px oklch(from var(--trip-accent-color) 70% c h / 0.5),
@@ -609,7 +670,7 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
   font-variation-settings:
     "FILL" var(--tripbar-r5-icon-fill),
     "wght" var(--tripbar-r5-icon-wght),
-    "GRAD" 0,
+    "GRAD" var(--tripbar-r5-icon-grad),
     "opsz" var(--tripbar-r5-icon-opsz);
   color: var(--tripbar-r5-icon-color);
   line-height: 1;
@@ -622,19 +683,23 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
 /* ── Compact mode ─────────────────────────────────────────────────────────── */
 
 body.bars-compact {
-  --tripbar-r7-row-height: 0px; /* driver pay   */
-  --tripbar-r8-row-height: 0px; /* estimate     */
-  --tripbar-r9-row-height: 0px; /* billing      */
-  --tripbar-r7-gap-above:  0px; /* suppress gap when track is collapsed */
+  --tripbar-r7-row-height:  0px; /* driver pay   */
+  --tripbar-r8-row-height:  0px; /* estimate     */
+  --tripbar-r9-row-height:  0px; /* billing      */
+  --tripbar-r10-row-height: 0px; /* payment refs */
+  --tripbar-r7-gap-above:   0px; /* suppress gap when track is collapsed */
+  --tripbar-r10-gap-above:  0px;
   --tripbar-height:     100px;
   --tripbar-lane-step:  100px;
 }
 
 body.bars-compact .schedule-grid__trip-bar.expanded {
-  --tripbar-r7-row-height: 22px;
-  --tripbar-r8-row-height: 19px;
-  --tripbar-r9-row-height: 19px;
-  --tripbar-r7-gap-above:   4px; /* restore gap when rows expand */
+  --tripbar-r7-row-height:  22px;
+  --tripbar-r8-row-height:  19px;
+  --tripbar-r9-row-height:  19px;
+  --tripbar-r10-row-height: 19px;
+  --tripbar-r7-gap-above:    4px; /* restore gap when rows expand */
+  --tripbar-r11-gap-above:   1px;
 }
 
 /* ── Row base ─────────────────────────────────────────────────────────────── */
@@ -926,7 +991,6 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   margin-inline: var(--tripbar-r5-margin-inline);
   padding-inline: var(--tripbar-r5-padding-inline);
   background: var(--tripbar-r5-bg);
-  height: var(--tripbar-r5-row-height);
   line-height: var(--tripbar-r5-line-height);
   border-radius: var(--tripbar-r5-radius);
   border: none;
@@ -938,7 +1002,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   font-variation-settings:
     "FILL" var(--tripbar-r5-icon-fill),
     "wght" var(--tripbar-r5-icon-wght),
-    "GRAD" 0,
+    "GRAD" var(--tripbar-r5-icon-grad),
     "opsz" var(--tripbar-r5-icon-opsz);
 }
 
@@ -952,6 +1016,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   font-weight: var(--tripbar-r5-font-weight);
   letter-spacing: var(--tripbar-r5-letter-spacing);
   text-transform: uppercase;
+  line-height: var(--tripbar-r5-line-height);
   color: var(--tripbar-r5-color);
   white-space: nowrap;
 }
@@ -987,7 +1052,6 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   padding-inline: var(--tripbar-r6-padding-inline);
   background: var(--tripbar-r6-bg);
   border-radius: 0 0 var(--tripbar-radius) var(--tripbar-radius);
-  height: var(--tripbar-r6-row-height);
   border: none;
   max-width: var(--tripbar-max-width);
   min-width: var(--tripbar-min-width);
@@ -1076,6 +1140,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   align-items: center;
   justify-content: center;
   gap: var(--tripbar-r7-gap);
+  font-family: var(--font-mono);
   font-size: var(--tripbar-r7-font-size);
   font-weight: var(--tripbar-r7-font-weight);
   line-height: var(--tripbar-r7-line-height);
@@ -1121,6 +1186,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
 
 .schedule-grid__trip-bar__estimate-row {
   display: flex;
+  font-family: var(--font-mono);
   align-items: center;
   justify-content: center;
   gap: var(--tripbar-r8-gap);
@@ -1134,6 +1200,8 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   line-height: var(--tripbar-r8-line-height);
   letter-spacing: var(--tripbar-r8-letter-spacing);
   color: var(--tripbar-r8-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1161,7 +1229,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   grid-row: 9;
   overflow: hidden;
   background: var(--tripbar-r9-bg);
-  border-radius: 0 0 var(--tripbar-radius) var(--tripbar-radius);
+  border-radius: 0;
   margin-top: var(--tripbar-r9-gap-above);
   margin-inline: var(--tripbar-r9-margin-inline);
   padding-inline: var(--tripbar-r9-padding-inline);
@@ -1187,27 +1255,64 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   line-height: var(--tripbar-r9-line-height);
   letter-spacing: var(--tripbar-r9-letter-spacing);
   color: var(--tripbar-r9-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 /* ==========================================================================
-   Row 10 — Action buttons
+   Row 10 — Payment references (PMT)
    ========================================================================== */
 
 .schedule-grid__trip-bar__row--10 {
   grid-row: 10;
   overflow: hidden;
-  display: flex;
-  gap: var(--tripbar-r10-gap);
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--rux-radius-2);
   background: var(--tripbar-r10-bg);
   margin-top: var(--tripbar-r10-gap-above);
   margin-inline: var(--tripbar-r10-margin-inline);
   padding-inline: var(--tripbar-r10-padding-inline);
+  border-radius: 0 0 var(--tripbar-radius) var(--tripbar-radius);
+  max-width: var(--tripbar-max-width);
+  min-width: var(--tripbar-min-width);
+  justify-self: center;
+}
+
+.schedule-grid__trip-bar__payment-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  gap: var(--tripbar-r10-gap);
+  font-size: var(--tripbar-r10-font-size);
+  font-weight: var(--tripbar-r10-font-weight);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: var(--tripbar-r10-line-height);
+  letter-spacing: var(--tripbar-r10-letter-spacing);
+  color: var(--tripbar-r10-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==========================================================================
+   Row 11 — Action buttons
+   ========================================================================== */
+
+.schedule-grid__trip-bar__row--11 {
+  grid-row: 11;
+  overflow: hidden;
+  display: flex;
+  gap: var(--tripbar-r11-gap);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rux-radius-2);
+  background: var(--tripbar-r11-bg);
+  margin-top: var(--tripbar-r11-gap-above);
+  margin-inline: var(--tripbar-r11-margin-inline);
+  padding-inline: var(--tripbar-r11-padding-inline);
   max-width: var(--tripbar-max-width);
   min-width: var(--tripbar-min-width);
   justify-self: center; /* ← centers within the grid column */
@@ -1218,13 +1323,13 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: var(--tripbar-r10-btn-width);
-  height: var(--tripbar-r10-btn-height);
+  width: var(--tripbar-r11-btn-width);
+  height: var(--tripbar-r11-btn-height);
   padding: 0;
-  color: var(--tripbar-r10-color);
-  background: var(--tripbar-r10-btn-bg);
+  color: var(--tripbar-r11-color);
+  background: var(--tripbar-r11-btn-bg);
   border: none;
-  border-radius: var(--tripbar-r10-btn-radius);
+  border-radius: var(--tripbar-r11-btn-radius);
   cursor: pointer;
   pointer-events: none;
   opacity: 0;
@@ -1245,13 +1350,13 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
 }
 
 .schedule-grid__trip-bar__action-btn .material-symbols-outlined {
-  font-size: var(--tripbar-r10-icon-size);
-  color: var(--tripbar-r10-icon-color);
+  font-size: var(--tripbar-r11-icon-size);
+  color: var(--tripbar-r11-icon-color);
   font-variation-settings:
-    "FILL" var(--tripbar-r10-icon-fill),
-    "wght" var(--tripbar-r10-icon-wght),
-    "GRAD" 0,
-    "opsz" var(--tripbar-r10-icon-opsz);
+    "FILL" var(--tripbar-r11-icon-fill),
+    "wght" var(--tripbar-r11-icon-wght),
+    "GRAD" var(--tripbar-r11-icon-grad),
+    "opsz" var(--tripbar-r11-icon-opsz);
 }
 
 /* ── Badge states ─────────────────────────────────────────────────────────── */
@@ -1334,7 +1439,8 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
     .schedule-grid__trip-bar__row--6,
     .schedule-grid__trip-bar__row--7,
     .schedule-grid__trip-bar__row--8,
-    .schedule-grid__trip-bar__row--9 {
+    .schedule-grid__trip-bar__row--9,
+    .schedule-grid__trip-bar__row--10 {
       visibility: hidden;
       height: 0;
       margin: 0;

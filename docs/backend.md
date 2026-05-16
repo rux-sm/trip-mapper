@@ -85,6 +85,9 @@ const HEADERS = {
     "tripMiles",
     "datePaid",
     "tripReviewed",
+    "ref1",
+    "ref2",
+    "ref3",
   ],
 
   BusAssignments: [
@@ -1086,6 +1089,9 @@ function weekData_(p) {
   const iTripMiles = idx(tripsHdr, "tripMiles");
   const iDatePaid = idx(tripsHdr, "datePaid");
   const iTripReviewed = idx(tripsHdr, "tripReviewed");
+  const iRef1 = idx(tripsHdr, "ref1");
+  const iRef2 = idx(tripsHdr, "ref2");
+  const iRef3 = idx(tripsHdr, "ref3");
   const aDriver1Pay = idx(asnHdr, "driver1Pay");
   const aDriver2Pay = idx(asnHdr, "driver2Pay");
   const aDriver3Pay = idx(asnHdr, "driver3Pay");
@@ -1154,6 +1160,9 @@ function weekData_(p) {
       tripMiles: iTripMiles >= 0 ? row[iTripMiles] || "" : "",
       datePaid: iDatePaid >= 0 ? ymdFromCell_(row[iDatePaid]) || "" : "",
       tripReviewed: iTripReviewed >= 0 ? truthy_(row[iTripReviewed]) : false,
+      ref1: iRef1 >= 0 ? row[iRef1] || "" : "",
+      ref2: iRef2 >= 0 ? row[iRef2] || "" : "",
+      ref3: iRef3 >= 0 ? row[iRef3] || "" : "",
     });
 
     tripKeysInRange.add(k);
@@ -1391,6 +1400,9 @@ function mapTripFromParams_(p, base) {
     tripMiles: String(p.tripMiles || "").trim(),
     datePaid: String(p.datePaid || "").trim(),
     tripReviewed: String(p.tripReviewed || "").toLowerCase() === "true",
+    ref1: String(p.ref1 || "").trim(),
+    ref2: String(p.ref2 || "").trim(),
+    ref3: String(p.ref3 || "").trim(),
     createdAt: base.createdAt,
 
     updatedAt: base.updatedAt,

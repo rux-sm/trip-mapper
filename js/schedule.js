@@ -357,7 +357,6 @@ function positionBarWithinOverlay(bar, bars, col, startIdx, endIdx, overrides) {
 
   bar.style.left = `${leftPx}px`;
   bar.style.width = `${widthPx}px`;
-  bar.style.top = `${insetT}px`;
   if (bar.classList.contains("expanded")) {
     // Don't overwrite style.height while the bar is animating open or
     // sitting expanded — the JS expand handler owns height at this point.
@@ -831,7 +830,7 @@ function _renderAgendaInner() {
 
         // Action row — revealed at the bottom of the bar when expanded
         const rAction = document.createElement("div");
-        rAction.className = "schedule-grid__trip-bar__row--10";
+        rAction.className = "schedule-grid__trip-bar__row--11";
         let pdfBtn = null;
         [
           { action: "load", icon: "edit", title: "Load trip" },
@@ -918,20 +917,18 @@ function _renderAgendaInner() {
         const bD3 = makeMini("autorenew", true); // Relief 1
         const bD4 = makeMini("autorenew", true); // Relief 2
 
-        // Complete row 1: [title already appended] → top-status group
-        const r1TopBadges = document.createElement("div");
-        r1TopBadges.className = "schedule-grid__trip-bar__top-status-badges";
-        r1TopBadges.setAttribute("aria-hidden", "true");
-        r1TopBadges.append(b$, bI, bC);
-        r1.appendChild(r1TopBadges);
-
-        // Row 4: paid badge sits at the right end
+        // Complete row 1: [title] → top-status group including paid badge
         const paidBadge = document.createElement("span");
         paidBadge.className =
           "schedule-grid__trip-bar__paid-badge material-symbols-outlined is-hidden";
         paidBadge.setAttribute("aria-hidden", "true");
-        paidBadge.textContent = "check_circle";
-        r4.appendChild(paidBadge);
+        paidBadge.textContent = "check";
+
+        const r1TopBadges = document.createElement("div");
+        r1TopBadges.className = "schedule-grid__trip-bar__top-status-badges";
+        r1TopBadges.setAttribute("aria-hidden", "true");
+        r1TopBadges.append(b$, bI, bC, paidBadge);
+        r1.appendChild(r1TopBadges);
 
         // Row 6: Drivers — each slot = [icon] [name]
         const driversRow = document.createElement("div");
@@ -984,23 +981,34 @@ function _renderAgendaInner() {
         driverPayRow.append(pay1Slot, pay2Slot, pay3Slot, pay4Slot);
         r7.appendChild(driverPayRow);
 
-        // Row 8: Estimate fields (est. mileage, quoted price)
+        // Row 8: Estimate fields — separate spans; order: price, mi, drv, dot
         const r8 = makeRow("8");
         const estimateRow = document.createElement("div");
         estimateRow.className = "schedule-grid__trip-bar__estimate-row";
-        const estimateSummary = document.createElement("span");
-        estimateSummary.className = "schedule-grid__trip-bar__estimate-summary";
-        estimateRow.append(estimateSummary);
+        const estPrice = document.createElement("span");
+        const estMi    = document.createElement("span");
+        const estDrv   = document.createElement("span");
+        const estDot   = document.createElement("span");
+        estPrice.className = estMi.className =
+          estDrv.className = estDot.className =
+            "schedule-grid__trip-bar__estimate-summary";
+        estimateRow.append(estPrice, estMi, estDrv, estDot);
         r8.appendChild(estimateRow);
 
-        // Row 9: Billing / invoice fields (trip miles, invoice number)
+        // Row 9: Billing / invoice fields (invoice number, PO, actual miles)
         const r9 = makeRow("9");
         const billingRow = document.createElement("div");
         billingRow.className = "schedule-grid__trip-bar__billing-row";
         r9.appendChild(billingRow);
 
+        // Row 10: Payment references (ref1, ref2, ref3, paid date)
+        const r10 = makeRow("10");
+        const paymentRow = document.createElement("div");
+        paymentRow.className = "schedule-grid__trip-bar__payment-row";
+        r10.appendChild(paymentRow);
+
         // Append all rows — rAction is last (bottom of bar when expanded)
-        bar.append(r1, r2, r3, r4, r5, r6, r7, r8, r9, rAction);
+        bar.append(r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, rAction);
 
         // Keep your existing references working
         bar._multiBadge = multiBadge;
@@ -1022,8 +1030,12 @@ function _renderAgendaInner() {
         bar._bD3 = bD3;
         bar._bD4 = bD4;
         bar._notes = notesEl;
-        bar._estimateSummary = estimateSummary;
+        bar._estMi    = estMi;
+        bar._estPrice = estPrice;
+        bar._estDrv   = estDrv;
+        bar._estDot   = estDot;
         bar._billingRow = billingRow;
+        bar._paymentRow = paymentRow;
         bar._drivers = driversRow;
         bar._d1Slot = d1Slot;
         bar._d2Slot = d2Slot;
@@ -1221,10 +1233,24 @@ function _renderAgendaInner() {
         }
       }
 
-      if (bar._estimateSummary) {
-        const miPart = t.estimatedMileage ? `${t.estimatedMileage} mi` : "— mi";
-        const pricePart = t.quotedPrice ? `$${t.quotedPrice}` : "$—";
-        bar._estimateSummary.textContent = `${miPart} · ${pricePart}`;
+      if (bar._estPrice) {
+        const estFields = [
+          { el: bar._estPrice, val: t.quotedPrice      ? `$${t.quotedPrice}`          : "" },
+          { el: bar._estMi,    val: t.estimatedMileage ? `${t.estimatedMileage}mi`    : "" },
+          { el: bar._estDrv,   val: t.drivingHours     ? String(t.drivingHours)       : "" },
+          { el: bar._estDot,   val: t.onDutyHours      ? String(t.onDutyHours)        : "" },
+        ];
+        let first = true;
+        estFields.forEach(({ el, val }) => {
+          if (val) {
+            el.textContent  = val;
+            el.style.display = "";
+            first = false;
+          } else {
+            el.textContent  = "";
+            el.style.display = "none";
+          }
+        });
       }
 
       // Requirement icons (left of status badges) from trip req flags
@@ -1295,20 +1321,10 @@ function _renderAgendaInner() {
         const isAllClear =
           payment === "po received" || payment === "not required" || invoice === "paid in full";
 
-        if (isAllClear && t.datePaid) {
-          // Show paid icon + date
-          bar._paidBadge.classList.remove(
-            "material-symbols-outlined",
-            "is-hidden",
-            "is-alert",
-            "is-solid",
-          );
-          bar._paidBadge.classList.add("is-date");
-          bar._paidBadge.innerHTML = `<span class="material-symbols-outlined">paid</span>${formatDateShort(t.datePaid)}`;
-        } else if (isAllClear) {
+        if (isAllClear) {
           bar._paidBadge.classList.add("material-symbols-outlined");
           bar._paidBadge.classList.remove("is-hidden", "is-alert", "is-solid", "is-date");
-          bar._paidBadge.textContent = "check_circle";
+          bar._paidBadge.textContent = t.datePaid ? "paid" : "check";
         } else {
           bar._paidBadge.classList.add("is-hidden");
           bar._paidBadge.classList.remove("is-alert", "is-date");
@@ -1437,9 +1453,16 @@ function _renderAgendaInner() {
       }
 
       if (bar._billingRow) {
-        const miPart = t.tripMiles ? `${t.tripMiles} mi` : "— mi";
-        const invPart = t.invoiceNumber ? `INV ${t.invoiceNumber}` : "INV —";
-        bar._billingRow.textContent = `${miPart} · ${invPart}`;
+        const invPart = t.invoiceNumber ? `#${t.invoiceNumber}` : "#TBD";
+        const poPart  = t.paymentType   ? `PO${t.paymentType}`  : "";
+        const miPart  = t.tripMiles     ? `${t.tripMiles}mi`    : "";
+        bar._billingRow.textContent = [invPart, poPart, miPart].filter(Boolean).join(" ");
+      }
+
+      if (bar._paymentRow) {
+        const refs = [t.ref1, t.ref2, t.ref3].filter(Boolean);
+        const paidPart = t.datePaid ? `PAID ${formatDateShort(t.datePaid)}` : "";
+        bar._paymentRow.textContent = [...refs, paidPart].filter(Boolean).join(" • ");
       }
 
       if (bar._notes) {
@@ -1451,11 +1474,22 @@ function _renderAgendaInner() {
       bar._d3Name.textContent = d3 && d3 !== "—" ? d3 : "";
       bar._d4Name.textContent = d4 && d4 !== "—" ? d4 : "";
 
-      // Row 7: driver pay — show value if set, "$—" placeholder if driver assigned but no pay, empty if no driver
-      if (bar._pay1) bar._pay1.textContent = d1 && d1 !== "—" ? (a.driver1Pay || "$—") : "";
-      if (bar._pay2) bar._pay2.textContent = d2 && d2 !== "—" ? (a.driver2Pay || "$—") : "";
-      if (bar._pay3) bar._pay3.textContent = d3 && d3 !== "—" ? (a.driver3Pay || "$—") : "";
-      if (bar._pay4) bar._pay4.textContent = d4 && d4 !== "—" ? (a.driver4Pay || "$—") : "";
+      // Row 7: driver pay — "$350 • TBD" format (no D1/D2 labels), combined into first slot
+      if (bar._pay1) {
+        const fmtSlot = (_idx, pay, driver) => {
+          if (!driver || driver === "—") return "";
+          return pay ? `$${String(pay).replace(/^\$/, "")}` : "TBD";
+        };
+        bar._pay1.textContent = [
+          fmtSlot(1, a.driver1Pay, d1),
+          fmtSlot(2, a.driver2Pay, d2),
+          fmtSlot(3, a.driver3Pay, d3),
+          fmtSlot(4, a.driver4Pay, d4),
+        ].filter(Boolean).join(" • ");
+        if (bar._pay2) bar._pay2.textContent = "";
+        if (bar._pay3) bar._pay3.textContent = "";
+        if (bar._pay4) bar._pay4.textContent = "";
+      }
 
       positionBarWithinOverlay(bar, bars, col, startIdx, endIdx);
 
@@ -1519,6 +1553,10 @@ function _renderAgendaInner() {
     }
   }
 
+  const insetTopPx =
+    parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--tripbar-inset-top")) ||
+    0;
+
   for (const [busId, list] of barsByBus) {
     const laneCount = (lanesByBus[busId] || []).length || 1;
     const top0 = stackOffset(rowH, barH, step, laneCount);
@@ -1529,7 +1567,7 @@ function _renderAgendaInner() {
     // FIX: Using 'step' (110px) instead of 'rowH' (100px) for the waiting list height
     // to ensure there is enough vertical room for the stacked bars + their gaps.
     const effectiveRowH = isWaitingList ? Math.max(1, laneCount) * step : rowH;
-    const maxTop = Math.max(0, effectiveRowH - barH - 1); // -1 for safety margin
+    const maxTop = Math.max(0, effectiveRowH - barH + insetTopPx);
 
     if (isWaitingList) {
       const wlTr = waitingBody?.querySelector(".waiting-list-row");
@@ -1546,7 +1584,7 @@ function _renderAgendaInner() {
       const lane = Number(bar.dataset.lane);
       if (!Number.isFinite(lane)) continue;
 
-      let topPx = isWaitingList ? lane * step : top0 + lane * step;
+      let topPx = isWaitingList ? lane * step + insetTopPx : top0 + lane * step + insetTopPx;
       // Clamp to ensure bar stays within its row bounds
       topPx = Math.max(0, Math.min(topPx, maxTop));
       bar.style.top = `${Math.round(topPx)}px`; // <— snap

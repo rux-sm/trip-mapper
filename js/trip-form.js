@@ -218,6 +218,9 @@ function refreshEmptyStateUI() {
     "quotedPrice",
     "tripMiles",
     "datePaid",
+    "ref1",
+    "ref2",
+    "ref3",
     "notes",
     "comments",
   ];
@@ -813,6 +816,9 @@ function populateFormFromData(t, assigns) {
   if ($("quotedPrice")) $("quotedPrice").value = String(t.quotedPrice || "");
   if ($("tripMiles")) $("tripMiles").value = t.tripMiles || "";
   if ($("datePaid")) $("datePaid").value = String(t.datePaid || "").slice(0, 10);
+  if ($("ref1")) $("ref1").value = t.ref1 || "";
+  if ($("ref2")) $("ref2").value = t.ref2 || "";
+  if ($("ref3")) $("ref3").value = t.ref3 || "";
   if ($("notes")) $("notes").value = t.notes || "";
   if ($("comments")) $("comments").value = t.comments || "";
   if ($("envelopePickup")) $("envelopePickup").value = t.envelopePickup || "";

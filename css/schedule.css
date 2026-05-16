@@ -2,7 +2,8 @@
 
 :root {
   /* Schedule grid dimensions */
-  --schedule-row-height: 135px;
+  --day-col-min-w: 224px;
+  --schedule-row-height: 172px;
   --bus-col-w: 32px;
   --week-picker-height: 32px;
   --day-row-h: 32px;
@@ -298,6 +299,7 @@
   position: absolute;
   inset: 0;
   border-radius: var(--rux-radius-section);
+  border: 1px solid var(--rux-border-3);
   box-shadow: var(--rux-btn-shadow-inset);
   pointer-events: none;
   z-index: 99999;
@@ -308,7 +310,8 @@
   height: 100%;
   overflow-x: auto;
   overflow-y: auto;
-  border: none;
+
+  scrollbar-gutter: stable;
 }
 
 .o-app-layout__main .schedule-viewport {
@@ -330,6 +333,7 @@
 .o-app-layout__main > .rux-card {
   position: relative;
   border-radius: var(--rux-radius-9);
+  border: 1px solid var(--rux-border-3);
   background: var(--rux-bg-2);
 }
 
@@ -341,14 +345,14 @@
 .o-app-layout__sidebar--right > .rux-card:not(.is-hidden) {
   position: relative;
   box-shadow: var(--card-shadow-left);
-  border-left: none;
+  border: 2px solid var(--rux-border-s);
 }
 
 /* Left Sidebar Card - Shadow spills RIGHT onto the main content */
 .o-app-layout__sidebar--left > .rux-card:not(.is-hidden) {
   position: relative;
   box-shadow: var(--card-shadow-right);
-  border-right: none;
+  border: 2px solid var(--rux-border-s);;
 }
 
 /* Inset shadow overlay — paints above all card content including sticky headers */
@@ -610,9 +614,9 @@
 /* Inner Gridlines */
 .schedule-grid__header-cell,
 .schedule-grid__cell {
-  border-inline-end: 1px solid var(--rux-border-2);
+  border-inline-end: 2px solid var(--rux-border-s);
   /* Vertical tracking lines */
-  border-bottom: 1px solid var(--rux-border-2);
+  border-bottom: 2px solid var(--rux-border-s);
   /* Horizontal tracking lines */
 }
 
@@ -622,17 +626,11 @@
   border-inline-end: none;
 }
 
-/* Main schedule tbody last row: closing bottom border + bottom corner radius */
+/* Main schedule tbody last row: suppress bottom border — corners are handled
+   by .schedule-surface { overflow: hidden; border-radius } at the container level. */
 .schedule-grid tbody:not(#waitingBody) tr:last-child > .schedule-grid__cell,
 .schedule-grid tbody:not(#waitingBody) tr:last-child > .schedule-grid__bus-cell {
   border-bottom: none;
-}
-.schedule-grid tbody:not(#waitingBody) tr:last-child > td:first-child,
-.schedule-grid tbody:not(#waitingBody) tr:last-child > .schedule-grid__bus-cell {
-  border-bottom-left-radius: var(--rux-radius-control);
-}
-.schedule-grid tbody:not(#waitingBody) tr:last-child > td:last-child {
-  border-bottom-right-radius: var(--rux-radius-control);
 }
 
 /* ==========================================================================
@@ -660,9 +658,9 @@
 
 .schedule-grid {
   width: 100%;
-  min-width: 1434px;
+  min-width: 1376px;
   height: auto;
-  background: var(--rux-bg-1);
+  background: var(--rux-bg-schedule);
   table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
@@ -676,7 +674,7 @@
 
 .schedule-grid__col-day {
   width: auto;
-  min-width: 200px;
+  min-width: var(--day-col-min-w);
 }
 
 .schedule-grid__header-cell,
@@ -686,7 +684,7 @@
 }
 
 .schedule-grid__header-cell {
-  background: color-mix(in srgb, var(--rux-bg-2) 25%, transparent);
+  background: var(--rux-bg-schedule-headers-a);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   overflow: hidden;
@@ -697,6 +695,13 @@
   z-index: 2000;
   text-align: center;
   vertical-align: middle;
+  /* Seal sub-pixel gaps between sticky cells — border alone can't cover these
+     because it renders inside the cell box; box-shadow bleeds outside it.
+     The border (from the gridlines rule) handles the visible line;
+     these shadows handle the rendering gap. */
+  box-shadow:
+    1px 0 0 var(--rux-bg-schedule-headers),   /* right: inter-cell gap */
+    0 -2px 0 var(--rux-bg-schedule-headers);  /* top: sticky seam */
 }
 
 /* Day columns */
@@ -709,7 +714,7 @@
   position: sticky;
   inset-inline-start: 0;
   z-index: 3000 !important;
-  background: color-mix(in srgb, var(--rux-bg-2) 25%, transparent);
+  background: var(--rux-bg-schedule-headers-a);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   overflow: hidden;
@@ -755,7 +760,7 @@
 }
 
 .schedule-grid__header-cell--today {
-  background: color-mix(in srgb, var(--rux-bg-2) 25%, transparent);
+  background: var(--rux-bg-schedule-headers-a);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   overflow: hidden;
@@ -805,16 +810,16 @@
 
 #waitingBody tr.waiting-list-row td,
 .waiting-list-row td {
-  background-color: var(--rux-bg-1) !important;
+  background-color: var(--rux-bg-schedule-headers-a) !important;
   vertical-align: top;
-  border-top: 1px solid var(--rux-border-2) !important;
+  border-top: 2px solid var(--rux-border-s) !important;
   height: var(--waiting-list-dynamic-height, var(--schedule-row-height)) !important;
   min-height: var(--waiting-list-dynamic-height, var(--schedule-row-height)) !important;
   max-height: var(--waiting-list-dynamic-height, var(--schedule-row-height)) !important;
 }
 
 .waiting-list-row .schedule-grid__bus-cell {
-  background: color-mix(in srgb, var(--rux-bg-2) 25%, transparent);
+  background: var(--rux-bg-schedule-headers-a);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   overflow: hidden;
@@ -837,6 +842,16 @@
   border-right: none;
   border-top-right-radius: 0px;
   border-bottom-right-radius: var(--rux-radius-surface);
+}
+
+/* When the waiting list is visible, the surface container provides the bottom
+   corners — suppress the waiting list's own bottom radii so the two tbody
+   sections form a seamless joint. JS toggles .has-waiting-list on the grid wrap. */
+.has-waiting-list .waiting-list-row td:first-child {
+  border-bottom-left-radius: 0;
+}
+.has-waiting-list .waiting-list-row td:last-child {
+  border-bottom-right-radius: 0;
 }
 
 .waiting-list-row .schedule-grid__bus-indicator .material-symbols-outlined {
@@ -869,7 +884,7 @@
   z-index: 500;
   pointer-events: none;
   /* pass through so sticky overlay doesn't steal trip bar hover */
-  background: color-mix(in srgb, var(--rux-bg-2) 25%, transparent);
+  background: var(--rux-bg-schedule-headers-a);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   overflow: hidden;
