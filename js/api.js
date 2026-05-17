@@ -141,7 +141,7 @@ function assignmentsFromParams(p, tripKey) {
       tripKey,
       busId,
       busName:       bus.busName || "",
-      busNumber:     Number(bus.busId) || 0,
+      busNumber:     i,
       driver1:       p2str(p[`bus${i}_driver1`]),
       driver2:       p2str(p[`bus${i}_driver2`]),
       driver3:       p2str(p[`bus${i}_driver3`]),
@@ -348,6 +348,8 @@ const api = {
     }
 
     await logTripChanges(isCreate ? "create" : "update", savedTrip, oldTrip);
+    _recentSaves.add(key);
+    setTimeout(() => _recentSaves.delete(key), 4000);
     return { ok: true, trip: savedTrip, assignments: newAssignments };
   },
 
@@ -473,10 +475,13 @@ function checkDriverDoubleBookings() {
 // REAL-TIME SUBSCRIPTIONS
 // ======================================================
 
+const _recentSaves = new Set();
+
 function onTripChange(payload) {
   if (state.pendingWrite) return;
   const trip = payload.eventType === "DELETE" ? payload.old : payload.new;
   if (!trip?.tripKey) return;
+  if (_recentSaves.has(trip.tripKey)) return;
 
   if (payload.eventType === "DELETE") {
     state.trips = state.trips.filter((t) => t.tripKey !== trip.tripKey);
@@ -507,6 +512,7 @@ function onAssignmentChange(payload) {
   const row = payload.new || payload.old;
   const tripKey = row?.tripKey;
   if (!tripKey || state.pendingWrite?.tripKey === tripKey) return;
+  if (_recentSaves.has(tripKey)) return;
   api.getBusAssignments(tripKey).then((resp) => {
     if (resp.assignments) {
       state.assignmentsByTripKey[tripKey] = resp.assignments
@@ -517,7 +523,10 @@ function onAssignmentChange(payload) {
   });
 }
 
+let _realtimeInit = false;
 function initRealtime() {
+  if (_realtimeInit) return;
+  _realtimeInit = true;
   _sb.channel("trip-board-changes")
     .on("postgres_changes", { event: "*", schema: "public", table: "trips" }, onTripChange)
     .on("postgres_changes", { event: "*", schema: "public", table: "bus_assignments" }, onAssignmentChange)

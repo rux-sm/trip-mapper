@@ -826,7 +826,10 @@ function populateFormFromData(t, assigns) {
   if ($("envelopeTripPhone")) $("envelopeTripPhone").value = t.envelopeTripPhone || "";
   if ($("envelopeTripNotes")) $("envelopeTripNotes").value = t.envelopeTripNotes || "";
 
-  setBusesNeededAndSync(t.busesNeeded ? String(t.busesNeeded) : "");
+  const effectiveBusCount = (t.busesNeeded && Number(t.busesNeeded) > 0)
+    ? String(t.busesNeeded)
+    : assigns?.length > 0 ? String(assigns.length) : "";
+  setBusesNeededAndSync(effectiveBusCount);
   dom.busesNeeded?.dispatchEvent(new Event("change", { bubbles: true }));
   setModeEdit(String(t.tripKey), String(t.tripId || ""));
 
@@ -840,9 +843,10 @@ function populateFormFromData(t, assigns) {
   });
 
   refreshBusSelectOptions();
-  (assigns || []).forEach((a) => {
-    const n = Number(a.busNumber);
-    if (!n || n < 1 || n > 10) return;
+  (assigns || []).forEach((a, idx) => {
+    let n = Number(a.busNumber);
+    if (!n || n < 1 || n > 10) n = idx + 1;
+    if (n < 1 || n > 10) return;
     const row = state.busRows[n - 1];
     if (!row) return;
     if (a.busId)   row.busSel.value = String(a.busId).trim();
