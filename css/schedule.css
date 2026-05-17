@@ -2,8 +2,8 @@
 
 :root {
   /* Schedule grid dimensions */
-  --day-col-min-w: 224px;
-  --schedule-row-height: 170px;
+  --day-col-min-w: 200px;
+  --schedule-row-height: calc(var(--tripbar-height-expanded) + var(--tripbar-inset-top) + var(--tripbar-inset-bottom));
   --bus-col-w: 32px;
   --week-picker-height: 32px;
   --day-row-h: 32px;
@@ -700,14 +700,14 @@
      The border (from the gridlines rule) handles the visible line;
      these shadows handle the rendering gap. */
   box-shadow:
-    1px 0 0 var(--rux-bg-schedule-headers),   /* right: inter-cell gap */
-    0 -2px 0 var(--rux-bg-schedule-headers);  /* top: sticky seam */
+    1px 0 0 var(--rux-bg-schedule-headers-b),   /* right: inter-cell gap */
+    0 -2px 0 var(--rux-bg-schedule-headers-b);  /* top: sticky seam */
 }
 
 /* Day columns */
 .schedule-grid__header-cell:not(:first-child),
 .schedule-grid__cell:not(:first-child) {
-  min-width: 224px;
+  min-width: 200px;
 }
 
 .schedule-grid__header-cell:first-child {
@@ -1374,6 +1374,7 @@ body.driver-filter-active .schedule-grid__trip-bar.selected {
 
 /* ── Compact bars mode: shrink schedule row height to match ── */
 body.bars-compact {
+  /* td uses content-box (no global reset), so border-bottom: 2px is outside this height — no +2px needed */
   --schedule-row-height: calc(var(--tripbar-height-collapsed) + var(--tripbar-inset-top) + var(--tripbar-inset-bottom));
 }
 

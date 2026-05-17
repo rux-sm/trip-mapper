@@ -1322,15 +1322,15 @@ function _renderAgendaInner() {
         const isAllClear =
           payment === "po received" || payment === "not required" || invoice === "paid in full";
 
-        if (isAllClear) {
+        if (isAllClear && t.datePaid) {
           bar._paidBadge.classList.add("material-symbols-outlined");
           bar._paidBadge.classList.remove("is-hidden", "is-alert", "is-solid", "is-date");
-          bar._paidBadge.textContent = t.datePaid ? "paid" : "check";
+          bar._paidBadge.textContent = "paid";
         } else {
           bar._paidBadge.classList.add("is-hidden");
           bar._paidBadge.classList.remove("is-alert", "is-date");
         }
-        bar.classList.toggle("has-paid-badge", isAllClear);
+        bar.classList.toggle("has-paid-badge", isAllClear && !!t.datePaid);
       }
 
       const ds = String(effectiveDriverStatus || "")
@@ -1463,7 +1463,7 @@ function _renderAgendaInner() {
       if (bar._paymentRow) {
         const refs = [t.ref1, t.ref2, t.ref3].filter(Boolean);
         const paidPart = t.datePaid ? `PAID ${formatDateShort(t.datePaid)}` : "";
-        bar._paymentRow.textContent = [...refs, paidPart].filter(Boolean).join(" • ");
+        bar._paymentRow.textContent = [...refs, paidPart].filter(Boolean).join(" ");
       }
 
       if (bar._notes) {

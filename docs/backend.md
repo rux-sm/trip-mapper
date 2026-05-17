@@ -85,9 +85,6 @@ const HEADERS = {
     "tripMiles",
     "datePaid",
     "tripReviewed",
-    "ref1",
-    "ref2",
-    "ref3",
   ],
 
   BusAssignments: [
@@ -1089,9 +1086,6 @@ function weekData_(p) {
   const iTripMiles = idx(tripsHdr, "tripMiles");
   const iDatePaid = idx(tripsHdr, "datePaid");
   const iTripReviewed = idx(tripsHdr, "tripReviewed");
-  const iRef1 = idx(tripsHdr, "ref1");
-  const iRef2 = idx(tripsHdr, "ref2");
-  const iRef3 = idx(tripsHdr, "ref3");
   const aDriver1Pay = idx(asnHdr, "driver1Pay");
   const aDriver2Pay = idx(asnHdr, "driver2Pay");
   const aDriver3Pay = idx(asnHdr, "driver3Pay");
@@ -1160,9 +1154,6 @@ function weekData_(p) {
       tripMiles: iTripMiles >= 0 ? row[iTripMiles] || "" : "",
       datePaid: iDatePaid >= 0 ? ymdFromCell_(row[iDatePaid]) || "" : "",
       tripReviewed: iTripReviewed >= 0 ? truthy_(row[iTripReviewed]) : false,
-      ref1: iRef1 >= 0 ? row[iRef1] || "" : "",
-      ref2: iRef2 >= 0 ? row[iRef2] || "" : "",
-      ref3: iRef3 >= 0 ? row[iRef3] || "" : "",
     });
 
     tripKeysInRange.add(k);
@@ -1400,9 +1391,6 @@ function mapTripFromParams_(p, base) {
     tripMiles: String(p.tripMiles || "").trim(),
     datePaid: String(p.datePaid || "").trim(),
     tripReviewed: String(p.tripReviewed || "").toLowerCase() === "true",
-    ref1: String(p.ref1 || "").trim(),
-    ref2: String(p.ref2 || "").trim(),
-    ref3: String(p.ref3 || "").trim(),
     createdAt: base.createdAt,
 
     updatedAt: base.updatedAt,
@@ -1534,19 +1522,18 @@ function uploadItineraryPdf_(e) {
   return { tripKey, itineraryPdfUrl: viewUrl, itineraryStatus: "Received" };
 }
 
-// One-time migration: set itineraryStatus = "Received" for trips that have a PDF URL
-// but were uploaded before the status write was added to uploadItineraryPdf_.
-// Run once from the GAS script editor (Run button) — not an HTTP endpoint.
 function fixItineraryStatuses() {
   const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
   const sheet = ss.getSheetByName(CONFIG.SHEET_TRIPS);
   const [header, ...rows] = sheet.getDataRange().getValues();
-  const colUrl    = header.indexOf("itineraryPdfUrl");
+  const colUrl = header.indexOf("itineraryPdfUrl");
   const colStatus = header.indexOf("itineraryStatus");
   if (colUrl < 0 || colStatus < 0) return;
   rows.forEach((row, i) => {
-    const hasPdf = String(row[colUrl]    || "").trim();
-    const status = String(row[colStatus] || "").trim().toLowerCase();
+    const hasPdf = String(row[colUrl] || "").trim();
+    const status = String(row[colStatus] || "")
+      .trim()
+      .toLowerCase();
     if (hasPdf && status === "pending") {
       sheet.getRange(i + 2, colStatus + 1).setValue("Received");
     }

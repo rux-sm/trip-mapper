@@ -21,12 +21,12 @@
 
   /* ── Bar heights ────────────────────────────────────────────────────── */
   --tripbar-height-collapsed: 90px; /* rows 1-6 */
-  --tripbar-height-expanded:  160px; /* rows 1-10 */
+  --tripbar-height-expanded:  162px; /* rows 1-10 */
   --tripbar-height-active:    190px; /* rows 1-11, including action bar */
 
   /* ── Outer insets (space between bar edge and row cell) ─────────────── */
   --tripbar-inset-top:    4px;
-  --tripbar-inset-bottom: 4px;
+  --tripbar-inset-bottom: 6px;
 
   /* ── Internal vertical spacing ──────────────────────────────────────── */
   --tripbar-padding-y: 0px;
@@ -55,7 +55,7 @@
   --tripbar-r8-gap-above:   1px;
   --tripbar-r9-gap-above:   1px;
   --tripbar-r10-gap-above:  1px;
-  --tripbar-r11-gap-above:  4px;
+  --tripbar-r11-gap-above:  2px;
 
     /* ── Line Height ─────────────────────────────────────────────────────── */
 
@@ -105,8 +105,8 @@
   --tripbar-lane-step:  calc(var(--tripbar-height) + var(--tripbar-lane-gap));
   --tripbar-radius:     8px;
   --tripbar-row-radius: 6px;
-  --tripbar-max-width:  188px;
-  --tripbar-min-width:  188px;
+  --tripbar-max-width:  180px;
+  --tripbar-min-width:  180px;
 
   --tripbar-padding-x:   0px;
   --tripbar-inset:       0px;
@@ -196,7 +196,7 @@
 
   /* ── Margin Inline (outer horizontal clearance) ──────────────────────── */
 
-  --tripbar-r1-margin-inline:   2px;
+  --tripbar-r1-margin-inline:   0px;
   --tripbar-r2-margin-inline:   0px;
   --tripbar-r3-margin-inline:   0px;
   --tripbar-r4-margin-inline:   4px;
@@ -210,7 +210,7 @@
 
   /* ── Padding Inline (inner horizontal text inset) ────────────────────── */
 
-  --tripbar-r1-padding-inline:   4px;
+  --tripbar-r1-padding-inline:   1px;
   --tripbar-r2-padding-inline:   0px;
   --tripbar-r3-padding-inline:   0px;
   --tripbar-r4-padding-inline:   4px;
@@ -277,7 +277,7 @@
   --tripbar-r2-icon-size:  14px;
   --tripbar-r3-icon-size:  14px;
   --tripbar-r4-icon-size:  14px;
-  --tripbar-r5-icon-size:  14px;
+  --tripbar-r5-icon-size:  16px;
   --tripbar-r6-icon-size:  14px;
   --tripbar-r7-icon-size:  14px;   /* icons not used on pay row */
   --tripbar-r8-icon-size:  14px;
@@ -318,7 +318,7 @@
   --tripbar-r2-icon-wght:  400;
   --tripbar-r3-icon-wght:  400;
   --tripbar-r4-icon-wght:  500;
-  --tripbar-r5-icon-wght:  400;
+  --tripbar-r5-icon-wght:  900;
   --tripbar-r6-icon-wght:  500;
   --tripbar-r7-icon-wght:  400;
   --tripbar-r8-icon-wght:  400;
@@ -344,7 +344,9 @@
 
   --tripbar-r1-icon-grad:  25;
   --tripbar-r4-icon-grad:  25;
+  --tripbar-r5-icon-grad:  25;
   --tripbar-r6-icon-grad:  25;
+
   --tripbar-r11-icon-grad: 0;
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -442,6 +444,7 @@
   container-type: inline-size;
   align-content: center;
   position: absolute;
+  top: var(--tripbar-inset-top);
   z-index: 501;
   /* above sticky bus cell (500) so trip bar receives hover when overlapping */
   /* height is set entirely by JS — bar.style.height = calc(100% - insetT - insetB) */
@@ -683,6 +686,20 @@ body.trip-bar-selected .schedule-grid__trip-bar.today-highlighted:not(.selected)
   border-inline-end: none;
   border-start-end-radius: 0;
   border-end-end-radius: 0;
+}
+
+.schedule-grid__trip-bar.cont-right .schedule-grid__trip-bar__row--5 {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  margin-inline-end: 0;
+  padding-inline-end: 6px;
+}
+
+.schedule-grid__trip-bar.cont-left .schedule-grid__trip-bar__row--5 {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  margin-inline-start: 0;
+  padding-inline-start: 6px;
 }
 
 /* ── Continuation arrow icons in time row ─────────────────────────────────── */
@@ -1308,7 +1325,6 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-mono);
   gap: var(--tripbar-r10-gap);
   font-size: var(--tripbar-r10-font-size);
   font-weight: var(--tripbar-r10-font-weight);

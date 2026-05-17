@@ -141,6 +141,7 @@
   --rux-bg-overlay: oklch(from var(--rux-color-gray) 70% c h); /* Scrim / backdrop */
   --rux-bg-schedule-headers: oklch(from var(--rux-color-gray) 26% c h);
   --rux-bg-schedule-headers-a: color-mix(in srgb, var(--rux-bg-schedule-headers) 100%, transparent);
+  --rux-bg-schedule-headers-b: oklch(from var(--rux-color-gray) 26% c h);
   --rux-bg-schedule: oklch(from var(--rux-color-gray) 24% c h); /* App canvas — pure black */
   --rux-bg-trip-bar: oklch(from var(--rux-color-gray) 32% c h); /* App canvas — pure black */
   --rux-bg-scrollbar-track: oklch(from var(--rux-color-gray) 26% c h / 100%); /* Scrollbar track — matches panel bg */
