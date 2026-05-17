@@ -1030,17 +1030,14 @@
 
                     <div class="form-group col-12">
                       <label>Buses Needed</label>
-                      <div class="bus-seg" id="busesNeededSeg" role="group" aria-label="Number of buses">
-                        <button type="button" class="rux-btn rux-btn--toggle" data-value="1" aria-pressed="false">1</button>
-                        <button type="button" class="rux-btn rux-btn--toggle" data-value="2" aria-pressed="false">2</button>
-                        <button type="button" class="rux-btn rux-btn--toggle" data-value="3" aria-pressed="false">3</button>
-                        <button type="button" class="rux-btn rux-btn--toggle" data-value="4" aria-pressed="false">4</button>
-                        <button type="button" class="rux-btn rux-btn--toggle" data-value="5" aria-pressed="false">5</button>
-                        <button type="button" class="rux-btn rux-btn--toggle" data-value="6" aria-pressed="false">6</button>
-                        <button type="button" class="rux-btn rux-btn--toggle" data-value="7" aria-pressed="false">7</button>
-                        <button type="button" class="rux-btn rux-btn--toggle" data-value="8" aria-pressed="false">8</button>
-                        <button type="button" class="rux-btn rux-btn--toggle" data-value="9" aria-pressed="false">9</button>
-                        <button type="button" class="rux-btn rux-btn--toggle" data-value="10" aria-pressed="false">10</button>
+                      <div class="rux-btn-group buses-needed-stepper" id="busesNeededSeg" role="group" aria-label="Number of buses">
+                        <button type="button" id="busesNeededDecBtn" class="rux-btn rux-btn--secondary rux-btn--icon" aria-label="Fewer buses" disabled>
+                          <span class="material-symbols-outlined">remove</span>
+                        </button>
+                        <span id="busesNeededDisplay" class="buses-needed-display">–</span>
+                        <button type="button" id="busesNeededIncBtn" class="rux-btn rux-btn--secondary rux-btn--icon" aria-label="More buses">
+                          <span class="material-symbols-outlined">add</span>
+                        </button>
                       </div>
                       <input type="hidden" id="busesNeeded" name="busesNeeded" value="">
                     </div>
@@ -1120,42 +1117,26 @@
                     <input type="hidden" id="itineraryStatus" name="itineraryStatus" value="" />
                     <input type="hidden" id="contactStatus" name="contactStatus" value="" />
 
-                    <div class="form-group col-6">
-                      <label for="paymentStatus">Contract Status</label>
-                      <select
-                        id="paymentStatus"
-                        name="paymentStatus"
-                        required
-                      >
-                        <option
-                          value=""
-                          disabled
-                          selected
-                        ></option>
-                        <option value="Pending Quote">Unconfirmed</option>
-                        <option value="Contract Signed">Contract Signed</option>
-                        <option value="PO Received">PO Received</option>
-                        <option value="Not Required">Not Required</option>
-                      </select>
+                    <div class="form-group col-12">
+                      <label>Contract Status</label>
+                      <input type="hidden" id="paymentStatus" name="paymentStatus" value="" />
+                      <div class="status-toggle-group" data-field="paymentStatus" role="group" aria-label="Contract status">
+                        <button type="button" class="status-toggle-btn" data-value="Pending Quote">Pending</button>
+                        <button type="button" class="status-toggle-btn" data-value="Contract Signed">Signed</button>
+                        <button type="button" class="status-toggle-btn" data-value="PO Received">PO Rec'd</button>
+                        <button type="button" class="status-toggle-btn" data-value="Not Required">N/A</button>
+                      </div>
                     </div>
 
-                    <div class="form-group col-6">
-                      <label for="invoiceStatus">Invoice Status</label>
-                      <select
-                        id="invoiceStatus"
-                        name="invoiceStatus"
-                        required
-                      >
-                        <option
-                          value=""
-                          disabled
-                          selected
-                        ></option>
-                        <option value="Pending Invoice">Pending</option>
-                        <option value="Invoiced">Invoiced</option>
-                        <option value="Deposit Received">Deposit Paid</option>
-                        <option value="Paid in Full">Paid in Full</option>
-                      </select>
+                    <div class="form-group col-12">
+                      <label>Invoice Status</label>
+                      <input type="hidden" id="invoiceStatus" name="invoiceStatus" value="" />
+                      <div class="status-toggle-group" data-field="invoiceStatus" role="group" aria-label="Invoice status">
+                        <button type="button" class="status-toggle-btn" data-value="Pending Invoice">Pending</button>
+                        <button type="button" class="status-toggle-btn" data-value="Invoiced">Invoiced</button>
+                        <button type="button" class="status-toggle-btn" data-value="Deposit Received">Deposit</button>
+                        <button type="button" class="status-toggle-btn" data-value="Paid in Full">Paid</button>
+                      </div>
                     </div>
 
                     <div class="form-group col-6">
@@ -1440,44 +1421,6 @@
 
                     </div>
 
-                    <!-- ── Section 6: Checklist ────────────────────────── -->
-                    <div class="form-section-card">
-                      <div class="form-section-card__label">Checklist</div>
-                      <div class="form-group col-12" style="display:flex; gap:8px;">
-                        <button
-                          type="button"
-                          class="rux-btn rux-btn--toggle"
-                          id="tripReminderSent"
-                          aria-pressed="false"
-                        >
-                          <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
-                          Reminder
-                        </button>
-                        <button
-                          type="button"
-                          class="rux-btn rux-btn--toggle"
-                          id="driverInfoSent"
-                          aria-pressed="false"
-                        >
-                          <span class="material-symbols-outlined" aria-hidden="true">send</span>
-                          Driver Info
-                        </button>
-                      </div>
-                      <div class="form-group col-12" style="display:flex; gap:8px;">
-                        <button type="button" class="rux-btn rux-btn--secondary rux-btn--sm" id="shortcutEnvelopeBtn" style="flex:1; justify-content:center;">
-                          <span class="material-symbols-outlined" aria-hidden="true">mail_outline</span>
-                          Envelope
-                        </button>
-                        <button type="button" class="rux-btn rux-btn--secondary rux-btn--sm" id="shortcutItineraryBtn" style="flex:1; justify-content:center;">
-                          <span class="material-symbols-outlined" aria-hidden="true">article</span>
-                          Itinerary
-                        </button>
-                        <button type="button" class="rux-btn rux-btn--secondary rux-btn--sm" id="shortcutPdfBtn" style="flex:1; justify-content:center;">
-                          <span class="material-symbols-outlined" aria-hidden="true">upload_file</span>
-                          <span class="shortcut-pdf-label">Upload PDF</span>
-                        </button>
-                      </div>
-                    </div>
 
                     <input
                       type="hidden"
@@ -2381,5 +2324,11 @@
     <script src="js/week.js?v=1" defer></script>
     <script src="js/auth.js?v=1" defer></script>
     <script src="js/app.js?v=58" defer></script>
+
+    <!-- Bus picker popover — shown by showBusPicker() -->
+    <div id="busPicker" class="bus-picker" hidden>
+      <div class="bus-picker__title">Move to bus</div>
+      <div id="busPickerList" class="bus-picker__list"></div>
+    </div>
   </body>
 </html>

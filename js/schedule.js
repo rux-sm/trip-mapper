@@ -834,7 +834,8 @@ function _renderAgendaInner() {
         rAction.className = "schedule-grid__trip-bar__row--11";
         let pdfBtn = null;
         [
-          { action: "load", icon: "edit", title: "Load trip" },
+          { action: "load",    icon: "edit",        title: "Load trip" },
+          { action: "moveBus", icon: "swap_horiz",  title: "Move to bus" },
           { action: "pdf", icon: "upload_file", title: "Attach itinerary PDF" },
           { action: "driverContact", icon: "chat", title: "Driver contact info" },
           { action: "envelope", icon: "mail_outline", title: "Envelope" },
@@ -1125,8 +1126,8 @@ function _renderAgendaInner() {
 
         const glyph = bar._b$.querySelector(".schedule-grid__trip-bar__badge-glyph");
 
-        if (ps === "po received" || ps === "not required" || inv === "paid in full") {
-          // PO received, not required, or paid in full -> hide icons
+        if (ps === "po received" || ps === "not required" || inv === "paid in full" || inv === "deposit received") {
+          // Confirmed via PO, waived, or payment received -> hide contract/PO badge
           bar._b$.classList.add("is-hidden");
         } else if (ps === "pending quote" || ps === "quoted" || ps === "pending") {
           // No contract signed -> red contract icon
@@ -1308,9 +1309,14 @@ function _renderAgendaInner() {
       }
 
       const pay = String(t.paymentStatus || "").toLowerCase();
-      // Red unconfirmed if "Pending Quote" or "Quoted" (or legacy "pending")
-      const isUnconfirmed = pay === "pending quote" || pay === "quoted" || pay === "pending";
-      bar.classList.toggle("unconfirmed", isUnconfirmed);
+      const inv = String(t.invoiceStatus || "").toLowerCase();
+      const isConfirmed =
+        pay === "contract signed" ||
+        pay === "po received" ||
+        pay === "not required" ||
+        inv === "deposit received" ||
+        inv === "paid in full";
+      bar.classList.toggle("unconfirmed", !isConfirmed);
 
       if (bar._paidBadge) {
         const payment = String(t.paymentStatus || "")
@@ -1320,7 +1326,8 @@ function _renderAgendaInner() {
           .trim()
           .toLowerCase();
         const isAllClear =
-          payment === "po received" || payment === "not required" || invoice === "paid in full";
+          payment === "po received" || payment === "not required" ||
+          invoice === "paid in full" || invoice === "deposit received";
 
         if (isAllClear && t.datePaid) {
           bar._paidBadge.classList.add("material-symbols-outlined");

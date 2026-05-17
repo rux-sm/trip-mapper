@@ -51,6 +51,16 @@ function getStatusIcon(fieldId, statusValue) {
   return "";
 }
 
+function syncStatusToggle(fieldId, value) {
+  const input = document.getElementById(fieldId);
+  if (input) input.value = value || "";
+  const group = document.querySelector(`.status-toggle-group[data-field="${fieldId}"]`);
+  if (!group) return;
+  group.querySelectorAll(".status-toggle-btn").forEach((btn) => {
+    btn.classList.toggle("is-active", btn.dataset.value === value);
+  });
+}
+
 function updateStatusSelect(el) {
   if (!el) return;
 
@@ -133,9 +143,13 @@ function maybeApplyPendingDefaults() {
     const el = $(id);
     if (!el || el.value) return;
 
-    if (id === "paymentStatus") el.value = "Pending Quote";
-    else if (id === "invoiceStatus") el.value = "Pending Invoice";
-    else el.value = "Pending";
+    if (id === "paymentStatus") {
+      syncStatusToggle("paymentStatus", "Pending Quote");
+    } else if (id === "invoiceStatus") {
+      syncStatusToggle("invoiceStatus", "Pending Invoice");
+    } else {
+      el.value = "Pending";
+    }
 
     el.dispatchEvent(new Event("change", { bubbles: true }));
     changed = true;
@@ -272,17 +286,49 @@ function syncEmptyStateForForm() {
       el.addEventListener("blur", () => syncOne(el));
     });
 
+    // Status toggle groups — click any button to set the hidden input and sync
+    document.querySelectorAll(".status-toggle-group").forEach((group) => {
+      group.addEventListener("click", (e) => {
+        const btn = e.target.closest(".status-toggle-btn");
+        if (!btn) return;
+        const fieldId = group.dataset.field;
+        syncStatusToggle(fieldId, btn.dataset.value);
+        state.tripFormDirty = true;
+        const hiddenInput = document.getElementById(fieldId);
+        if (hiddenInput) hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
+        if (fieldId === "invoiceStatus") {
+          updateInvoiceNumberVisibility();
+          if (btn.dataset.value === "Paid in Full") {
+            const datePaid = $("datePaid");
+            if (datePaid && !datePaid.value) datePaid.value = ymd(new Date());
+          }
+        }
+      });
+    });
+
+    // invoiceStatus hidden input change → update visibility (handles programmatic changes)
     const invSel = $("invoiceStatus");
     if (invSel) {
       invSel.addEventListener("change", () => {
         updateInvoiceNumberVisibility();
-        updateStatusSelect(invSel);
       });
     }
 
     const invNumInput = $("invoiceNumber");
     if (invNumInput) {
       invNumInput.addEventListener("input", updateInvoiceNumberColor);
+    }
+
+    // PO number auto-confirm: typing a PO number advances paymentStatus to "PO Received"
+    const poInput = $("paymentType");
+    if (poInput) {
+      poInput.addEventListener("input", () => {
+        const cur = $("paymentStatus")?.value;
+        if (poInput.value.trim() && (cur === "Pending Quote" || cur === "Contract Signed")) {
+          syncStatusToggle("paymentStatus", "PO Received");
+          $("paymentStatus")?.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      });
     }
 
     // Auto-set Contact status to Received when both Trip contact and Trip contact phone are filled
@@ -509,10 +555,13 @@ function setBusesNeededAndSync(value) {
 }
 
 function syncBusSegButtons() {
-  const val = dom.busesNeeded.value;
-  document.querySelectorAll("#busesNeededSeg .rux-btn--toggle").forEach((btn) => {
-    btn.setAttribute("aria-pressed", String(btn.dataset.value === val));
-  });
+  const n = parseInt(dom.busesNeeded.value) || 0;
+  const display = document.getElementById("busesNeededDisplay");
+  if (display) display.textContent = n > 0 ? String(n) : "–";
+  const dec = document.getElementById("busesNeededDecBtn");
+  const inc = document.getElementById("busesNeededIncBtn");
+  if (dec) dec.disabled = n <= 1;
+  if (inc) inc.disabled = n >= 10;
 }
 
 function buildBusRowsOnce() {
@@ -654,9 +703,9 @@ function clearTripInfoCardForNextTrip() {
   setSelectToPlaceholder("tripColor");
   setSelectToPlaceholder("itineraryStatus");
   setSelectToPlaceholder("contactStatus");
-  setSelectToPlaceholder("paymentStatus");
+  syncStatusToggle("paymentStatus", "");
   setSelectToPlaceholder("driverStatus");
-  setSelectToPlaceholder("invoiceStatus");
+  syncStatusToggle("invoiceStatus", "");
 
   dom.busesNeeded.value = "";
   syncBusSegButtons();
@@ -693,9 +742,9 @@ function setTripFormFromState(tripKey) {
 
   $("itineraryStatus").value = t.itineraryStatus || "";
   $("contactStatus").value = t.contactStatus || "";
-  $("paymentStatus").value = t.paymentStatus || "";
+  syncStatusToggle("paymentStatus", t.paymentStatus || "");
   $("driverStatus").value = t.driverStatus || "";
-  $("invoiceStatus").value = t.invoiceStatus || "";
+  syncStatusToggle("invoiceStatus", t.invoiceStatus || "");
   $("invoiceNumber").value = t.invoiceNumber || "";
   $("tripColor").value = t.tripColor || "";
   setRequirementTogglesFromTrip(t);
@@ -794,9 +843,9 @@ function populateFormFromData(t, assigns) {
 
   $("itineraryStatus").value = t.itineraryStatus || "";
   $("contactStatus").value = t.contactStatus || "";
-  $("paymentStatus").value = t.paymentStatus || "";
+  syncStatusToggle("paymentStatus", t.paymentStatus || "");
   $("driverStatus").value = t.driverStatus || "";
-  $("invoiceStatus").value = t.invoiceStatus || "";
+  syncStatusToggle("invoiceStatus", t.invoiceStatus || "");
   $("invoiceNumber").value = t.invoiceNumber || "";
   $("tripColor").value = t.tripColor || "";
   setRequirementTogglesFromTrip(t);

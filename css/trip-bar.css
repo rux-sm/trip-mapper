@@ -29,7 +29,7 @@
   --tripbar-inset-bottom: 6px;
 
   /* ── Internal vertical spacing ──────────────────────────────────────── */
-  --tripbar-padding-y: 0px;
+  --tripbar-padding-y: 4px;
   --tripbar-row-gap:   0px;
 
   /* ── Row heights (CSS grid track sizes; r11 via @property above) ─────── */
@@ -45,7 +45,7 @@
   --tripbar-r10-row-height: 15px; /* -2px */
 
   /* ── Gap above each row (margin-top; adds to height budget) ─────────── */
-  --tripbar-r1-gap-above:   2px;  /* +2px to rescue title from the border */
+  --tripbar-r1-gap-above:   0px;  /* +2px to rescue title from the border */
   --tripbar-r2-gap-above:   0px;
   --tripbar-r3-gap-above:   0px;
   --tripbar-r4-gap-above:   0px;
@@ -148,7 +148,7 @@
   --tripbar-dim-opacity:  1;                          /* schedule   */
   --tripbar-dim-bg-l:     36%;
   --tripbar-dim-bg-c:     0.2;
-  --tripbar-dim-bg-a:     50%;
+  --tripbar-dim-bg-a:     100%;
 
   /* ── Time row special ───────────────────────────────────────────────── */
 
@@ -432,7 +432,9 @@
 .schedule-grid__trip-bar {
   display: grid;
   grid-template-rows:
-    [r1]  var(--tripbar-r1-row-height)
+    [r11]     var(--tripbar-r11-row-height, 0px)
+    [spacer]  1fr
+    [r1]      var(--tripbar-r1-row-height)
     [r2]  var(--tripbar-r2-row-height)
     [r3]  var(--tripbar-r3-row-height)
     [r4]  var(--tripbar-r4-row-height)
@@ -441,8 +443,7 @@
     [r7]  var(--tripbar-r7-row-height)
     [r8]  var(--tripbar-r8-row-height)
     [r9]  var(--tripbar-r9-row-height)
-    [r10] var(--tripbar-r10-row-height)
-    [r11] var(--tripbar-r11-row-height, 0px);
+    [r10] var(--tripbar-r10-row-height);
   row-gap: var(--tripbar-row-gap);
   container-type: inline-size;
   align-content: start;
@@ -658,6 +659,30 @@ body.trip-bar-selected .schedule-grid__trip-bar:not(.selected) {
   --tripbar-bg-a: var(--tripbar-dim-bg-a);
 }
 
+/* ── Action row entrance animation ───────────────────────────────────────── */
+
+@keyframes actionRowIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes actionBtnIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1);   }
+}
+
+.schedule-grid__trip-bar.expanded .schedule-grid__trip-bar__row--11 {
+  animation: actionRowIn 160ms cubic-bezier(0.2, 0, 0, 1) 110ms both;
+}
+
+/* Stagger each button — 30ms apart, starting after row delay */
+.schedule-grid__trip-bar.expanded .schedule-grid__trip-bar__action-btn:nth-child(1) { animation: actionBtnIn 130ms cubic-bezier(0.2, 0, 0, 1) 140ms both; }
+.schedule-grid__trip-bar.expanded .schedule-grid__trip-bar__action-btn:nth-child(2) { animation: actionBtnIn 130ms cubic-bezier(0.2, 0, 0, 1) 170ms both; }
+.schedule-grid__trip-bar.expanded .schedule-grid__trip-bar__action-btn:nth-child(3) { animation: actionBtnIn 130ms cubic-bezier(0.2, 0, 0, 1) 200ms both; }
+.schedule-grid__trip-bar.expanded .schedule-grid__trip-bar__action-btn:nth-child(4) { animation: actionBtnIn 130ms cubic-bezier(0.2, 0, 0, 1) 230ms both; }
+.schedule-grid__trip-bar.expanded .schedule-grid__trip-bar__action-btn:nth-child(5) { animation: actionBtnIn 130ms cubic-bezier(0.2, 0, 0, 1) 260ms both; }
+.schedule-grid__trip-bar.expanded .schedule-grid__trip-bar__action-btn:nth-child(6) { animation: actionBtnIn 130ms cubic-bezier(0.2, 0, 0, 1) 290ms both; }
+
 /* Expand timing — overrides base collapse timing while .expanded is present */
 .schedule-grid__trip-bar.expanded {
   transition:
@@ -782,7 +807,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
    ========================================================================== */
 
 .schedule-grid__trip-bar__row--1 {
-  grid-row: 1;
+  grid-row: 3;
   display: flex;
   align-items: center;
   gap: var(--tripbar-r1-gap);
@@ -928,7 +953,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
    ========================================================================== */
 
 .schedule-grid__trip-bar__row--2 {
-  grid-row: 2;
+  grid-row: 4;
   gap: var(--tripbar-r2-gap);
   margin-top: var(--tripbar-r2-gap-above);
   margin-inline: var(--tripbar-r2-margin-inline);
@@ -966,7 +991,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
    ========================================================================== */
 
 .schedule-grid__trip-bar__row--3 {
-  grid-row: 3;
+  grid-row: 5;
   gap: var(--tripbar-r3-gap);
   margin-top: var(--tripbar-r3-gap-above);
   margin-inline: var(--tripbar-r3-margin-inline);
@@ -993,7 +1018,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
    ========================================================================== */
 
 .schedule-grid__trip-bar__row--4 {
-  grid-row: 4;
+  grid-row: 6;
   justify-content: flex-start; /* req icons pin left */
   position: relative;          /* notes centers absolutely within */
   gap: var(--tripbar-r4-gap);
@@ -1040,7 +1065,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
    ========================================================================== */
 
 .schedule-grid__trip-bar__row--5 {
-  grid-row: 5;
+  grid-row: 7;
   gap: var(--tripbar-r5-gap);
   margin-top: var(--tripbar-r5-gap-above);
   margin-inline: var(--tripbar-r5-margin-inline);
@@ -1099,7 +1124,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
    ========================================================================== */
 
 .schedule-grid__trip-bar__row--6 {
-  grid-row: 6;
+  grid-row: 8;
   gap: var(--tripbar-r6-gap);
   margin-top: var(--tripbar-r6-gap-above);
   margin-inline: var(--tripbar-r6-margin-inline);
@@ -1167,7 +1192,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
    ========================================================================== */
 
 .schedule-grid__trip-bar__row--7 {
-  grid-row: 7;
+  grid-row: 9;
   overflow: hidden;
   background: var(--tripbar-r7-bg);
   border-radius: var(--tripbar-radius) var(--tripbar-radius) 0 0;
@@ -1217,7 +1242,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
    ========================================================================== */
 
 .schedule-grid__trip-bar__row--8 {
-  grid-row: 8;
+  grid-row: 10;
   overflow: hidden;
   background: var(--tripbar-r8-bg);
   margin-top: var(--tripbar-r8-gap-above);
@@ -1280,7 +1305,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
    ========================================================================== */
 
 .schedule-grid__trip-bar__row--9 {
-  grid-row: 9;
+  grid-row: 11;
   overflow: hidden;
   background: var(--tripbar-r9-bg);
   border-radius: 0;
@@ -1321,7 +1346,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
    ========================================================================== */
 
 .schedule-grid__trip-bar__row--10 {
-  grid-row: 10;
+  grid-row: 12;
   overflow: hidden;
   background: var(--tripbar-r10-bg);
   margin-top: var(--tripbar-r10-gap-above);
@@ -1355,7 +1380,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
    ========================================================================== */
 
 .schedule-grid__trip-bar__row--11 {
-  grid-row: 11;
+  grid-row: 1;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -1368,6 +1393,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   max-width: var(--tripbar-max-width);
   min-width: var(--tripbar-min-width);
   justify-self: center; /* ← centers within the grid column */
+  
 }
 
 .schedule-grid__trip-bar__action-btn {

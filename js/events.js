@@ -282,6 +282,9 @@ function wireDelegatedBarEvents() {
           openEnvelopeModal(tripKey);
         } else if (action === "tripReview") {
           openTripDetailsModal(tripKey);
+        } else if (action === "moveBus") {
+          const rect = actionBtn.getBoundingClientRect();
+          showBusPicker(bar, rect);
         } else if (action === "more") {
           const rect = bar.getBoundingClientRect();
           showTripContextMenu(rect.left + rect.width / 2, rect.bottom + window.scrollY, tripKey);
@@ -292,6 +295,26 @@ function wireDelegatedBarEvents() {
       // Selection (all devices)
       const clickedBar = e.target.closest(".schedule-grid__trip-bar");
       selectTripBar(clickedBar || null);
+
+      // Clicking an empty cell — collapse any expanded bar
+      if (!clickedBar) {
+        document.querySelectorAll(".schedule-grid__trip-bar.expanded").forEach((b) => {
+          b.classList.remove("expanded");
+          b.style.height = b.dataset.collapsedHeight || "";
+          b.style.top    = b.dataset.collapsedTop    || "";
+          delete b.dataset.collapsedHeight;
+          delete b.dataset.collapsedTop;
+          const overlay = b.parentElement;
+          const td = overlay?.parentElement;
+          overlay.style.zIndex = "45";
+          if (td?.tagName === "TD") td.style.zIndex = "45";
+          b.addEventListener("transitionend", () => {
+            if (overlay.querySelector(".schedule-grid__trip-bar.expanded")) return;
+            overlay.style.zIndex = "";
+            if (td?.tagName === "TD") td.style.zIndex = "";
+          }, { once: true });
+        });
+      }
 
       // On desktop, expand only the clicked bar (not all bars for the trip)
       if (!isMobileOnly() && clickedBar) {
@@ -306,9 +329,18 @@ function wireDelegatedBarEvents() {
           b.style.top = b.dataset.collapsedTop || "";
           delete b.dataset.collapsedHeight;
           delete b.dataset.collapsedTop;
-          b.parentElement.style.zIndex = "";
-          const td = b.parentElement.parentElement;
-          if (td?.tagName === "TD") td.style.zIndex = "";
+          // Lower z-index below the newly expanding bar (50) but keep it
+          // above normal bars so the collapse animation stays visible.
+          // Clear entirely once the animation finishes.
+          const overlay = b.parentElement;
+          const td = overlay?.parentElement;
+          overlay.style.zIndex = "45";
+          if (td?.tagName === "TD") td.style.zIndex = "45";
+          b.addEventListener("transitionend", () => {
+            if (overlay.querySelector(".schedule-grid__trip-bar.expanded")) return;
+            overlay.style.zIndex = "";
+            if (td?.tagName === "TD") td.style.zIndex = "";
+          }, { once: true });
         });
 
         if (!wasExpanded) {
@@ -406,6 +438,7 @@ function wireEvents() {
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
     const modalClosers = [
+      { el: document.getElementById("busPicker"), close: closeBusPicker },
       { el: dom.profilePopover,          close: closeProfilePopover },
       { el: dom.itineraryModal,          close: closeItineraryModal },
       { el: dom.tripDetailsModal,        close: closeTripDetailsModal },
@@ -565,6 +598,15 @@ function wireEvents() {
     if (!cardType) return;
 
     hideCard(cardType);
+  });
+
+  // Deselect active trip bar when clicking outside the schedule and side panels
+  document.addEventListener("click", (e) => {
+    if (!document.body.classList.contains("trip-bar-selected")) return;
+    const inSchedule = e.target.closest(SELECTORS.scheduleGridWrapHook);
+    const inPanel    = dom.panelStart?.contains(e.target) ||
+                       dom.panelEnd?.contains(e.target);
+    if (!inSchedule && !inPanel) selectTripBar(null);
   });
 
   dom.driverWeekBody?.addEventListener("click", (e) => {
@@ -845,11 +887,16 @@ function wireEvents() {
     syncBusSegButtons();
   });
 
-  document.querySelectorAll("#busesNeededSeg .rux-btn--toggle").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      setBusesNeededAndSync(btn.dataset.value);
-      syncBusSegButtons();
-    });
+  document.getElementById("busesNeededDecBtn")?.addEventListener("click", () => {
+    const n = parseInt(dom.busesNeeded.value) || 1;
+    if (n > 1) setBusesNeededAndSync(String(n - 1));
+    syncBusSegButtons();
+  });
+
+  document.getElementById("busesNeededIncBtn")?.addEventListener("click", () => {
+    const n = parseInt(dom.busesNeeded.value) || 0;
+    if (n < 10) setBusesNeededAndSync(String(n + 1));
+    syncBusSegButtons();
   });
 
   $("tripDate").addEventListener("change", () => {
@@ -1339,7 +1386,9 @@ function wireEvents() {
     // Reset custom selects to placeholder so triggers sync (form.reset doesn't fire change)
     setSelectToPlaceholder("busesNeeded");
     setSelectToPlaceholder("tripColor");
-    ["paymentStatus", "driverStatus", "invoiceStatus"].forEach(setSelectToPlaceholder);
+    setSelectToPlaceholder("driverStatus");
+    syncStatusToggle("paymentStatus", "");
+    syncStatusToggle("invoiceStatus", "");
 
     dom.busesNeeded.value = "";
     syncBusSegButtons();
@@ -1404,10 +1453,7 @@ function wireEvents() {
   });
 
   // Toggle buttons — click toggles aria-pressed
-  // Skip bus-seg buttons: they're a single-select segmented control with their
-  // own click handler in wireBusSegButtons (above), not independent toggles.
   document.querySelectorAll(".rux-btn--toggle").forEach((btn) => {
-    if (btn.closest("#busesNeededSeg")) return;
     btn.addEventListener("click", () => {
       const pressed = btn.getAttribute("aria-pressed") === "true";
       btn.setAttribute("aria-pressed", pressed ? "false" : "true");

@@ -650,3 +650,85 @@ hr.form-divider {
   flex: 1;
   min-width: 0;
 }
+
+/* ── Buses needed stepper ────────────────────────────────────────────────── */
+
+.buses-needed-stepper {
+  width: fit-content;
+  margin: 0 auto;
+  align-self: center;
+}
+
+.buses-needed-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: var(--rux-btn-height);
+  padding: 0 var(--rux-space-3);
+  background: var(--rux-bg-field);
+  border-top: 1px solid var(--rux-border-2);
+  border-bottom: 1px solid var(--rux-border-2);
+  font-size: var(--rux-size-4);
+  font-weight: var(--rux-weight-bold);
+  color: var(--rux-text-1);
+  user-select: none;
+}
+
+/* ── Status toggle button group ─────────────────────────────────────────── */
+
+.status-toggle-group {
+  display: flex;
+  border-radius: var(--rux-radius-3);
+  overflow: hidden;
+  border: 1px solid var(--rux-border-2);
+  width: 100%;
+}
+
+.status-toggle-btn {
+  flex: 1;
+  height: var(--rux-fld-height);
+  padding: 0 var(--rux-space-2);
+  border: none;
+  border-right: 1px solid var(--rux-border-2);
+  background: var(--rux-bg-field);
+  color: var(--rux-text-2);
+  font-family: inherit;
+  font-size: var(--rux-size-3);
+  font-weight: var(--rux-weight-medium);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.status-toggle-btn:last-child { border-right: none; }
+.status-toggle-btn:hover      { background: var(--rux-bg-4); color: var(--rux-text-1); }
+
+.status-toggle-btn.is-active[data-value="Pending Quote"],
+.status-toggle-btn.is-active[data-value="Pending Invoice"] {
+  background: var(--rux-status-red-alpha);
+  color: var(--rux-status-red);
+}
+
+.status-toggle-btn.is-active[data-value="Contract Signed"],
+.status-toggle-btn.is-active[data-value="Invoiced"] {
+  background: var(--rux-status-yellow-alpha);
+  color: var(--rux-status-yellow);
+}
+
+.status-toggle-btn.is-active[data-value="Deposit Received"] {
+  background: var(--rux-status-blue-alpha);
+  color: var(--rux-status-blue);
+}
+
+.status-toggle-btn.is-active[data-value="PO Received"],
+.status-toggle-btn.is-active[data-value="Paid in Full"] {
+  background: var(--rux-status-green-alpha);
+  color: var(--rux-status-green);
+}
+
+.status-toggle-btn.is-active[data-value="Not Required"] {
+  background: var(--rux-bg-4);
+  color: var(--rux-text-2);
+}

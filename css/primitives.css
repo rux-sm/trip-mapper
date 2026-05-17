@@ -231,3 +231,84 @@
 .cds-accordion__content.is-hidden {
   display: none;
 }
+
+/* ── Bus picker popover ──────────────────────────────────────────────────── */
+
+.bus-picker {
+  position: fixed;
+  z-index: var(--z-dropdown);
+  min-width: 180px;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--rux-bg-4);
+  border: 1px solid var(--rux-border-2);
+  border-radius: var(--rux-radius-overlay);
+  box-shadow: var(--rux-shadow-3);
+}
+
+.bus-picker[hidden] { display: none; }
+
+.bus-picker__title {
+  padding: var(--rux-space-3) var(--rux-space-4);
+  font-size: var(--rux-size-2);
+  font-weight: var(--rux-weight-semibold);
+  color: var(--rux-text-2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--rux-border-1);
+}
+
+.bus-picker__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--rux-space-3) var(--rux-space-4);
+  background: none;
+  border: none;
+  border-top: 1px solid var(--rux-border-1);
+  font-family: inherit;
+  font-size: var(--rux-size-4);
+  color: var(--rux-text-1);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.bus-picker__item:first-child                           { border-top: none; }
+.bus-picker__item:hover:not(.bus-picker__item--disabled) { background: var(--overlay-hover); }
+
+.bus-picker__item--disabled {
+  color: var(--rux-text-3);
+  cursor: default;
+  pointer-events: none;
+}
+
+.bus-picker__count {
+  flex-shrink: 0;
+  font-size: var(--rux-size-2);
+  color: var(--rux-text-2);
+  background: var(--rux-bg-5);
+  border-radius: var(--rux-radius-2);
+  padding: 1px 5px;
+  margin-left: var(--rux-space-3);
+}
+
+.bus-picker__swap-btn {
+  flex-shrink: 0;
+  margin-left: var(--rux-space-3);
+  padding: 2px var(--rux-space-3);
+  background: var(--rux-bg-5);
+  border: 1px solid var(--rux-border-2);
+  border-radius: var(--rux-radius-2);
+  font-family: inherit;
+  font-size: var(--rux-size-2);
+  font-weight: var(--rux-weight-semibold);
+  color: var(--rux-color-accent);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.bus-picker__swap-btn:hover {
+  background: oklch(from var(--rux-color-accent) l c h / 15%);
+}

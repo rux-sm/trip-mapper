@@ -258,6 +258,28 @@ const api = {
     return { ok: true, trip: data };
   },
 
+  async moveTripBus(tripKey, busNumber, newBusId, newBusName) {
+    const { error } = await _sb
+      .from("bus_assignments")
+      .update({ busId: newBusId, busName: newBusName || "" })
+      .eq("tripKey", String(tripKey))
+      .eq("busNumber", busNumber);
+    if (error) sbErr(error, "moveTripBus");
+    return { ok: !error };
+  },
+
+  async swapTripBuses(tripKeyA, busNumberA, busIdA, busNameA,
+                      tripKeyB, busNumberB, busIdB, busNameB) {
+    const r1 = await this.moveTripBus(tripKeyA, busNumberA, busIdB, busNameB);
+    if (!r1.ok) return { ok: false };
+    const r2 = await this.moveTripBus(tripKeyB, busNumberB, busIdA, busNameA);
+    if (!r2.ok) {
+      await this.moveTripBus(tripKeyA, busNumberA, busIdA, busNameA); // best-effort rollback
+      return { ok: false };
+    }
+    return { ok: true };
+  },
+
   async getBusAssignments(tripKey) {
     const { data, error } = await _sb.from("bus_assignments").select("*").eq("tripKey", tripKey);
     if (error) sbErr(error, "getBusAssignments");

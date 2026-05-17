@@ -372,10 +372,10 @@ function renderQuickEditTab(tabId, trip, assigns) {
         type: "select",
         options: [
           ["", ""],
-          ["Pending Quote", "Unconfirmed"],
-          ["Contract Signed", "Contract Signed"],
-          ["PO Received", "PO Received"],
-          ["Not Required", "Not Required"],
+          ["Pending Quote", "Pending"],
+          ["Contract Signed", "Signed"],
+          ["PO Received", "PO Rec'd"],
+          ["Not Required", "N/A"],
         ],
       },
       {
@@ -805,4 +805,205 @@ function wireQuickEditPopover() {
     if (quickEditDirty && !confirm("Discard unsaved changes?")) return;
     closeQuickEditPopover();
   });
+}
+
+// ======================================================
+// BUS PICKER — move trip to a different bus
+// ======================================================
+
+let _busPickerOutsideClick = null;
+
+function showBusPicker(bar, anchorRect) {
+  const picker = document.getElementById("busPicker");
+  if (!picker) return;
+
+  const tripKey      = bar.dataset.tripkey;
+  const currentBusId = String(bar.dataset.busid || "");
+
+  // All buses already on this trip — keyed by busId for O(1) lookup + access to busNumber
+  const tripAssignments = state.assignmentsByTripKey[tripKey] || [];
+  const busesOnTripMap  = new Map(tripAssignments.map((a) => [String(a.busId), a]));
+
+  // Trip date range for overlap count
+  const movingTrip = state.tripByKey?.[tripKey];
+  const depDate    = movingTrip?.departureDate;
+  const arrDate    = movingTrip?.arrivalDate || depDate;
+
+  const list = document.getElementById("busPickerList");
+  list.innerHTML = "";
+
+  state.busesList.forEach((bus) => {
+    const isCurrent  = String(bus.busId) === currentBusId;
+    const sameTrip   = !isCurrent && busesOnTripMap.has(String(bus.busId));
+    const isDisabled = isCurrent; // current bus only; same-trip buses get a swap button
+
+    // Collect overlapping trips on this bus (used for cross-trip swap option)
+    const overlapTrips = [];
+    if (depDate && !isDisabled && !sameTrip) {
+      Object.entries(state.assignmentsByTripKey).forEach(([tk, asgns]) => {
+        if (tk === tripKey) return;
+        const t = state.tripByKey?.[tk];
+        if (!t) return;
+        const tArr = t.arrivalDate || t.departureDate;
+        if (t.departureDate > arrDate || tArr < depDate) return;
+        const matchAsgn = asgns.find((a) => String(a.busId) === String(bus.busId));
+        if (matchAsgn) {
+          overlapTrips.push({
+            tripKey:     tk,
+            busId:       matchAsgn.busId,
+            busName:     matchAsgn.busName || "",
+            busNumber:   matchAsgn.busNumber,
+            destination: t.destination || "",
+          });
+        }
+      });
+    }
+
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = "bus-picker__item" + (isDisabled ? " bus-picker__item--disabled" : "");
+
+    const nameSpan = document.createElement("span");
+    nameSpan.textContent = bus.busName || String(bus.busId);
+    item.appendChild(nameSpan);
+
+    if (sameTrip) {
+      // Intra-trip slot swap — swap busId between two slots of the same trip
+      const otherAsgn = busesOnTripMap.get(String(bus.busId));
+      const swapBtn = document.createElement("button");
+      swapBtn.type = "button";
+      swapBtn.className = "bus-picker__swap-btn";
+      swapBtn.textContent = "↔ Swap";
+      swapBtn.title = "Swap bus slots within this trip";
+      swapBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        doSwap(tripKey, currentBusId, {
+          tripKey:     tripKey,
+          busId:       otherAsgn.busId,
+          busName:     otherAsgn.busName || "",
+          busNumber:   otherAsgn.busNumber,
+          destination: "slot " + otherAsgn.busNumber,
+        });
+        closeBusPicker();
+      });
+      item.appendChild(swapBtn);
+    } else if (overlapTrips.length === 1) {
+      const swapBtn = document.createElement("button");
+      swapBtn.type = "button";
+      swapBtn.className = "bus-picker__swap-btn";
+      swapBtn.textContent = "↔ Swap";
+      swapBtn.title = `Swap with: ${overlapTrips[0].destination || overlapTrips[0].tripKey}`;
+      swapBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        doSwap(tripKey, currentBusId, overlapTrips[0]);
+        closeBusPicker();
+      });
+      item.appendChild(swapBtn);
+    } else if (overlapTrips.length > 1) {
+      const badge = document.createElement("span");
+      badge.className = "bus-picker__count";
+      badge.textContent = `+${overlapTrips.length}`;
+      badge.title = `${overlapTrips.length} other trips on this bus`;
+      item.appendChild(badge);
+    }
+
+    if (!isDisabled && !sameTrip) {
+      item.addEventListener("click", () => {
+        moveTripToBus(tripKey, currentBusId, bus);
+        closeBusPicker();
+      });
+    }
+    list.appendChild(item);
+  });
+
+  // Position fixed relative to viewport
+  picker.hidden = false;
+  const w = picker.offsetWidth || 200;
+  let top  = anchorRect.bottom + 6;
+  let left = anchorRect.left;
+  if (left + w > window.innerWidth - 8) left = window.innerWidth - w - 8;
+  if (top + 300 > window.innerHeight) top = anchorRect.top - Math.min(picker.offsetHeight || 300, 300) - 6;
+  picker.style.top  = top  + "px";
+  picker.style.left = left + "px";
+
+  _busPickerOutsideClick = (e) => {
+    if (!picker.contains(e.target)) closeBusPicker();
+  };
+  requestAnimationFrame(() => document.addEventListener("click", _busPickerOutsideClick));
+}
+
+function closeBusPicker() {
+  const picker = document.getElementById("busPicker");
+  if (picker) picker.hidden = true;
+  if (_busPickerOutsideClick) {
+    document.removeEventListener("click", _busPickerOutsideClick);
+    _busPickerOutsideClick = null;
+  }
+}
+
+async function moveTripToBus(tripKey, currentBusId, newBus) {
+  const assignments = state.assignmentsByTripKey[tripKey];
+  if (!assignments?.length) return;
+
+  const assignment = assignments.find((a) => String(a.busId) === String(currentBusId));
+  if (!assignment) return;
+
+  const busNumber   = assignment.busNumber;
+  const prevBusId   = assignment.busId;
+  const prevBusName = assignment.busName;
+
+  // Optimistic update
+  assignment.busId   = newBus.busId;
+  assignment.busName = newBus.busName || String(newBus.busId);
+  scheduleAgendaReflow();
+
+  const result = await api.moveTripBus(tripKey, busNumber, newBus.busId, newBus.busName || "");
+  if (!result.ok) {
+    assignment.busId   = prevBusId;
+    assignment.busName = prevBusName;
+    scheduleAgendaReflow();
+    toast("Move failed — please try again.", "danger", 3000);
+    return;
+  }
+
+  state.weekCache.clear();
+  try { CACHE.clearAll(); } catch (_) {}
+
+  toast(`Moved to ${newBus.busName || newBus.busId}`, "success", 2000);
+}
+
+async function doSwap(tripKeyA, currentBusIdA, targetTrip) {
+  const assignmentsA = state.assignmentsByTripKey[tripKeyA];
+  const assignmentsB = state.assignmentsByTripKey[targetTrip.tripKey];
+  if (!assignmentsA?.length || !assignmentsB?.length) return;
+
+  const asgA = assignmentsA.find((a) => String(a.busId) === String(currentBusIdA));
+  const asgB = assignmentsB.find((a) => String(a.busId) === String(targetTrip.busId));
+  if (!asgA || !asgB) return;
+
+  const origA = { busId: asgA.busId, busName: asgA.busName };
+  const origB = { busId: asgB.busId, busName: asgB.busName };
+
+  // Optimistic update
+  asgA.busId = origB.busId; asgA.busName = origB.busName;
+  asgB.busId = origA.busId; asgB.busName = origA.busName;
+  scheduleAgendaReflow();
+
+  const result = await api.swapTripBuses(
+    tripKeyA,           asgA.busNumber, origA.busId, origA.busName,
+    targetTrip.tripKey, asgB.busNumber, origB.busId, origB.busName,
+  );
+
+  if (!result.ok) {
+    asgA.busId = origA.busId; asgA.busName = origA.busName;
+    asgB.busId = origB.busId; asgB.busName = origB.busName;
+    scheduleAgendaReflow();
+    toast("Swap incomplete — reload the page to see the current state.", "danger", 5000);
+    return;
+  }
+
+  state.weekCache.clear();
+  try { CACHE.clearAll(); } catch (_) {}
+
+  toast(`Swapped with ${targetTrip.destination || "trip"} on ${origB.busName || origB.busId}`, "success", 2500);
 }
