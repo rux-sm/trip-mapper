@@ -253,6 +253,8 @@ function wireDelegatedBarEvents() {
   });
 
   containers.forEach((container) => {
+    container.addEventListener("contextmenu", (e) => handleScheduleInteraction(e, true));
+
     // Click (Tap) - all devices and specific icon clicks
     container.addEventListener("click", async (e) => {
       // Action row button clicks (delegated)
@@ -304,10 +306,6 @@ function wireDelegatedBarEvents() {
           b.style.top = b.dataset.collapsedTop || "";
           delete b.dataset.collapsedHeight;
           delete b.dataset.collapsedTop;
-          if (b.dataset.collapsedWidth) {
-            b.style.width = b.dataset.collapsedWidth;
-            delete b.dataset.collapsedWidth;
-          }
           b.parentElement.style.zIndex = "";
           const td = b.parentElement.parentElement;
           if (td?.tagName === "TD") td.style.zIndex = "";
@@ -330,19 +328,6 @@ function wireDelegatedBarEvents() {
           // 3. Add class — switches transition to expand timing and sets
           //    --tripbar-action-row-height: 30px for the grid track.
           clickedBar.classList.add("expanded");
-
-          // Shrink multi-day bars to a single column width on expand.
-          const sidx = parseInt(clickedBar.dataset.sidx ?? "0", 10);
-          const eidx = parseInt(clickedBar.dataset.eidx ?? "0", 10);
-          if (sidx !== eidx) {
-            clickedBar.dataset.collapsedWidth = clickedBar.style.width;
-            const col = getColMetricsCached();
-            const barCs = getComputedStyle(clickedBar);
-            const insetL = parseFloat(barCs.getPropertyValue("--tripbar-inset-left")) || 3;
-            const insetR = parseFloat(barCs.getPropertyValue("--tripbar-inset-right")) || 3;
-            const singleW = Math.max(0, (col.widths[sidx] ?? 0) - insetL - insetR);
-            clickedBar.style.width = singleW + "px";
-          }
 
           // Elevate both the .schedule-grid__row-bars overlay AND its parent <td>
           // (.schedule-grid__cell has position:relative, so adding z-index creates
@@ -1434,105 +1419,7 @@ function wireEvents() {
 }
 
 // ======================================================
-// 37) WIRE SETTINGS MENU
-// ======================================================
-function wireSettingsMenu() {
-  if (!dom.settingsBtn || !dom.settingsMenu) return;
-
-  function settingsOutsideClick(e) {
-    if (!dom.settingsMenu.contains(e.target) && !dom.settingsBtn.contains(e.target)) {
-      closeSettings();
-    }
-  }
-
-  function closeSettings() {
-    dom.settingsMenu.hidden = true;
-    dom.settingsBtn.setAttribute("aria-expanded", "false");
-    document.removeEventListener("click", settingsOutsideClick);
-  }
-
-  dom.settingsBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    if (dom.settingsMenu.hidden) {
-      closeAllFloatingMenus();
-      dom.settingsMenu.hidden = false;
-      dom.settingsBtn.setAttribute("aria-expanded", "true");
-      requestAnimationFrame(() => document.addEventListener("click", settingsOutsideClick));
-    } else {
-      closeSettings();
-    }
-  });
-
-  // 1. Jump directly to Today
-  dom.todayBtn2?.addEventListener("click", () => {
-    if (!confirmDiscardIfDirty()) return;
-    state.currentDate = startOfWeek(new Date());
-    updateWeekDates();
-    closeSettings();
-  });
-
-  // Next Day Maintenance Report
-  dom.nextDayReportBtn?.addEventListener("click", () => {
-    closeSettings();
-    generateNextDayReport();
-  });
-
-  // Daily Maintenance Plan
-  dom.dailyMaintenancePlanBtn?.addEventListener("click", () => {
-    closeSettings();
-    generateDailyMaintenancePlan();
-  });
-
-  // 3. Print (Legal, 2 pages)
-  dom.printBtn2?.addEventListener("click", () => {
-    closeSettings();
-    setSidePanelMode("off");
-    requestAnimationFrame(() => {
-      setPrintPageSize("legal");
-      buildPrintScheduleLegalCSSGrid();
-      window.print();
-    });
-  });
-
-  // 3b. Print Full (Letter, 1 page)
-  dom.printBtn2Full?.addEventListener("click", () => {
-    closeSettings();
-    setSidePanelMode("off");
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setPrintPageSize("letter");
-        buildPrintScheduleFullLetter();
-        window.print();
-      });
-    });
-  });
-
-  // 4. Week Start
-  dom.weekStartToggle?.addEventListener("click", () => {
-    applyWeekStart(!state.weekStartsOnMonday);
-    // Don't close menu so user can see the toggle change
-  });
-
-  // 5. Refresh
-  dom.refreshBtn2?.addEventListener("click", () => {
-    closeSettings();
-    CACHE.clearAll();
-    state.weekCache.clear();
-    loadDriversAndBuses(true).then(() => refreshWeekData());
-  });
-
-  document.getElementById("signOutBtn")?.addEventListener("click", () => {
-    authSignOut();
-  });
-
-  // 6. Auto-close whenever ANY dropdown item is clicked inside this menu
-  dom.settingsMenu.addEventListener("click", (e) => {
-    if (e.target.closest(".dropdown__item")) closeSettings();
-  });
-}
-
-// ======================================================
-// 38) WIRE PROFILE POPOVER
+// 37) WIRE PROFILE POPOVER (includes all settings)
 // ======================================================
 function wireProfilePopover() {
   const btn     = dom.avatarBtn;
@@ -1542,6 +1429,7 @@ function wireProfilePopover() {
   function profileOutsideClick(e) {
     if (!popover.contains(e.target) && !btn.contains(e.target)) {
       closeProfilePopover();
+      document.removeEventListener("click", profileOutsideClick);
     }
   }
 
@@ -1549,11 +1437,6 @@ function wireProfilePopover() {
     e.stopPropagation();
     if (popover.hidden) {
       closeAllFloatingMenus();
-      // Close settings menu too
-      if (dom.settingsMenu && !dom.settingsMenu.hidden) {
-        dom.settingsMenu.hidden = true;
-        dom.settingsBtn?.setAttribute("aria-expanded", "false");
-      }
       openProfilePopover();
       requestAnimationFrame(() => document.addEventListener("click", profileOutsideClick));
     } else {
@@ -1562,7 +1445,17 @@ function wireProfilePopover() {
     }
   });
 
-  // Display name: save on blur and Enter
+  // Auto-close on any dropdown__item click inside the popover
+  // (excludes preference toggles which are rux-btn, not dropdown__item)
+  popover.addEventListener("click", (e) => {
+    if (e.target.closest(".dropdown__item")) {
+      closeProfilePopover();
+      document.removeEventListener("click", profileOutsideClick);
+    }
+  });
+
+  // ── Profile identity ───────────────────────────────────────────────────────
+
   document.getElementById("profileDisplayName")?.addEventListener("blur", () => {
     const input = document.getElementById("profileDisplayName");
     const val = input?.value.trim() || "";
@@ -1578,7 +1471,8 @@ function wireProfilePopover() {
     if (e.key === "Enter") { e.preventDefault(); e.target.blur(); }
   });
 
-  // Color swatches
+  // ── Avatar color ───────────────────────────────────────────────────────────
+
   document.getElementById("profileColorSwatches")?.addEventListener("click", (e) => {
     const swatch = e.target.closest("[data-color]");
     if (!swatch) return;
@@ -1592,7 +1486,8 @@ function wireProfilePopover() {
     saveProfileToSupabase().then(() => retrackPresence()).catch(console.warn);
   });
 
-  // Photo upload
+  // ── Photo upload ───────────────────────────────────────────────────────────
+
   document.getElementById("profileUploadBtn")?.addEventListener("click", () => {
     document.getElementById("profilePhotoInput")?.click();
   });
@@ -1608,7 +1503,8 @@ function wireProfilePopover() {
     e.target.value = "";
   });
 
-  // Preferences
+  // ── Preferences ────────────────────────────────────────────────────────────
+
   document.getElementById("profileThemeToggle")?.addEventListener("click", () => {
     dom.themeToggle?.click();
     const newTheme = document.documentElement.getAttribute("data-theme") || "dark";
@@ -1639,7 +1535,55 @@ function wireProfilePopover() {
     document.getElementById("profileCompactToggle")?.setAttribute("aria-pressed", String(isCompact));
   });
 
-  // Sign out
+  // ── Data ───────────────────────────────────────────────────────────────────
+  // Note: todayHighlightBtn, waitingListBtn, logBtn already wired in wireEvents()
+
+  dom.refreshBtn2?.addEventListener("click", () => {
+    CACHE.clearAll();
+    state.weekCache.clear();
+    loadDriversAndBuses(true).then(() => refreshWeekData());
+  });
+
+  document.getElementById("todayBtn2")?.addEventListener("click", () => {
+    if (!confirmDiscardIfDirty()) return;
+    state.currentDate = startOfWeek(new Date());
+    updateWeekDates();
+  });
+
+  // ── Print ──────────────────────────────────────────────────────────────────
+
+  dom.printBtn2?.addEventListener("click", () => {
+    setSidePanelMode("off");
+    requestAnimationFrame(() => {
+      setPrintPageSize("legal");
+      buildPrintScheduleLegalCSSGrid();
+      window.print();
+    });
+  });
+
+  dom.printBtn2Full?.addEventListener("click", () => {
+    setSidePanelMode("off");
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setPrintPageSize("letter");
+        buildPrintScheduleFullLetter();
+        window.print();
+      });
+    });
+  });
+
+  // ── Reports ────────────────────────────────────────────────────────────────
+
+  dom.nextDayReportBtn?.addEventListener("click", () => {
+    generateNextDayReport();
+  });
+
+  dom.dailyMaintenancePlanBtn?.addEventListener("click", () => {
+    generateDailyMaintenancePlan();
+  });
+
+  // ── Sign out ───────────────────────────────────────────────────────────────
+
   document.getElementById("profileSignOutBtn")?.addEventListener("click", () => {
     authSignOut();
   });

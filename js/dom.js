@@ -118,9 +118,6 @@ const dom = {
   presenceStrip:  $("presenceStrip"),
   avatarBtn:      $("avatarBtn"),
   profilePopover: $("profilePopover"),
-
-  settingsBtn: $("settingsBtn"),
-  settingsMenu: $("settingsMenu"),
   todayBtn2: $("todayBtn2"),
   themeToggle: $("themeToggle"),
   themeText2: $("themeText2"),

@@ -30,7 +30,6 @@
   syncEmptyStateForForm();
   setModeNew();
 
-  wireSettingsMenu();
   wireEvents();
   wireDelegatedBarEvents();
   wireQuickEditPopover();

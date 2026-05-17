@@ -92,7 +92,25 @@
 
 .profile-popover {
   width: var(--profile-popover-width);
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
   padding: 0;
+}
+
+/* Compact section for action-list items (Views, Print, Reports) */
+.profile-popover__section--actions {
+  gap: 0;
+  padding: var(--rux-space-3) var(--rux-space-5) var(--rux-space-2);
+}
+
+.profile-popover__section--actions .profile-popover__section-title {
+  padding-bottom: var(--rux-space-2);
+}
+
+/* Full-width dropdown items inside the popover */
+#profilePopover .dropdown__item {
+  width: 100%;
+  border-radius: 0;
 }
 
 .profile-popover__header {

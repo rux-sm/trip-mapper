@@ -22,7 +22,7 @@
   /* ── Bar heights ────────────────────────────────────────────────────── */
   --tripbar-height-collapsed: 89px;  /* rows 1-6 (was 90px) */
   --tripbar-height-expanded:  153px; /* rows 1-10 (was 162px) */
-  --tripbar-height-active:    185px; /* rows 1-11, inc action bar (was 198px) */
+  --tripbar-height-active:    185px; /* rows 1-11, inc  bar (was 198px) */
 
   /* ── Outer insets (space between bar edge and row cell) ─────────────── */
   --tripbar-inset-top:    4px;
@@ -37,7 +37,7 @@
   --tripbar-r2-row-height:  11px;
   --tripbar-r3-row-height:  11px;
   --tripbar-r4-row-height:  14px; /* -1px */
-  --tripbar-r5-row-height:  18px; /* -1px */
+  --tripbar-r5-row-height:  20px; /* -1px */
   --tripbar-r6-row-height:  16px; /* -1px */
   --tripbar-r7-row-height:  15px; /* -2px */
   --tripbar-r8-row-height:  15px; /* -2px */
@@ -48,14 +48,14 @@
   --tripbar-r1-gap-above:   2px;  /* +2px to rescue title from the border */
   --tripbar-r2-gap-above:   0px;
   --tripbar-r3-gap-above:   0px;
-  --tripbar-r4-gap-above:   1px;
-  --tripbar-r5-gap-above:   1px;
-  --tripbar-r6-gap-above:   1px;
-  --tripbar-r7-gap-above:   1px;
+  --tripbar-r4-gap-above:   0px;
+  --tripbar-r5-gap-above:   0px;
+  --tripbar-r6-gap-above:   0px;
+  --tripbar-r7-gap-above:   0px;
   --tripbar-r8-gap-above:   1px;
   --tripbar-r9-gap-above:   1px;
   --tripbar-r10-gap-above:  1px;
-  --tripbar-r11-gap-above:  4px;
+  --tripbar-r11-gap-above:  0px;
 
     /* ── Line Height ─────────────────────────────────────────────────────── */
 
@@ -63,7 +63,7 @@
   --tripbar-r2-line-height:  11px;
   --tripbar-r3-line-height:  11px;
   --tripbar-r4-line-height:  13px;
-  --tripbar-r5-line-height:  17px;
+  --tripbar-r5-line-height:  20px;
   --tripbar-r6-line-height:  15px;
   --tripbar-r7-line-height:  14px;
   --tripbar-r8-line-height:  14px;
@@ -86,11 +86,11 @@
     /* ── Font Weight ─────────────────────────────────────────────────────── */
 
   --tripbar-r1-font-weight:  700;
-  --tripbar-r2-font-weight:  600;
-  --tripbar-r3-font-weight:  600;
+  --tripbar-r2-font-weight:  500;
+  --tripbar-r3-font-weight:  500;
   --tripbar-r4-font-weight:  500;
-  --tripbar-r5-font-weight:  800;
-  --tripbar-r6-font-weight:  800;
+  --tripbar-r5-font-weight:  700;
+  --tripbar-r6-font-weight:  700;
   --tripbar-r7-font-weight:  400;
   --tripbar-r8-font-weight:  400;
   --tripbar-r9-font-weight:  400;
@@ -146,9 +146,9 @@
   --tripbar-color:        var(--rux-status-blue-alpha); /* print.css  */
   --tripbar-border-color: var(--rux-color-accent);      /* .one-way   */
   --tripbar-dim-opacity:  1;                          /* schedule   */
-  --tripbar-dim-bg-l:     40%;
+  --tripbar-dim-bg-l:     36%;
   --tripbar-dim-bg-c:     0.2;
-  --tripbar-dim-bg-a:     75%;
+  --tripbar-dim-bg-a:     50%;
 
   /* ── Time row special ───────────────────────────────────────────────── */
 
@@ -209,11 +209,11 @@
   --tripbar-r8-margin-inline:   4px;
   --tripbar-r9-margin-inline:   4px;
   --tripbar-r10-margin-inline:  4px;
-  --tripbar-r11-margin-inline:  4px;
+  --tripbar-r11-margin-inline:  0px;
 
   /* ── Padding Inline (inner horizontal text inset) ────────────────────── */
 
-  --tripbar-r1-padding-inline:   1px;
+  --tripbar-r1-padding-inline:   2px;
   --tripbar-r2-padding-inline:   0px;
   --tripbar-r3-padding-inline:   0px;
   --tripbar-r4-padding-inline:   4px;
@@ -246,16 +246,16 @@
 
   /* ── Text Color ──────────────────────────────────────────────────────── */
 
-  --tripbar-r1-color: oklch(from var(--trip-accent-color) 99% 0.1 h);
+  --tripbar-r1-color: oklch(from var(--trip-accent-color) 80% 0.1 h);
   --tripbar-r2-color:  var(--rux-text-2);
   --tripbar-r3-color:  var(--rux-text-2);
-  --tripbar-r4-color:  oklch(100% 0 0 / 0.1);
-  /* r5 color is set per-instance in component rules (inherits from bar text) */
+  --tripbar-r4-color:  oklch(100% 0 0 / 1);
+  --tripbar-r5-color: oklch(from var(--trip-accent-color) 80% 0.1 h);
   --tripbar-r6-color:  var(--rux-text-1);
   --tripbar-r7-color:  var(--rux-color-white);
   --tripbar-r8-color:  var(--rux-color-white);
   --tripbar-r9-color:  var(--rux-color-white);
-  --tripbar-r10-color: var(--rux-color-white);
+  --tripbar-r10-color: var(--rux-status-green);
   --tripbar-r11-color: var(--rux-text-1);
 
   /* ── Background ──────────────────────────────────────────────────────── */
@@ -264,7 +264,7 @@
   --tripbar-r2-bg:  oklch(0% 0 0 / 0%);
   --tripbar-r3-bg:  oklch(0% 0 0 / 0%);
   --tripbar-r4-bg:  oklch(0% 0 0 / 0%);
-  --tripbar-r5-bg:  oklch(0% 0 0 / 50%);
+  --tripbar-r5-bg:  oklch(0% 0 0 / 25%);
   --tripbar-r6-bg:  oklch(0% 0 0 / 0%);
   --tripbar-r7-bg:  oklch(100% 0 0 / 25%);
   --tripbar-r8-bg:  oklch(100% 0 0 / 25%);
@@ -317,10 +317,10 @@
 
   /* ── Icon Weight (100–700) ───────────────────────────────────────────── */
 
-  --tripbar-r1-icon-wght:  500;
+  --tripbar-r1-icon-wght:  400;
   --tripbar-r2-icon-wght:  400;
   --tripbar-r3-icon-wght:  400;
-  --tripbar-r4-icon-wght:  500;
+  --tripbar-r4-icon-wght:  400;
   --tripbar-r5-icon-wght:  900;
   --tripbar-r6-icon-wght:  500;
   --tripbar-r7-icon-wght:  400;
@@ -463,7 +463,6 @@
   /* Collapse timing — overridden by .expanded rule for the open direction */
   transition:
     height var(--tripbar-collapse-duration) var(--tripbar-collapse-ease),
-    width  var(--tripbar-collapse-duration) var(--tripbar-collapse-ease),
     --tripbar-r11-row-height var(--tripbar-collapse-duration) var(--tripbar-collapse-ease),
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
@@ -475,7 +474,7 @@
   --trip-accent-color: var(--rux-color-blue);
 
 /* Adjusted Variables */
---tripbar-bg-l: 40%;   /* Lightness */
+--tripbar-bg-l: 36%;   /* Lightness */
 --tripbar-bg-c: 0.2;  /* Chroma (Saturation) - Try values between 0 and 0.3 */
 --tripbar-bg-h: none;  /* Hue - Use 'none' or 'h' to inherit from the accent */
 --tripbar-bg-a: 100%;  /* Alpha */
@@ -498,10 +497,10 @@
 
   /* ── Component color token overrides ──────────────────────────────────── */
 
-  --tripbar-r1-color: oklch(from var(--tripbar-text-color) 75% 0.1 h / 1);
-  --tripbar-r2-color: oklch(from var(--tripbar-text-color) 75% 0.1 h / 1);
-  --tripbar-r3-color: oklch(from var(--tripbar-text-color) 75% 0.1 h / 1);
-  --tripbar-r4-color: oklch(100% 0 0 / .75);;
+  --tripbar-r1-color: oklch(from var(--tripbar-text-color) 85% 0.1 h / 1);
+  --tripbar-r2-color: oklch(from var(--tripbar-text-color) 85% 0.1 h / .75);
+  --tripbar-r3-color: oklch(from var(--tripbar-text-color) 85% 0.1 h / .75);
+  --tripbar-r4-color: oklch(100% 0 0 / 1);;
   /* r5 inherits from bar text via component rules */
   --tripbar-r6-color: var(--rux-text-1);
   /* r7–r10 use :root values */
@@ -602,16 +601,16 @@
 
 .schedule-grid__trip-bar:hover {
   z-index: 600;
-  --tripbar-bg-l: 45%;
+  --tripbar-bg-l: 36%;
 }
 
 .schedule-grid__trip-bar:active {
-  --tripbar-bg-l: 40%;
+  --tripbar-bg-l: 36%;
 }
 
 .schedule-grid__trip-bar.selected {
   z-index: 9000;
-  --tripbar-bg-l: 40%;
+  --tripbar-bg-l: 36%;
   --tripbar-bg-c: 0.2;
   --tripbar-r1-color: var(--rux-color-white);
   --tripbar-r2-color: var(--rux-color-white);
@@ -663,7 +662,6 @@ body.trip-bar-selected .schedule-grid__trip-bar:not(.selected) {
 .schedule-grid__trip-bar.expanded {
   transition:
     height var(--tripbar-expand-duration) var(--tripbar-expand-ease),
-    width  var(--tripbar-expand-duration) var(--tripbar-expand-ease),
     --tripbar-r11-row-height var(--tripbar-expand-duration) var(--tripbar-expand-ease),
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
@@ -671,7 +669,7 @@ body.trip-bar-selected .schedule-grid__trip-bar:not(.selected) {
     border-color var(--transition-fast),
     outline-color var(--transition-fast);
 
-  --tripbar-r11-row-height: 28px;
+  --tripbar-r11-row-height: 30px;
   z-index: 600;
   box-shadow:
     0 0 0 1px oklch(from var(--trip-accent-color) 70% c h / 0.5),
@@ -818,7 +816,6 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   font-weight: var(--tripbar-r1-font-weight);
   line-height: var(--tripbar-r1-line-height);
   letter-spacing: var(--tripbar-r1-letter-spacing);
-  text-transform: uppercase;
   color: var(--tripbar-r1-color);
   white-space: nowrap;
   overflow: hidden;
@@ -958,7 +955,6 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   font-weight: var(--tripbar-r2-font-weight);
   line-height: var(--tripbar-r2-line-height);
   letter-spacing: var(--tripbar-r2-letter-spacing);
-  text-transform: uppercase;
   color: var(--tripbar-r2-color);
   white-space: nowrap;
   overflow: hidden;
@@ -1036,7 +1032,6 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-transform: uppercase;
   padding-inline: var(--tripbar-r4-notes-padding-inline);
 }
 
@@ -1052,7 +1047,7 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   padding-inline: var(--tripbar-r5-padding-inline);
   background: var(--tripbar-r5-bg);
   line-height: var(--tripbar-r5-line-height);
-  border-radius: var(--tripbar-row-radius);
+  border-radius: var(--rux-radius-1);
 }
 
 .schedule-grid__trip-bar__row--5 .material-symbols-outlined {
@@ -1363,9 +1358,8 @@ body.bars-compact .schedule-grid__trip-bar.expanded {
   grid-row: 11;
   overflow: hidden;
   display: flex;
-  gap: var(--tripbar-r11-gap);
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   border-radius: var(--rux-radius-2);
   background: var(--tripbar-r11-bg);
   margin-top: var(--tripbar-r11-gap-above);

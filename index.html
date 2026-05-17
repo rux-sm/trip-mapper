@@ -232,129 +232,64 @@
                 </div>
               </div>
               <hr class="dropdown__divider" />
+              <!-- Views -->
+              <div class="profile-popover__section profile-popover__section--actions">
+                <div class="profile-popover__section-title">Views</div>
+                <button type="button" id="todayHighlightBtn" class="dropdown__item" aria-pressed="false">
+                  <span class="dropdown__icon material-symbols-outlined">visibility</span>
+                  <span>Highlight Today's Trips</span>
+                </button>
+                <button type="button" id="waitingListBtn" class="dropdown__item">
+                  <span class="dropdown__icon material-symbols-outlined">low_priority</span>
+                  <span>Waiting List</span>
+                </button>
+                <button type="button" id="logBtn" class="dropdown__item">
+                  <span class="dropdown__icon material-symbols-outlined">history</span>
+                  <span>Activity Log</span>
+                </button>
+              </div>
+              <hr class="dropdown__divider" />
+              <!-- Data -->
+              <button type="button" id="refreshBtn2" class="dropdown__item">
+                <span class="dropdown__icon material-symbols-outlined">refresh</span>
+                <span>Refresh Data</span>
+              </button>
+              <button type="button" id="todayBtn2" class="dropdown__item">
+                <span class="dropdown__icon material-symbols-outlined">today</span>
+                <span>Jump to Today</span>
+              </button>
+              <hr class="dropdown__divider" />
+              <!-- Print -->
+              <div class="profile-popover__section profile-popover__section--actions">
+                <div class="profile-popover__section-title">Print</div>
+                <button type="button" id="printBtn2" class="dropdown__item">
+                  <span class="dropdown__icon material-symbols-outlined">print</span>
+                  <span>Print Schedule (Legal)</span>
+                </button>
+                <button type="button" id="printBtn2Full" class="dropdown__item">
+                  <span class="dropdown__icon material-symbols-outlined">print</span>
+                  <span>Print Full Schedule (Letter)</span>
+                </button>
+              </div>
+              <hr class="dropdown__divider" />
+              <!-- Reports -->
+              <div class="profile-popover__section profile-popover__section--actions">
+                <div class="profile-popover__section-title">Reports</div>
+                <button type="button" id="nextDayReportBtn" class="dropdown__item">
+                  <span class="dropdown__icon material-symbols-outlined">event_upcoming</span>
+                  <span>Weekly Maintenance</span>
+                </button>
+                <button type="button" id="dailyMaintenancePlanBtn" class="dropdown__item">
+                  <span class="dropdown__icon material-symbols-outlined">handyman</span>
+                  <span>Daily Maintenance Plan</span>
+                </button>
+              </div>
+              <hr class="dropdown__divider" />
               <button type="button" id="profileSignOutBtn" class="dropdown__item">
                 <span class="dropdown__icon material-symbols-outlined">logout</span>
                 Sign out
               </button>
-            </div>
-          </div>
-
-          <div class="dropdown">
-            <button
-              id="settingsBtn"
-              class="rux-btn rux-btn--square"
-              type="button"
-              aria-haspopup="true"
-              aria-expanded="false"
-              title="Settings"
-              aria-label="Settings"
-            >
-              <span class="material-symbols-outlined">menu</span>
-            </button>
-            <div
-              id="settingsMenu"
-              class="dropdown__menu"
-              hidden
-            >
-              <button
-                id="todayHighlightBtn"
-                class="dropdown__item"
-                type="button"
-                aria-pressed="false"
-              >
-                <span class="dropdown__icon material-symbols-outlined">visibility</span>
-                <span>Highlight Today's Trips</span>
-              </button>
-              <button
-                id="waitingListBtn"
-                class="dropdown__item"
-                type="button"
-              >
-                <span class="dropdown__icon material-symbols-outlined">low_priority</span>
-                <span>Waiting List</span>
-              </button>
-              <button
-                id="logBtn"
-                class="dropdown__item"
-                type="button"
-              >
-                <span class="dropdown__icon material-symbols-outlined">history</span>
-                <span>Activity Log</span>
-              </button>
-              <hr class="dropdown__divider" />
-              <button
-                id="refreshBtn2"
-                class="dropdown__item"
-                type="button"
-              >
-                <span class="dropdown__icon material-symbols-outlined">refresh</span>
-                <span>Refresh Data</span>
-              </button>
-              <hr class="dropdown__divider" />
-              <button
-                id="themeToggle2"
-                class="dropdown__item"
-                type="button"
-              >
-                <span class="dropdown__icon material-symbols-outlined">dark_mode</span>
-                <span>Toggle Theme</span>
-              </button>
-              <button
-                id="printBtn2"
-                class="dropdown__item"
-                type="button"
-              >
-                <span class="dropdown__icon material-symbols-outlined">print</span>
-                <span>Print Schedule (Legal)</span>
-              </button>
-              <button
-                id="printBtn2Full"
-                class="dropdown__item"
-                type="button"
-              >
-                <span class="dropdown__icon material-symbols-outlined">print</span>
-                <span>Print Full Schedule (Letter)</span>
-              </button>
-              <hr class="dropdown__divider" />
-              <button
-                id="nextDayReportBtn"
-                class="dropdown__item"
-                type="button"
-              >
-                <span class="dropdown__icon material-symbols-outlined">event_upcoming</span>
-                <span>Weekly Maintenance</span>
-              </button>
-              <button
-                id="dailyMaintenancePlanBtn"
-                class="dropdown__item"
-                type="button"
-              >
-                <span class="dropdown__icon material-symbols-outlined">handyman</span>
-                <span>Daily Maintenance Plan</span>
-              </button>
-              <button
-                id="weekStartToggle"
-                class="dropdown__item"
-                type="button"
-              >
-                <span class="dropdown__icon material-symbols-outlined">toggle_off</span>
-                <span>Week starts Monday</span>
-              </button>
-              <hr class="dropdown__divider" />
-              <button
-                id="signOutBtn"
-                class="dropdown__item"
-                type="button"
-              >
-                <span class="dropdown__icon material-symbols-outlined">logout</span>
-                <span>Sign Out</span>
-              </button>
-              <hr class="dropdown__divider" />
-              <div
-                id="appVersionMenuItem"
-                class="dropdown__item dropdown__item--meta"
-                role="note"
-              ></div>
+              <div id="appVersionMenuItem" class="dropdown__item dropdown__item--meta" role="note"></div>
             </div>
           </div>
         </div>
@@ -1671,6 +1606,16 @@
                         />
                       </div>
                       <button
+                        id="compactBarsBtn"
+                        class="rux-btn rux-btn--secondary rux-btn--icon"
+                        type="button"
+                        aria-label="Toggle compact bars"
+                        title="Toggle compact bars"
+                        aria-pressed="false"
+                      >
+                        <span class="material-symbols-outlined">unfold_less</span>
+                      </button>
+                      <button
                         id="nextWeekBtn"
                         class="rux-btn rux-btn--secondary rux-btn--icon"
                         type="button"
@@ -1680,16 +1625,6 @@
                         <span class="material-symbols-outlined">keyboard_arrow_right</span>
                       </button>
                     </div>
-                    <button
-                      id="compactBarsBtn"
-                      class="rux-btn rux-btn--secondary rux-btn--icon"
-                      type="button"
-                      aria-label="Toggle compact bars"
-                      title="Toggle compact bars"
-                      aria-pressed="false"
-                    >
-                      <span class="material-symbols-outlined">unfold_less</span>
-                    </button>
                   </div>
                 </div>
 
