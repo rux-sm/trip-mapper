@@ -243,7 +243,7 @@ function truthyRequirement(v) {
 }
 
 function setRequirementTogglesFromTrip(t = {}) {
-  const ids = ["req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "reqWifi", "driverInfoSent", "tripReminderSent"];
+  const ids = ["oneWay", "req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "reqWifi", "driverInfoSent", "tripReminderSent"];
   ids.forEach((id) => {
     const btn = document.getElementById(id);
     if (!btn) return;
@@ -400,6 +400,7 @@ function sanitizeWeekResp(resp) {
         spotTime: normalizeTime(t?.spotTime),
         arrivalTime: normalizeTime(t?.arrivalTime),
         busesNeeded: String(clamp(asInt(t?.busesNeeded, 0), 0, 10) || ""),
+        oneWay: !!t?.oneWay && t?.oneWay !== "false",
         tripColor: asStr(t?.tripColor).trim(),
         itineraryStatus: asStr(t?.itineraryStatus).trim(),
         contactStatus: asStr(t?.contactStatus).trim(),

@@ -94,6 +94,7 @@ function tripFromParams(p, base = {}, isCreate = true) {
     invoiceNumber:        m(p.invoiceNumber,        "invoiceNumber"),
     busesNeeded:          m(p.busesNeeded,          "busesNeeded"),
     tripColor:            m(p.tripColor,            "tripColor"),
+    oneWay:               p2bool(p.oneWay),
     notes:                m(p.notes,               "notes"),
     itinerary:            m(p.itinerary,           "itinerary"),
     comments:             m(p.comments,            "comments"),
@@ -390,6 +391,14 @@ const api = {
     if (error) console.warn("[checklist] upsert error:", error.message);
     return { ok: !error };
   },
+
+  async updateTripPdfUrl(tripKey, pdfUrl, itineraryStatus) {
+    const update = { itineraryPdfUrl: pdfUrl, updatedAt: new Date().toISOString() };
+    if (itineraryStatus) update.itineraryStatus = itineraryStatus;
+    const { error } = await _sb.from("trips").update(update).eq("tripKey", tripKey);
+    if (error) sbErr(error, "updateTripPdfUrl");
+    return { ok: true };
+  },
 };
 
 // ======================================================
@@ -548,6 +557,14 @@ function onAssignmentChange(payload) {
 let _realtimeInit = false;
 let _presenceChannel = null;
 
+function onWeekNotesChange(payload) {
+  const notes = payload.new?.notes ?? "";
+  if (dom.scheduleNotes && !state.notesDirty) {
+    dom.scheduleNotes.value = notes;
+  }
+  state.savedNotesValue = notes;
+}
+
 function initRealtime() {
   if (_realtimeInit) return;
   _realtimeInit = true;
@@ -555,6 +572,7 @@ function initRealtime() {
   _sb.channel("trip-board-changes")
     .on("postgres_changes", { event: "*", schema: "public", table: "trips" }, onTripChange)
     .on("postgres_changes", { event: "*", schema: "public", table: "bus_assignments" }, onAssignmentChange)
+    .on("postgres_changes", { event: "*", schema: "public", table: "week_notes" }, onWeekNotesChange)
     .subscribe((status) => {
       if (status === "SUBSCRIBED") console.info("[realtime] connected");
     });

@@ -291,7 +291,6 @@ function initGlassSelects() {
   ]);
   const ids = [
     "busesNeeded",
-    "tripColor",
     "itineraryStatus",
     "contactStatus",
     "paymentStatus",

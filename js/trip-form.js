@@ -105,6 +105,14 @@ function updateStatusSelect(el) {
   }
 }
 
+function syncTripColorSwatches(value) {
+  const sel = $("tripColor");
+  if (sel) sel.value = value;
+  document.querySelectorAll("#tripColorSwatches .trip-color-swatch").forEach((s) => {
+    s.classList.toggle("is-selected", s.dataset.value === value);
+  });
+}
+
 function setSelectToPlaceholder(id) {
   const el = $(id);
   if (!el) return;
@@ -159,7 +167,7 @@ function maybeApplyPendingDefaults() {
 
   const tc = $("tripColor");
   if (tc && !tc.value) {
-    tc.value = "Round-Trip";
+    syncTripColorSwatches("Round-Trip");
     tc.dispatchEvent(new Event("change", { bubbles: true }));
   }
 }
@@ -700,7 +708,7 @@ function clearTripInfoCardForNextTrip() {
   setModeNew();
 
   setSelectToPlaceholder("busesNeeded");
-  setSelectToPlaceholder("tripColor");
+  syncTripColorSwatches("");
   setSelectToPlaceholder("itineraryStatus");
   setSelectToPlaceholder("contactStatus");
   syncStatusToggle("paymentStatus", "");
@@ -746,7 +754,7 @@ function setTripFormFromState(tripKey) {
   $("driverStatus").value = t.driverStatus || "";
   syncStatusToggle("invoiceStatus", t.invoiceStatus || "");
   $("invoiceNumber").value = t.invoiceNumber || "";
-  $("tripColor").value = t.tripColor || "";
+  syncTripColorSwatches(t.tripColor || "");
   setRequirementTogglesFromTrip(t);
 
   // Envelope-specific fields (when editing in the main Trip Editor)
@@ -847,10 +855,10 @@ function populateFormFromData(t, assigns) {
   $("driverStatus").value = t.driverStatus || "";
   syncStatusToggle("invoiceStatus", t.invoiceStatus || "");
   $("invoiceNumber").value = t.invoiceNumber || "";
-  $("tripColor").value = t.tripColor || "";
+  syncTripColorSwatches(t.tripColor || "");
   setRequirementTogglesFromTrip(t);
 
-  ["paymentStatus", "driverStatus", "invoiceStatus", "tripColor"].forEach((id) => {
+  ["paymentStatus", "driverStatus", "invoiceStatus"].forEach((id) => {
     const el = $(id);
     if (el) el.dispatchEvent(new Event("change", { bubbles: true }));
   });
@@ -970,7 +978,7 @@ async function openTripForEdit(tripKey) {
     dom.tripForm.querySelectorAll("input, select, textarea").forEach((el) => {
       el.disabled = disabled;
     });
-    ["req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "reqWifi"].forEach((id) => {
+    ["oneWay", "req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "reqWifi"].forEach((id) => {
       const btn = document.getElementById(id);
       if (btn) btn.disabled = disabled;
     });
@@ -1103,7 +1111,6 @@ async function openTripForEdit(tripKey) {
     state.tripFormDirty = false;
   }
 }
-
 
 
 

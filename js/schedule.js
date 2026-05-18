@@ -1410,15 +1410,14 @@ function _renderAgendaInner() {
         "color-gray",
         "color-violet",
         "out-of-service",
-        "one-way",
+        "is-one-way",
       );
+      if (t.oneWay) bar.classList.add("is-one-way");
       const tripColor = String(t.tripColor || "")
         .trim()
         .toLowerCase();
       if (tripColor === "out of service") {
         bar.classList.add("out-of-service");
-      } else if (tripColor === "one-way") {
-        bar.classList.add("one-way");
       } else if (tripColor && tripColor !== "round-trip") {
         bar.classList.add(`color-${tripColor}`);
       }

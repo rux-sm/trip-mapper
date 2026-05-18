@@ -147,7 +147,7 @@
   /* Consumed by print.css, schedule.css, base.css — do not remove       */
 
   --tripbar-color:        var(--rux-status-blue-alpha); /* print.css  */
-  --tripbar-border-color: var(--rux-color-accent);      /* .one-way   */
+  --tripbar-border-color: var(--rux-color-accent);      /* .is-one-way */
   --tripbar-dim-opacity:  1;                          /* schedule   */
   --tripbar-dim-bg-l:     36%;
   --tripbar-dim-bg-c:     0.2;
@@ -570,7 +570,7 @@
     }
   }
 
-  &.one-way {
+  &.is-one-way {
     background: repeating-linear-gradient(
       -45deg,
       color-mix(in srgb, var(--trip-accent-color) 25%, transparent),

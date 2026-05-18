@@ -189,9 +189,12 @@ function wireDelegatedBarEvents() {
       const trip = state.tripByKey?.[tripKey];
       if (trip) {
         trip.itineraryPdfUrl = pdfUrl;
+        if ($("itineraryPdfUrl")) $("itineraryPdfUrl").value = pdfUrl;
         trip.itineraryStatus = json.itineraryStatus || trip.itineraryStatus;
         scheduleAgendaReflow();
       }
+
+      await api.updateTripPdfUrl(tripKey, pdfUrl, json.itineraryStatus || null);
 
       toastHide(0, { source: "pdf-upload" });
       toast("PDF Uploaded ✓", "success", 1800);
@@ -761,10 +764,8 @@ function wireEvents() {
 
   dom.saveNotesBtn?.addEventListener("click", async () => {
     const notes = dom.scheduleNotes.value;
-
     dom.saveNotesBtn.disabled = true;
     toastShow("Saving notes...", "loading");
-
     try {
       const res = await api.saveWeekNote(notes);
       if (res.ok) {
@@ -1247,6 +1248,7 @@ function wireEvents() {
       envelopeTripContact: $("envelopeTripContact")?.value || "",
       envelopeTripPhone: $("envelopeTripPhone")?.value || "",
       envelopeTripNotes: $("envelopeTripNotes")?.value || "",
+      oneWay: $("oneWay")?.getAttribute("aria-pressed") === "true",
       req56Pass: $("req56Pass")?.getAttribute("aria-pressed") === "true",
       reqSleeper: $("reqSleeper")?.getAttribute("aria-pressed") === "true",
       reqLift: $("reqLift")?.getAttribute("aria-pressed") === "true",
@@ -1299,6 +1301,7 @@ function wireEvents() {
 
     // Sync requirement toggles to hidden inputs so backend receives them
     [
+      "oneWay",
       "req56Pass",
       "reqSleeper",
       "reqLift",
@@ -1407,7 +1410,6 @@ function wireEvents() {
   });
 
   function resetTripFormUI() {
-    setSidePanelMode("off");
     dom.tripForm.reset();
     resetRequirementToggles();
     refreshEmptyStateUI();
@@ -1548,6 +1550,14 @@ function wireProfilePopover() {
   });
 
   // ── Avatar color ───────────────────────────────────────────────────────────
+
+  document.getElementById("tripColorSwatches")?.addEventListener("click", (e) => {
+    const swatch = e.target.closest(".trip-color-swatch");
+    if (!swatch) return;
+    syncTripColorSwatches(swatch.dataset.value);
+    $("tripColor")?.dispatchEvent(new Event("change", { bubbles: true }));
+    state.tripFormDirty = true;
+  });
 
   document.getElementById("profileColorSwatches")?.addEventListener("click", (e) => {
     const swatch = e.target.closest("[data-color]");

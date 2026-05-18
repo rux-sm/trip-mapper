@@ -587,7 +587,6 @@ function renderQuickEditTab(tabId, trip, assigns) {
           ["", "None"],
           ["blue", "Blue"],
           ["green", "Green"],
-          ["one-way", "One-Way"],
           ["out-of-service", "Out of Service"],
         ],
       },

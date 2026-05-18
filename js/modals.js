@@ -241,8 +241,15 @@ function openDriverWeekScheduleModal(driverName) {
     return depStr;
   };
 
-  const SEP = "➖➖➖➖➖➖➖➖";
-  let msg = `🗓️ TRIPS FOR THE WEEK OF: ${fmtShortDate(startDate)} - ${fmtShortDate(endDate)}\n`;
+  const fmtDayHeader = (ymdStr) => {
+    const d = parseYMD(ymdStr);
+    if (!d) return "🔹 TBD";
+    const weekday = d.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase();
+    const month   = d.toLocaleDateString("en-US", { month: "long" }).toUpperCase();
+    return `🔹 ${weekday}, ${month} ${d.getDate()}`;
+  };
+
+  let msg = `UPCOMING TRIPS:\n`;
 
   if (driverTrips.length === 0) {
     msg += "\nNo trips assigned this week.";
@@ -255,19 +262,23 @@ function openDriverWeekScheduleModal(driverName) {
           (d) => d && d.trim().toLowerCase() === driverName.trim().toLowerCase()
         )
       );
-      const spotTime = envFormatTime(trip.spotTime || "");
 
-      msg += `\n${fmtFullDayLine(trip.departureDate, trip.arrivalDate)}\n`;
-      if (trip.customer)    msg += `🏢 ${trip.customer}\n`;
-      if (trip.destination) msg += `📍 ${trip.destination}\n`;
-      if (spotTime)         msg += `⏱️ Spot: ${spotTime}\n`;
-      if (trip.itineraryPdfUrl) msg += `👇 Tap link for itinerary:\n${trip.itineraryPdfUrl}\n`;
+      const busNum  = myAssign?.busNumber || "TBD";
+      const client  = `${trip.customer || "TBD"} (${trip.destination || "TBD"})`;
+      const spot    = envFormatTime(trip.spotTime || "") || "TBD";
+      const contact = `${trip.contactName || "TBD"} - ${trip.phone || "TBD"}`;
 
-      if (i < driverTrips.length - 1) msg += `\n${SEP}\n`;
+      if (i > 0) msg += `\n• • •\n`;
+      msg += `\n${fmtDayHeader(trip.departureDate)}\n`;
+      msg += `Bus: ${busNum}\n`;
+      msg += `Client: ${client}\n`;
+      msg += `Spot: ${spot}\n`;
+      msg += `Contact: ${contact}\n`;
+      msg += `Itinerary: ${trip.itineraryPdfUrl || "TBD"}\n`;
     }
   }
 
-  msg += `\n\n👍 Please reply "CONFIRMED" so I know you received your assignments!`;
+  msg += `\n✅ Please reply "CONFIRMED" to acknowledge receipt of your assignments.`;
 
   dom.driverWeekSchedulePreview.textContent = msg;
   openModalA11y(dom.driverWeekScheduleModal, null);

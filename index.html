@@ -756,7 +756,7 @@
                 <div class="rux-panel__footer">
                   <button
                     type="button"
-                    class="rux-btn rux-btn--primary"
+                    class="rux-btn rux-btn--secondary"
                     id="saveNotesBtn"
                   >
                     Save Notes
@@ -1035,6 +1035,15 @@
                     </div>
 
                     <div class="form-group col-6">
+                      <label>One-Way Trip</label>
+                      <button type="button" id="oneWay" class="rux-btn rux-btn--toggle" aria-pressed="false">
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                        <span>One-Way</span>
+                      </button>
+                      <input type="hidden" id="oneWayValue" name="oneWay" value="false" />
+                    </div>
+
+                    <div class="form-group col-6">
                       <label>Buses Needed</label>
                       <div class="rux-btn-group buses-needed-stepper" id="busesNeededSeg" role="group" aria-label="Number of buses">
                         <button type="button" id="busesNeededDecBtn" class="rux-btn rux-btn--secondary rux-btn--icon" aria-label="Fewer buses" disabled>
@@ -1049,16 +1058,22 @@
                     </div>
 
                     <div class="form-group col-6">
-                      <label for="tripColor">Trip Type</label>
-                      <select
-                        id="tripColor"
-                        name="tripColor"
-                      >
+                      <label>Color</label>
+                      <div id="tripColorSwatches" class="trip-color-swatches" role="group" aria-label="Trip color">
+                        <button type="button" class="trip-color-swatch trip-color-swatch--none is-selected" data-value="" title="None" aria-label="No color"></button>
+                        <button type="button" class="trip-color-swatch" data-value="Cyan"           style="background:var(--rux-color-cyan)"   title="Round-Trip 2"        aria-label="Cyan"></button>
+                        <button type="button" class="trip-color-swatch" data-value="Green"          style="background:var(--rux-color-green)"  title="Round-Trip 3"        aria-label="Green"></button>
+                        <button type="button" class="trip-color-swatch" data-value="Purple"         style="background:var(--rux-color-purple)" title="MVM"                 aria-label="Purple"></button>
+                        <button type="button" class="trip-color-swatch" data-value="Yellow"         style="background:var(--rux-color-yellow)" title="Hold – Pending Info" aria-label="Yellow"></button>
+                        <button type="button" class="trip-color-swatch" data-value="Orange"         style="background:var(--rux-color-orange)" title="Bid Submitted"       aria-label="Orange"></button>
+                        <button type="button" class="trip-color-swatch" data-value="Pink"           style="background:var(--rux-color-pink)"   title="Date TBD"            aria-label="Pink"></button>
+                        <button type="button" class="trip-color-swatch trip-color-swatch--oos" data-value="Out of Service" title="Out of Service" aria-label="Out of Service"></button>
+                      </div>
+                      <select id="tripColor" name="tripColor" style="display:none">
                         <option value="" disabled selected>–</option>
                         <option value="Round-Trip">Round-Trip</option>
                         <option value="Cyan">Round-Trip 2</option>
                         <option value="Green">Round-Trip 3</option>
-                        <option value="One-Way">One-Way</option>
                         <option value="Purple">MVM</option>
                         <option value="Yellow">Hold – Pending Info</option>
                         <option value="Orange">Bid Submitted</option>
@@ -1126,22 +1141,22 @@
                     <div class="form-group col-12">
                       <label>Contract Status</label>
                       <input type="hidden" id="paymentStatus" name="paymentStatus" value="" />
-                      <div class="status-toggle-group" data-field="paymentStatus" role="group" aria-label="Contract status">
-                        <button type="button" class="status-toggle-btn" data-value="Pending Quote">Pending</button>
-                        <button type="button" class="status-toggle-btn" data-value="Contract Signed">Signed</button>
-                        <button type="button" class="status-toggle-btn" data-value="PO Received">PO Rec'd</button>
-                        <button type="button" class="status-toggle-btn" data-value="Not Required">N/A</button>
+                      <div class="rux-btn-group status-toggle-group" data-field="paymentStatus" role="group" aria-label="Contract status">
+                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Pending Quote">Pending</button>
+                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Contract Signed">Signed</button>
+                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="PO Received">PO Rec'd</button>
+                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Not Required">N/A</button>
                       </div>
                     </div>
 
                     <div class="form-group col-12">
                       <label>Invoice Status</label>
                       <input type="hidden" id="invoiceStatus" name="invoiceStatus" value="" />
-                      <div class="status-toggle-group" data-field="invoiceStatus" role="group" aria-label="Invoice status">
-                        <button type="button" class="status-toggle-btn" data-value="Pending Invoice">Pending</button>
-                        <button type="button" class="status-toggle-btn" data-value="Invoiced">Invoiced</button>
-                        <button type="button" class="status-toggle-btn" data-value="Deposit Received">Deposit</button>
-                        <button type="button" class="status-toggle-btn" data-value="Paid in Full">Paid</button>
+                      <div class="rux-btn-group status-toggle-group" data-field="invoiceStatus" role="group" aria-label="Invoice status">
+                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Pending Invoice">Pending</button>
+                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Invoiced">Invoiced</button>
+                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Deposit Received">Deposit</button>
+                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Paid in Full">Paid</button>
                       </div>
                     </div>
 

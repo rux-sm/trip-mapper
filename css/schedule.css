@@ -36,6 +36,12 @@
   --bus-grid-row-gap: 4px;
   --bus-driver-block-gap: 4px;
   --bus-header-margin: 4px;
+
+  --card-border-01: var(--rux-color-red);
+  --card-border-02: var(--rux-color-orange);
+
+   --card-border-01: transparent;
+  --card-border-02: transparent;
 }
 
 /* Print styles moved to css/print.css */
@@ -299,7 +305,7 @@
   position: absolute;
   inset: 0;
   border-radius: var(--rux-radius-section);
-  border: 1px solid var(--rux-border-3);
+  border: 1px solid var(--card-border-02);
   box-shadow: var(--rux-btn-shadow-inset);
   pointer-events: none;
   z-index: 99999;
@@ -333,7 +339,7 @@
 .o-app-layout__main > .rux-card {
   position: relative;
   border-radius: var(--rux-radius-9);
-  border: 1px solid var(--rux-border-3);
+  border: 1px solid var(--card-border-01);
   background: var(--rux-bg-2);
 }
 
@@ -1440,7 +1446,7 @@ body.bars-compact {
   padding: var(--rux-space-3);
   border-radius: var(--rux-radius-section);
   background: var(--surface-raised);
-  border: 1px solid var(--rux-border-1);
+  border: 1px solid var(--card-border-02);
 }
 
 .todo-trip-card.has-pending {

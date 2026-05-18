@@ -9,16 +9,16 @@
 
   /* ── Avatar color palette ── */
 
-  --avatar-color-1: oklch(85% 0.3 25);
-  --avatar-color-2: oklch(85% 0.3 65);
-  --avatar-color-3: oklch(85% 0.3 100);
-  --avatar-color-4: oklch(85% 0.3 155);
-  --avatar-color-5: oklch(85% 0.3 210);
-  --avatar-color-6: oklch(85% 0.3 260);
-  --avatar-color-7: oklch(85% 0.3 290);
-  --avatar-color-8: oklch(85% 0.3 350);
+  --avatar-color-1: oklch(60% 0.2 25);
+  --avatar-color-2: oklch(60% 0.2 65);
+  --avatar-color-3: oklch(60% 0.2 100);
+  --avatar-color-4: oklch(60% 0.2 155);
+  --avatar-color-5: oklch(60% 0.2 210);
+  --avatar-color-6: oklch(60% 0.2 260);
+  --avatar-color-7: oklch(60% 0.15 290);
+  --avatar-color-8: oklch(60% 0.15 350);
   --avatar-color-9: oklch(100% 0 350);
-  --avatar-color-10: oklch(65% 0 350);
+  --avatar-color-10: oklch(75% 0 350);
 
 
 
