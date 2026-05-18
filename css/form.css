@@ -654,9 +654,11 @@ hr.form-divider {
 /* ── Buses needed stepper ────────────────────────────────────────────────── */
 
 .buses-needed-stepper {
-  width: fit-content;
-  margin: 0 auto;
-  align-self: center;
+  width: 100%;
+}
+
+.buses-needed-stepper .buses-needed-display {
+  flex: 1;
 }
 
 .buses-needed-display {

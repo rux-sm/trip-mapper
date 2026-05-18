@@ -559,7 +559,7 @@ function wireEvents() {
 
   // 14-day view toggle
   (function initViewToggle() {
-    const btn = document.getElementById("viewToggleBtn");
+    const btn = document.getElementById("profileViewToggle");
     if (!btn) return;
 
     function syncViewToggleBtn(days) {

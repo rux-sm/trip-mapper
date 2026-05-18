@@ -153,7 +153,7 @@
   /* 2B. Accent & Status Colors
   ──────────────────────────────────────────────────────────────── */
 
-  --rux-color-accent: oklch(from var(--rux-color-blue) 75% c h);
+  --rux-color-accent: var(--rux-color-blue);
 
   --rux-status-red: oklch(from var(--rux-color-red) 90% 0.3 h);
   --rux-status-red-alpha: oklch(from var(--rux-color-red) l c h / 15%);

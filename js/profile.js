@@ -14,6 +14,7 @@ const AVATAR_COLORS = [
   'var(--avatar-color-7)',
   'var(--avatar-color-8)',
   'var(--avatar-color-9)',
+  'var(--avatar-color-10)',
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

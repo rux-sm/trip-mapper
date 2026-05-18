@@ -230,6 +230,12 @@
                     <span class="material-symbols-outlined">unfold_less</span>
                   </button>
                 </div>
+                <div class="profile-pref-row">
+                  <span>14-day view</span>
+                  <button type="button" id="profileViewToggle" class="rux-btn rux-btn--square" aria-pressed="false">
+                    <span class="material-symbols-outlined">view_column_2</span>
+                  </button>
+                </div>
               </div>
               <hr class="dropdown__divider" />
               <!-- Views -->
@@ -1028,7 +1034,7 @@
                       />
                     </div>
 
-                    <div class="form-group col-12">
+                    <div class="form-group col-6">
                       <label>Buses Needed</label>
                       <div class="rux-btn-group buses-needed-stepper" id="busesNeededSeg" role="group" aria-label="Number of buses">
                         <button type="button" id="busesNeededDecBtn" class="rux-btn rux-btn--secondary rux-btn--icon" aria-label="Fewer buses" disabled>
@@ -1040,6 +1046,25 @@
                         </button>
                       </div>
                       <input type="hidden" id="busesNeeded" name="busesNeeded" value="">
+                    </div>
+
+                    <div class="form-group col-6">
+                      <label for="tripColor">Trip Type</label>
+                      <select
+                        id="tripColor"
+                        name="tripColor"
+                      >
+                        <option value="" disabled selected>–</option>
+                        <option value="Round-Trip">Round-Trip</option>
+                        <option value="Cyan">Round-Trip 2</option>
+                        <option value="Green">Round-Trip 3</option>
+                        <option value="One-Way">One-Way</option>
+                        <option value="Purple">MVM</option>
+                        <option value="Yellow">Hold – Pending Info</option>
+                        <option value="Orange">Bid Submitted</option>
+                        <option value="Pink">Date TBD</option>
+                        <option value="Out of Service">Out of Service</option>
+                      </select>
                     </div>
 
                     <div class="form-group col-12">
@@ -1082,26 +1107,7 @@
                       </div>
                     </div>
 
-                    <div class="form-group col-6">
-                      <label for="tripColor">Trip Type</label>
-                      <select
-                        id="tripColor"
-                        name="tripColor"
-                      >
-                        <option value="" disabled selected>–</option>
-                        <option value="Round-Trip">Round-Trip</option>
-                        <option value="Cyan">Round-Trip 2</option>
-                        <option value="Green">Round-Trip 3</option>
-                        <option value="One-Way">One-Way</option>
-                        <option value="Purple">MVM</option>
-                        <option value="Yellow">Hold – Pending Info</option>
-                        <option value="Orange">Bid Submitted</option>
-                        <option value="Pink">Date TBD</option>
-                        <option value="Out of Service">Out of Service</option>
-                      </select>
-                    </div>
-
-                    <div class="form-group col-6">
+                    <div class="form-group col-12">
                       <label for="quotedPrice">Quoted Price</label>
                       <div class="fld-affix fld-affix--prefix">
                         <span class="fld-affix__prefix">$</span>
@@ -1548,16 +1554,6 @@
                           aria-label="Select week"
                         />
                       </div>
-                      <button
-                        id="viewToggleBtn"
-                        class="rux-btn rux-btn--secondary rux-btn--icon"
-                        type="button"
-                        aria-label="Toggle 14-day view"
-                        title="Toggle 14-day view"
-                        aria-pressed="false"
-                      >
-                        <span class="material-symbols-outlined">view_column_2</span>
-                      </button>
                       <button
                         id="compactBarsBtn"
                         class="rux-btn rux-btn--secondary rux-btn--icon"
