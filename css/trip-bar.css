@@ -623,7 +623,7 @@
   --tripbar-r2-color: var(--rux-color-white);
   --tripbar-r3-color: var(--rux-color-white);
   box-shadow:
-    0 0 0 1px oklch(from var(--trip-accent-color) 70% c h / 0.6),
+    0 0 0 2px var(--rux-color-accent),
     0 8px 24px oklch(0% 0 0 / 0.65),
     0 24px 48px oklch(0% 0 0 / 0.45);
 }
@@ -703,7 +703,7 @@ body.trip-bar-selected .schedule-grid__trip-bar:not(.selected) {
   --tripbar-r11-row-height: 30px;
   z-index: 600;
   box-shadow:
-    0 0 0 1px oklch(from var(--trip-accent-color) 70% c h / 0.5),
+    0 0 0 2px var(--rux-color-accent),
     0 8px 24px oklch(0% 0 0 / 0.6),
     0 24px 48px oklch(0% 0 0 / 0.4);
 }

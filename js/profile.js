@@ -111,6 +111,7 @@ function renderAvatarBtn() {
   btn.innerHTML = '';
   btn.appendChild(buildAvatarEl(state.profile, 'lg'));
   btn.style.setProperty('--avatar-ring-color', state.profile.avatarColor || '');
+  document.documentElement.style.setProperty('--rux-color-accent', state.profile.avatarColor || '');
 }
 
 // ── Presence strip ────────────────────────────────────────────────────────────
