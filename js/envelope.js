@@ -223,10 +223,7 @@ function fillEnvelopePage(pageEl, trip, assignment) {
 
   const fullName = (shortName) => {
     if (!shortName) return shortName;
-    const d = (state.driversList || []).find(
-      (d) => String(d.driverName).trim().toLowerCase() === String(shortName).trim().toLowerCase(),
-    );
-    return (d && d.driverNameFull) ? d.driverNameFull : shortName;
+    return getDriverFullName(shortName) || shortName;
   };
 
   const set = (field, text) => {

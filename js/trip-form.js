@@ -419,7 +419,7 @@ function getDriverOptions() {
   const base = [{ value: "None", label: "" }];
   const mapped = state.driversList.map((d) => ({
     value: d.driverName ? String(d.driverName) : String(d.driverId),
-    label: d.driverName ? String(d.driverName) : String(d.driverId),
+    label: getDriverFullName(d) || (d.driverName ? String(d.driverName) : String(d.driverId)),
   }));
   return base.concat(mapped);
 }
@@ -1146,6 +1146,5 @@ async function openTripForEdit(tripKey) {
     state.tripFormDirty = false;
   }
 }
-
 
 

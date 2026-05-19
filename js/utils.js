@@ -49,6 +49,62 @@ function asInt(x, def = 0) {
   return isNaN(n) ? def : n;
 }
 
+function normalizeDriverRecord(driver) {
+  const d = driver || {};
+  const driverId = asStr(d.driverId ?? d.driver_id).trim();
+  const driverName = asStr(d.driverName ?? d.driver_name ?? d.name).trim() || driverId;
+  const fullName = asStr(d.full_name ?? d.driverNameFull ?? d.fullName).trim();
+  const phone = asStr(d.phone_number ?? d.phone ?? d.driverPhone).trim();
+  const notes = asStr(d.driver_notes ?? d.driverNotes ?? d.notes).trim();
+
+  return {
+    ...d,
+    driverId,
+    driverName,
+    full_name: fullName,
+    fullName,
+    driverNameFull: fullName,
+    phone_number: phone,
+    phone,
+    driver_notes: notes,
+    driverNotes: notes,
+  };
+}
+
+function findDriverByName(name) {
+  const needle = asStr(name).trim().toLowerCase();
+  if (!needle) return null;
+
+  return (
+    (state.driversList || []).find((driver) => {
+      const d = normalizeDriverRecord(driver);
+      return [d.driverName, d.full_name, d.driverNameFull]
+        .some((value) => asStr(value).trim().toLowerCase() === needle);
+    }) || null
+  );
+}
+
+function getDriverFullName(driverOrName) {
+  const driver = typeof driverOrName === "object"
+    ? normalizeDriverRecord(driverOrName)
+    : normalizeDriverRecord(findDriverByName(driverOrName) || { driverName: driverOrName });
+  return driver.full_name || driver.driverName || "";
+}
+
+function getDriverPhone(driverOrName) {
+  const driver = typeof driverOrName === "object"
+    ? normalizeDriverRecord(driverOrName)
+    : normalizeDriverRecord(findDriverByName(driverOrName) || {});
+  return driver.phone_number || driver.phone || "";
+}
+
+function getDriverNotes(driverOrName) {
+  const driver = typeof driverOrName === "object"
+    ? normalizeDriverRecord(driverOrName)
+    : normalizeDriverRecord(findDriverByName(driverOrName) || {});
+  return driver.driver_notes || driver.driverNotes || "";
+}
+
 const MODAL_FOCUSABLE_SELECTOR =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 const modalReturnFocusMap = new WeakMap();

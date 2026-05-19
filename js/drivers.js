@@ -115,6 +115,7 @@ function renderDriverWeekGrid() {
   dom.driverWeekBody.innerHTML = driverNames
     .map((name) => {
       const set = onDaysByDriver.get(name) || new Set();
+      const displayName = getDriverFullName(name) || name;
 
       const cells = weekDates
         .map((dStr, idx) => {
@@ -135,7 +136,7 @@ function renderDriverWeekGrid() {
 
       return `
 <tr>
-<td class="driver-week__name-cell" data-driver-name="${escHtml(name)}"><span class="material-symbols-outlined driver-week__schedule-icon" data-action="showDriverWeekSchedule" data-driver-name="${escHtml(name)}" title="Week schedule for ${escHtml(name)}">assignment</span>${escHtml(name)}</td>
+<td class="driver-week__name-cell" data-driver-name="${escHtml(name)}"><span class="material-symbols-outlined driver-week__schedule-icon" data-action="showDriverWeekSchedule" data-driver-name="${escHtml(name)}" title="Week schedule for ${escHtml(displayName)}">assignment</span>${escHtml(displayName)}</td>
 ${cells}
 </tr>
 `;

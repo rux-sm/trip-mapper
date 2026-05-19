@@ -182,10 +182,12 @@ function renderLogList(entries) {
 }
 
 async function loadDriversAndBuses(forceRefresh = false) {
+  const driversCacheKey = "cache_drivers_v2";
+
   if (!forceRefresh) {
-    const cDrivers = CACHE.get("cache_drivers");
+    const cDrivers = CACHE.get(driversCacheKey);
     const cBuses   = CACHE.get("cache_buses");
-    if (cDrivers) state.driversList = cDrivers;
+    if (cDrivers) state.driversList = cDrivers.map(normalizeDriverRecord).filter((d) => d.driverName);
     if (cBuses)   state.busesList   = cBuses;
   }
 
@@ -205,14 +207,7 @@ async function loadDriversAndBuses(forceRefresh = false) {
   // failure returning an empty list must not wipe good state that other code depends on.
   if (freshDrivers) {
     state.driversList = freshDrivers
-      .map((d) => ({
-        ...d,
-        driverId: String(d.driverId || "").trim(),
-        driverName:
-          d.driverName && String(d.driverName).trim()
-            ? String(d.driverName).trim()
-            : String(d.driverId || "").trim(),
-      }))
+      .map(normalizeDriverRecord)
       .filter((d) => d.driverName);
   }
 
@@ -227,7 +222,7 @@ async function loadDriversAndBuses(forceRefresh = false) {
   }
 
   if (state.driversList.length)
-    CACHE.set("cache_drivers", state.driversList, CONFIG.CACHE_TTL_DRIVERS);
+    CACHE.set(driversCacheKey, state.driversList, CONFIG.CACHE_TTL_DRIVERS);
   if (state.busesList.length)
     CACHE.set("cache_buses", state.busesList, CONFIG.CACHE_TTL_BUSES);
 
@@ -237,4 +232,3 @@ async function loadDriversAndBuses(forceRefresh = false) {
   setHeaderOrder();
   scheduleAgendaReflow();
 }
-

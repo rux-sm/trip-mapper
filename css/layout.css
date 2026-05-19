@@ -147,7 +147,19 @@
 
 /* ── Container-morphing sidebars ─────────────────────────────────────────── */
 
-.o-app-layout__sidebar--left,
+.o-app-layout__sidebar--left {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1001;
+  display: flex;
+  flex-direction: row;
+  overflow: visible;
+  background: var(--rux-bg-4);
+  border-radius: 0 var(--rux-radius-9) var(--rux-radius-9) 0;
+  border: 1px solid var(--rux-border-s);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .o-app-layout__sidebar--right {
   flex-shrink: 0;
   position: relative;
@@ -155,8 +167,8 @@
   display: flex;
   flex-direction: row;
   overflow: visible;
-  background: var(--rux-bg-2);
-  border-radius: var(--rux-radius-9);
+  background: var(--rux-bg-4);
+  border-radius: var(--rux-radius-9) 0 0 var(--rux-radius-9);
   border: 1px solid var(--rux-border-s);
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

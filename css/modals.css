@@ -121,6 +121,7 @@
 
 .modal__foot {
   flex-shrink: 0;
+  padding-inline: 12px;
 }
 
 /* --- Variants: Itinerary Modal --- */
@@ -152,7 +153,7 @@
 
 .modal--trip-details .detail-text.detail-itinerary-scroll,
 .modal--trip-details .trip-details__itinerary-scroll {
-  padding: 8px 12px;
+  padding: 12px 12px;
 }
 
 
@@ -997,19 +998,31 @@
   gap: var(--rux-space-4);
 }
 
-.driver-contact__section {
-  gap: var(--rux-space-2);
+.driver-contact__tabs {
+  width: 100%;
+}
+.driver-contact__tabs > .driver-contact__tab {
   flex: 1;
+  min-width: 0;
+}
+.driver-contact__tab.is-active {
+  background: var(--rux-btn-bg-primary);
+  color: var(--rux-color-white);
+}
+
+#driverContactModal.modal--itinerary .modal__card {
+  min-height: 600px; /* <--- Add this */
+  max-height: 80vh;
+  max-width: 400px;
+  overflow-y: auto;
+  padding-block: 16px;
 }
 
 .driver-contact__textarea {
-  min-height: 180px;
-}
-
-.driver-contact__divider {
-  border: none;
-  border-top: 1px solid var(--rux-border-2);
-  margin-top: 12px;
+  flex: 1 1 0;
+  min-height: 250px;
+  max-height: none;
+  resize: none;
 }
 
 /* ── Hidden file input ───────────────────────────────────────────── */

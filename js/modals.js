@@ -184,7 +184,11 @@ function openDriverWeekScheduleModal(driverName) {
   const weekEnd = weekDates[weekDates.length - 1];
   const startDate = parseYMD(weekStart);
   const endDate = parseYMD(weekEnd);
-  const firstName = driverName.split(" ")[0];
+  const driverFullName = getDriverFullName(driverName) || driverName;
+  const titleEl = $("driverWeekScheduleTitle");
+  if (titleEl) {
+    titleEl.textContent = `${driverFullName} Schedule`;
+  }
 
   const fmtLong = (d) =>
     d.toLocaleDateString("en-US", { month: "long", day: "numeric" });
@@ -291,19 +295,24 @@ function openDriverContactModal(tripKey) {
   // Retrieve assignments for the trip
   const rowA = state.assignmentsByTripKey[tripKey];
 
-  // Helper: get driver object from name
-  const getDriverObj = (name) => {
-    if (!name) return null;
-    return (
-      state.driversList.find(
-        (d) => String(d.driverName).trim().toLowerCase() === String(name).trim().toLowerCase(),
-      ) || null
-    );
-  };
-
   const isAssigned = (name) => {
     const n = String(name || "").trim();
     return n && n.toLowerCase() !== "none";
+  };
+
+  const driverContactBlock = (name, busId, role = "") => {
+    const driver = findDriverByName(name);
+    const fullName = getDriverFullName(driver || name) || name;
+    const phone = getDriverPhone(driver || name) || "None";
+    const notes = getDriverNotes(driver || name);
+    const nameLine = role ? `Name:  ${fullName} (${role})` : `Name:  ${fullName}`;
+
+    return [
+      nameLine,
+      `Phone: ${phone}`,
+      `Bus:   ${busId}`,
+      notes ? `Notes: ${notes}` : "",
+    ].filter(Boolean).join("\n");
   };
 
   // --- 1. Generate OFFICE/CUSTOMER Message ---
@@ -329,36 +338,20 @@ function openDriverContactModal(tripKey) {
       const d2Name = assignment.driver2 && assignment.driver2 !== "—" ? assignment.driver2 : "";
 
       if (isAssigned(d1Name)) {
-        const d1 = getDriverObj(d1Name);
-        const d1Full = (d1 && d1.driverNameFull) ? d1.driverNameFull : d1Name;
-        officeBlocks.push(
-          `Name:  ${d1Full}\nPhone: ${d1 ? d1.phone || "None" : "None"}\nBus:   ${busId}`,
-        );
+        officeBlocks.push(driverContactBlock(d1Name, busId));
       }
       if (isAssigned(d2Name)) {
-        const d2 = getDriverObj(d2Name);
-        const d2Full = (d2 && d2.driverNameFull) ? d2.driverNameFull : d2Name;
-        officeBlocks.push(
-          `Name:  ${d2Full}\nPhone: ${d2 ? d2.phone || "None" : "None"}\nBus:   ${busId}`,
-        );
+        officeBlocks.push(driverContactBlock(d2Name, busId));
       }
 
       const d3Name = assignment.driver3 && assignment.driver3 !== "—" ? assignment.driver3 : "";
       const d4Name = assignment.driver4 && assignment.driver4 !== "—" ? assignment.driver4 : "";
 
       if (isAssigned(d3Name)) {
-        const d3 = getDriverObj(d3Name);
-        const d3Full = (d3 && d3.driverNameFull) ? d3.driverNameFull : d3Name;
-        officeBlocks.push(
-          `Name:  ${d3Full} (Relief)\nPhone: ${d3 ? d3.phone || "None" : "None"}\nBus:   ${busId}`,
-        );
+        officeBlocks.push(driverContactBlock(d3Name, busId, "Relief"));
       }
       if (isAssigned(d4Name)) {
-        const d4 = getDriverObj(d4Name);
-        const d4Full = (d4 && d4.driverNameFull) ? d4.driverNameFull : d4Name;
-        officeBlocks.push(
-          `Name:  ${d4Full} (Relief)\nPhone: ${d4 ? d4.phone || "None" : "None"}\nBus:   ${busId}`,
-        );
+        officeBlocks.push(driverContactBlock(d4Name, busId, "Relief"));
       }
     });
   }
@@ -435,7 +428,7 @@ function openDriverContactModal(tripKey) {
       for (const a of asns) {
         for (const key of ["driver1", "driver2", "driver3", "driver4"]) {
           const n = String(a[key] || "").trim();
-          if (n && n.toLowerCase() !== "none") return n.split(" ")[0];
+          if (n && n.toLowerCase() !== "none") return (getDriverFullName(n) || n).split(" ")[0];
         }
       }
       return "[Name]";
@@ -458,4 +451,3 @@ function openDriverContactModal(tripKey) {
   dom.tripInfoBody.value = tripInfoText;
   openModalA11y(dom.driverContactModal, dom.driverContactBody);
 }
-

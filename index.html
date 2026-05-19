@@ -1831,73 +1831,25 @@
         aria-label="Driver Contact Information"
       >
         <div class="rux-header rux-header--modal">
-          <h2 class="section-title rux-header__title">Driver Contact Information / Trip Reminder</h2>
+          <h2 class="section-title rux-header__title">Contact &amp; Reminder</h2>
         </div>
 
         <div class="modal__body driver-contact__body">
-          <!-- Office/Customer Section -->
-          <div class="flex-column driver-contact__section">
-            <div class="flex-between">
-              <label class="envelope-modal__label">Driver Contact Information</label>
-              <button
-                id="copyDriverContactBtn"
-                class="rux-btn rux-btn--primary"
-                type="button"
-              >
-                Copy Driver Contact Info
-              </button>
-            </div>
-            <textarea
-              id="driverContactBody"
-              class="driver-contact__textarea"
-              readonly
-            ></textarea>
+          <!-- Tab buttons -->
+          <div class="driver-contact__tabs rux-btn-group" role="tablist">
+            <button class="rux-btn rux-btn--secondary driver-contact__tab is-active" data-tab="contact" role="tab" type="button">Contact Info</button>
+            <button class="rux-btn rux-btn--secondary driver-contact__tab" data-tab="reminder" role="tab" type="button">Reminder</button>
+            <button class="rux-btn rux-btn--secondary driver-contact__tab" data-tab="trip" role="tab" type="button">Trip Info</button>
           </div>
 
-          <hr class="driver-contact__divider" />
-
-          <!-- Driver Reminder Section -->
-          <div class="flex-column driver-contact__section">
-            <div class="flex-between">
-              <label class="envelope-modal__label">Trip Reminder</label>
-              <button
-                id="copyDriverReminderBtn"
-                class="rux-btn rux-btn--primary"
-                type="button"
-              >
-                Copy Trip Reminder
-              </button>
-            </div>
-            <textarea
-              id="driverReminderBody"
-              class="driver-contact__textarea"
-              readonly
-            ></textarea>
-          </div>
-
-          <hr class="driver-contact__divider" />
-
-          <!-- Trip Info Section -->
-          <div class="flex-column driver-contact__section">
-            <div class="flex-between">
-              <label class="envelope-modal__label">Trip Information</label>
-              <button
-                id="copyTripInfoBtn"
-                class="rux-btn rux-btn--primary"
-                type="button"
-              >
-                Copy Trip Info
-              </button>
-            </div>
-            <textarea
-              id="tripInfoBody"
-              class="driver-contact__textarea"
-              readonly
-            ></textarea>
-          </div>
+          <!-- Single textarea — content swaps on tab change -->
+          <textarea id="driverContactBody"   class="driver-contact__textarea" readonly></textarea>
+          <textarea id="driverReminderBody"  class="driver-contact__textarea is-hidden" readonly></textarea>
+          <textarea id="tripInfoBody"        class="driver-contact__textarea is-hidden" readonly></textarea>
         </div>
 
         <div class="modal__foot">
+          <button id="copyDriverContactBtn" class="rux-btn rux-btn--primary" type="button">Copy</button>
           <button
             id="closeDriverContactBtnFooter"
             class="rux-btn rux-btn--secondary"

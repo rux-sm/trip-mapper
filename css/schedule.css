@@ -331,7 +331,7 @@
 /* Base sidebars layer */
 .o-app-layout__sidebar--left:not(.is-collapsed),
 .o-app-layout__sidebar--right:not(.is-collapsed) {
-  background: var(--rux-bg-1);
+  background: var(--rux-bg-2);
   /* Removed the invisible layout wrapper borders here to prevent clipping */
 }
 

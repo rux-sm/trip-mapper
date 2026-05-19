@@ -1871,62 +1871,47 @@ document.addEventListener("keydown", (e) => {
   if (!openModal) return;
   trapModalFocus(openModal, e);
 });
-if (dom.copyDriverContactBtn) {
-  dom.copyDriverContactBtn.addEventListener("click", async () => {
-    const text = dom.driverContactBody.value;
-    if (!text) return;
-    try {
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(text);
-        toast("Office/Customer Info copied!");
-      } else {
-        dom.driverContactBody.select();
-        document.execCommand("copy");
-        toast("Office/Customer Info copied!");
-      }
-    } catch (err) {
-      toast("Failed to copy", "danger");
-    }
-  });
-}
+// Driver contact modal — tab switching + unified copy
+(() => {
+  const tabMap = {
+    contact:  { textarea: () => dom.driverContactBody,  label: "Contact info" },
+    reminder: { textarea: () => dom.driverReminderBody, label: "Reminder" },
+    trip:     { textarea: () => dom.tripInfoBody,        label: "Trip info" },
+  };
 
-if (dom.copyDriverReminderBtn) {
-  dom.copyDriverReminderBtn.addEventListener("click", async () => {
-    const text = dom.driverReminderBody.value;
-    if (!text) return;
-    try {
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(text);
-        toast("Driver Reminder copied!");
-      } else {
-        dom.driverReminderBody.select();
-        document.execCommand("copy");
-        toast("Driver Reminder copied!");
-      }
-    } catch (err) {
-      toast("Failed to copy", "danger");
-    }
+  document.getElementById("driverContactModal")?.addEventListener("click", (e) => {
+    const tab = e.target.closest(".driver-contact__tab");
+    if (!tab) return;
+    const key = tab.dataset.tab;
+    // Toggle tabs
+    document.querySelectorAll(".driver-contact__tab").forEach(t => t.classList.remove("is-active"));
+    tab.classList.add("is-active");
+    // Show correct textarea
+    Object.values(tabMap).forEach(({ textarea }) => textarea()?.classList.add("is-hidden"));
+    tabMap[key]?.textarea()?.classList.remove("is-hidden");
   });
-}
 
-if (dom.copyTripInfoBtn) {
-  dom.copyTripInfoBtn.addEventListener("click", async () => {
-    const text = dom.tripInfoBody.value;
-    if (!text) return;
-    try {
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(text);
-        toast("Trip Info copied!");
-      } else {
-        dom.tripInfoBody.select();
-        document.execCommand("copy");
-        toast("Trip Info copied!");
+  if (dom.copyDriverContactBtn) {
+    dom.copyDriverContactBtn.addEventListener("click", async () => {
+      const activeTab = document.querySelector(".driver-contact__tab.is-active")?.dataset.tab || "contact";
+      const ta = tabMap[activeTab]?.textarea();
+      const text = ta?.value;
+      if (!text) return;
+      try {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(text);
+          toast(`${tabMap[activeTab].label} copied!`);
+        } else {
+          ta.select();
+          document.execCommand("copy");
+          toast(`${tabMap[activeTab].label} copied!`);
+        }
+      } catch (err) {
+        toast("Failed to copy", "danger");
       }
-    } catch (err) {
-      toast("Failed to copy", "danger");
-    }
-  });
-}
+    });
+  }
+})();
 
 // Envelope modal events
 if (dom.closeEnvelopeBtn) {
