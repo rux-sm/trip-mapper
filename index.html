@@ -37,7 +37,7 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;600;700;800;900&display=swap"
       rel="stylesheet"
     />
 
@@ -307,33 +307,36 @@
             class="o-app-layout"
             data-js="layout-panels"
           >
-            <!-- START PANEL -->
+            <!-- LEFT SIDEBAR: morphs 64px → expanded -->
             <div
               class="o-app-layout__sidebar o-app-layout__sidebar--left is-collapsed"
               id="panelStart"
               data-js="panel-sidebar-left"
             >
-              <!-- Placeholder for new left panel cards -->
-              <div
-                class="rux-card rux-card--compact is-hidden"
-                id="leftPanelCard1"
-                data-js="panel-card-left-placeholder"
-              >
-                <div class="rux-panel__header">
-                  <h2 class="rux-header__title">Left panel card 1</h2>
-                </div>
-                <div class="rux-card__body">
-                  <p>Add your content here</p>
-                </div>
+              <div class="sidebar__rail">
+                <button class="sidebar__icon-btn" data-card="trip"    title="Trip Editor"        aria-pressed="false"><span class="material-symbols-outlined">edit_note</span></button>
+                <button class="sidebar__icon-btn" data-card="drivers" title="Driver Assignments"  aria-pressed="false"><span class="material-symbols-outlined">groups</span></button>
+                <button class="sidebar__icon-btn" data-card="notes"   title="Notes"              aria-pressed="false"><span class="material-symbols-outlined">sticky_note_2</span></button>
+                <button class="sidebar__icon-btn" data-card="todo"    title="Daily Checklist"    aria-pressed="false"><span class="material-symbols-outlined">checklist</span></button>
+                <button class="sidebar__icon-btn" data-card="log"     title="Activity Log"       aria-pressed="false"><span class="material-symbols-outlined">history</span></button>
               </div>
+              <div class="sidebar__content"></div>
             </div>
 
-            <!-- END PANEL (Trip Editor, Drivers, Notes) -->
+            <!-- RIGHT SIDEBAR: morphs 64px → expanded -->
             <div
               class="o-app-layout__sidebar o-app-layout__sidebar--right is-collapsed"
               id="panelEnd"
               data-js="panel-sidebar-right"
             >
+              <div class="sidebar__rail">
+                <button class="sidebar__icon-btn" data-card="trip"    title="Trip Editor"        aria-pressed="false"><span class="material-symbols-outlined">edit_note</span></button>
+                <button class="sidebar__icon-btn" data-card="drivers" title="Driver Assignments"  aria-pressed="false"><span class="material-symbols-outlined">groups</span></button>
+                <button class="sidebar__icon-btn" data-card="notes"   title="Notes"              aria-pressed="false"><span class="material-symbols-outlined">sticky_note_2</span></button>
+                <button class="sidebar__icon-btn" data-card="todo"    title="Daily Checklist"    aria-pressed="false"><span class="material-symbols-outlined">checklist</span></button>
+                <button class="sidebar__icon-btn" data-card="log"     title="Activity Log"       aria-pressed="false"><span class="material-symbols-outlined">history</span></button>
+              </div>
+              <div class="sidebar__content">
               <!-- Quote Calculator Card (hidden by default) -->
               <div
                 class="rux-card rux-card--compact is-hidden quote-calculator"
@@ -1418,7 +1421,8 @@
                   title="Hidden submission iframe"
                 ></iframe>
               </div>
-            </div>
+              </div><!-- /.sidebar__content -->
+            </div><!-- /#panelEnd -->
 
             <!-- MAIN PANEL (Schedule) -->
             <div class="o-app-layout__main">

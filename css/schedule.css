@@ -347,20 +347,12 @@
    2. SIDEBAR CARDS (ELEVATION & BORDERS)
    ========================================================================== */
 
-/* Right Sidebar Card - Shadow spills LEFT onto the main content */
-.o-app-layout__sidebar--right > .rux-card:not(.is-hidden) {
-  position: relative;
-  overflow: visible;
+/* Sidebar containers — shadow on the unified surface */
+.o-app-layout__sidebar--right:not(.is-collapsed) {
   box-shadow: var(--card-shadow-left);
-  border: 2px solid var(--rux-border-s);
 }
-
-/* Left Sidebar Card - Shadow spills RIGHT onto the main content */
-.o-app-layout__sidebar--left > .rux-card:not(.is-hidden) {
-  position: relative;
-  overflow: visible;
+.o-app-layout__sidebar--left:not(.is-collapsed) {
   box-shadow: var(--card-shadow-right);
-  border: 2px solid var(--rux-border-s);;
 }
 
 /* Inset shadow overlay — paints above all card content including sticky headers */
@@ -424,9 +416,9 @@ body.debug-surfaces .o-app-layout__sidebar--right > .rux-card:not(.is-hidden) .r
 
 .notes-textarea,
 .notes__textarea {
-  font-family: "Indie Flower", cursive;
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-family: "Shadows Into Light", cursive;
+  font-size: 1rem;
+  font-weight: 800;
   line-height: 1.7;
   padding: 1.5rem;
   background: #FDF3C8;

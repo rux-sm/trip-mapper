@@ -26,8 +26,49 @@ const CARD_CONFIG = {
   log: { card: dom.logCard, btn: dom.logBtn },
 };
 
+const MAX_CARDS_PER_PANEL = 2;
+
 function getCardPanel(cardType) {
   return state.cardPanelAssignments[cardType] || null;
+}
+
+function getPanelContent(panel) {
+  const panelEl = panel === "left" ? dom.panelStart : dom.panelEnd;
+  return panelEl?.querySelector(".sidebar__content") || null;
+}
+
+function getCardTypeForElement(cardEl) {
+  return Object.keys(CARD_CONFIG).find((cardType) => CARD_CONFIG[cardType]?.card === cardEl) || null;
+}
+
+function getOpenCardTypesInPanel(panel) {
+  const content = getPanelContent(panel);
+  if (!content) return [];
+
+  return Array.from(content.children)
+    .map(getCardTypeForElement)
+    .filter((cardType) =>
+      cardType &&
+      state.cardPanelAssignments[cardType] === panel &&
+      !CARD_CONFIG[cardType].card.classList.contains("is-hidden")
+    );
+}
+
+function updatePanelCollapsedStates() {
+  const leftHasCards = Object.values(state.cardPanelAssignments).includes("left");
+  const rightHasCards = Object.values(state.cardPanelAssignments).includes("right");
+
+  dom.panelStart?.classList.toggle("is-collapsed", !leftHasCards);
+  dom.panelEnd?.classList.toggle("is-collapsed", !rightHasCards);
+}
+
+function ensurePanelCapacity(panel, incomingCardType) {
+  const openCards = getOpenCardTypesInPanel(panel).filter((cardType) => cardType !== incomingCardType);
+
+  while (openCards.length >= MAX_CARDS_PER_PANEL) {
+    const oldestCard = openCards.shift();
+    if (oldestCard) hideCard(oldestCard, { immediate: true });
+  }
 }
 
 /** Suppress horizontal scrollbar during layout changes (panel open/close, window resize) */
@@ -41,14 +82,8 @@ function suppressScrollbarDuringResize() {
 }
 
 function getFirstAvailablePanel() {
-  const panelStart = dom.panelStart;
-  const panelEndEl = dom.panelEnd;
-
-  const leftHasCard = Object.values(state.cardPanelAssignments).includes("left");
-  const rightHasCard = Object.values(state.cardPanelAssignments).includes("right");
-
-  if (!leftHasCard && panelStart) return "left";
-  if (!rightHasCard && panelEndEl) return "right";
+  if (dom.panelStart && getOpenCardTypesInPanel("left").length < MAX_CARDS_PER_PANEL) return "left";
+  if (dom.panelEnd && getOpenCardTypesInPanel("right").length < MAX_CARDS_PER_PANEL) return "right";
   return null; // Both panels occupied
 }
 
@@ -67,20 +102,28 @@ function showCardInPanel(cardType, panel) {
     config.card._hideTimeout = null;
   }
 
-  // Remove card from current location if it's a direct child
+  // Remove card from current location if it's inside a sidebar__content
   const currentParent = config.card.parentElement;
-  if (currentParent === panelStart || currentParent === panelEndEl) {
+  const leftContent  = panelStart?.querySelector('.sidebar__content');
+  const rightContent = panelEndEl?.querySelector('.sidebar__content');
+  if (currentParent === leftContent || currentParent === rightContent) {
     currentParent.removeChild(config.card);
   }
 
-  // Add to target panel
-  if (panel === "left" && panelStart) {
-    panelStart.appendChild(config.card);
+  ensurePanelCapacity(panel, cardType);
+
+  // Add to target panel's content slot
+  if (panel === "left" && leftContent) {
+    leftContent.appendChild(config.card);
     panelStart.classList.remove("is-collapsed");
-  } else if (panel === "right" && panelEndEl) {
-    panelEndEl.appendChild(config.card);
+  } else if (panel === "right" && rightContent) {
+    rightContent.appendChild(config.card);
     panelEndEl.classList.remove("is-collapsed");
   }
+
+  // Mark all icon buttons for this card active
+  document.querySelectorAll(`.sidebar__icon-btn[data-card="${cardType}"]`)
+    .forEach(b => b.classList.add("is-active"));
 
   // Show the card
   config.card.classList.remove("is-hidden");
@@ -114,20 +157,14 @@ function showCardInPanel(cardType, panel) {
   scheduleAgendaReflow();
 }
 
-function hideCard(cardType) {
+function hideCard(cardType, options = {}) {
   const config = CARD_CONFIG[cardType];
   if (!config || !config.card) return;
 
   suppressScrollbarDuringResize();
 
   const panel = state.cardPanelAssignments[cardType];
-  
-  // Explicitly trigger the slide-out animation independently from the wrapper's CSS
-  const outClass = panel === "right" ? "slide-out-right" : "slide-out-left";
-  config.card.classList.remove("slide-in-left", "slide-in-right", "slide-out-left", "slide-out-right");
-  void config.card.offsetWidth; // force reflow
-  config.card.classList.add(outClass);
-  
+
   state.cardPanelAssignments[cardType] = null;
 
   // Update button state
@@ -135,24 +172,32 @@ function hideCard(cardType) {
     config.btn.setAttribute("aria-pressed", "false");
   }
 
-  // Collapse panel if it's now empty (check state, not DOM)
-  const panelStart = dom.panelStart;
-  const panelEndEl = dom.panelEnd;
+  // Deactivate all icon buttons for this card
+  document.querySelectorAll(`.sidebar__icon-btn[data-card="${cardType}"]`)
+    .forEach(b => b.classList.remove("is-active"));
 
-  const leftHasCards = Object.values(state.cardPanelAssignments).includes("left");
-  const rightHasCards = Object.values(state.cardPanelAssignments).includes("right");
-
-  if (panelStart && !leftHasCards) {
-    panelStart.classList.add("is-collapsed");
-  }
-  if (panelEndEl && !rightHasCards) {
-    panelEndEl.classList.add("is-collapsed");
-  }
-
-  // Delay "display: none" so the closing animation can visually complete
   if (config.card._hideTimeout) {
     clearTimeout(config.card._hideTimeout);
+    config.card._hideTimeout = null;
   }
+
+  if (options.immediate) {
+    config.card.classList.remove("slide-in-left", "slide-in-right", "slide-out-left", "slide-out-right");
+    config.card.classList.add("is-hidden");
+    updatePanelCollapsedStates();
+    scheduleAgendaReflow();
+    return;
+  }
+
+  // Explicitly trigger the slide-out animation independently from the wrapper's CSS
+  const outClass = panel === "right" ? "slide-out-right" : "slide-out-left";
+  config.card.classList.remove("slide-in-left", "slide-in-right", "slide-out-left", "slide-out-right");
+  void config.card.offsetWidth; // force reflow
+  config.card.classList.add(outClass);
+
+  updatePanelCollapsedStates();
+
+  // Delay "display: none" so the closing animation can visually complete
   config.card._hideTimeout = setTimeout(() => {
     config.card.classList.add("is-hidden");
     config.card._hideTimeout = null;
@@ -168,18 +213,8 @@ function toggleCard(cardType) {
     // Card is open — close it
     hideCard(cardType);
   } else {
-    const panel = getFirstAvailablePanel();
-    if (panel) {
-      // Open in the first available slot (left first, then right)
-      showCardInPanel(cardType, panel);
-    } else {
-      // Both panels occupied — replace the right (secondary) panel
-      const rightCard = Object.keys(state.cardPanelAssignments).find(
-        (k) => state.cardPanelAssignments[k] === "right"
-      );
-      if (rightCard) hideCard(rightCard);
-      showCardInPanel(cardType, "right");
-    }
+    const panel = getFirstAvailablePanel() || "right";
+    showCardInPanel(cardType, panel);
   }
 }
 
@@ -225,6 +260,20 @@ function setPanelStartMode(show) {
   if (dom.agendaBody?.rows?.length) scheduleAgendaReflow();
 }
 
+function wireIconRail() {
+  document.querySelectorAll(".sidebar__icon-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const cardType = btn.dataset.card;
+      const panel = btn.closest("#panelStart") ? "left" : "right";
+      if (getCardPanel(cardType)) {
+        hideCard(cardType);
+      } else {
+        showCardInPanel(cardType, panel);
+      }
+    });
+  });
+}
+
 function enforceDesktopEditing() {
   const mobile = isMobileOnly();
 
@@ -236,4 +285,3 @@ function enforceDesktopEditing() {
 
   if (mobile) setSidePanelMode("off");
 }
-

@@ -662,6 +662,8 @@ function wireEvents() {
     }
   });
 
+  wireIconRail();
+
   dom.tripInputBtn.addEventListener("click", () => {
     if (isMobileOnly()) return;
     toggleCard("trip");
