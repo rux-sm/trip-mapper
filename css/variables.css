@@ -181,7 +181,16 @@
   --rux-status-gray: oklch(from var(--rux-color-gray) 90% 0.3 h);
   --rux-status-gray-alpha: oklch(from var(--rux-color-gray) l c h / 50%);
 
-  /* 2C. Text Roles
+  /* 2C. Debug Surface Colors
+  ──────────────────────────────────────────────────────────────── */
+
+  --rux-debug-red: var(--rux-color-red);
+  --rux-debug-yellow: var(--rux-color-yellow);
+  --rux-debug-blue: var(--rux-color-blue);
+  --rux-debug-green: var(--rux-color-green);
+  --rux-debug-pink: var(--rux-color-pink);
+
+  /* 2D. Text Roles
   ──────────────────────────────────────────────────────────────── */
 
   --rux-text-1: var(--rux-color-white);
@@ -189,7 +198,7 @@
   --rux-text-3: oklch(45% 0.014 250);
   --rux-text-placeholder: oklch(from var(--rux-color-gray) 45% c h);
 
-  /* 2D. Border Roles
+  /* 2E. Border Roles
   ──────────────────────────────────────────────────────────────── */
 
   --rux-border-1: oklch(from var(--rux-color-white) l c h / 4%); /* Subtle */
@@ -197,7 +206,7 @@
   --rux-border-3: oklch(from var(--rux-color-white) l c h / 24%); /* Strong */
   --rux-border-s: var(--rux-bg-2); /* Matches panel bg for a seamless look */
 
-  /* 2E. Semantic Radius Aliases
+  /* 2F. Semantic Radius Aliases
      Convenience aliases for common optical-nesting levels.
      Prefer using --rux-radius-{n} directly in new component tokens.
   ──────────────────────────────────────────────────────────────── */
@@ -208,7 +217,7 @@
   --rux-radius-overlay: var(--rux-radius-4); /* modals, popovers — 10px */
   --rux-radius-badge: var(--rux-radius-0); /* chips, mini-badges — 0px */
 
-  /* 2F. Effects */
+  /* 2G. Effects */
 
   --focus-ring-color: var(--rux-color-accent);
   --focus-ring: inset 0 0 0 2px var(--focus-ring-color);

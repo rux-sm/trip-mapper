@@ -51,7 +51,7 @@
     />
   </head>
 
-  <body>
+  <body class="debug-surfaces">
     <!-- Login overlay — shown by auth.js when no session -->
     <div id="loginOverlay" class="login" style="display:none;">
       <div class="login__card">
@@ -963,6 +963,7 @@
                         id="destination"
                         name="destination"
                         placeholder=""
+                        autocomplete="off"
                         required
                       />
                     </div>
@@ -974,7 +975,7 @@
                         id="customer"
                         name="customer"
                         placeholder=""
-                        required
+                        autocomplete="off"
                       />
                     </div>
 
@@ -985,7 +986,7 @@
                         id="contactName"
                         name="contactName"
                         placeholder=""
-                        required
+                        autocomplete="off"
                       />
                     </div>
 
@@ -995,7 +996,7 @@
                         type="tel"
                         id="phone"
                         name="phone"
-                        autocomplete="tel"
+                        autocomplete="off"
                         inputmode="tel"
                         placeholder=""
                       />
@@ -1089,6 +1090,7 @@
                         id="notes"
                         name="notes"
                         placeholder=""
+                        autocomplete="off"
                       />
                     </div>
 
@@ -1167,6 +1169,7 @@
                         id="paymentType"
                         name="paymentType"
                         placeholder=""
+                        autocomplete="off"
                       />
                     </div>
 
@@ -1180,13 +1183,14 @@
                         id="invoiceNumber"
                         name="invoiceNumber"
                         placeholder=""
+                        autocomplete="off"
                       />
                     </div>
 
                     <div class="form-group col-6">
                       <label for="tripMiles">Post Trip Miles</label>
                       <div class="fld-affix fld-affix--suffix">
-                        <input type="text" id="tripMiles" name="tripMiles" placeholder="" />
+                        <input type="text" id="tripMiles" name="tripMiles" placeholder="" autocomplete="off" />
                         <span class="fld-affix__suffix">mi</span>
                       </div>
                     </div>
@@ -1202,15 +1206,15 @@
 
                     <div class="form-group col-4">
                       <label for="ref1">Ref 1</label>
-                      <input type="text" id="ref1" name="ref1" placeholder="" />
+                      <input type="text" id="ref1" name="ref1" placeholder="" autocomplete="off" />
                     </div>
                     <div class="form-group col-4">
                       <label for="ref2">Ref 2</label>
-                      <input type="text" id="ref2" name="ref2" placeholder="" />
+                      <input type="text" id="ref2" name="ref2" placeholder="" autocomplete="off" />
                     </div>
                     <div class="form-group col-4">
                       <label for="ref3">Ref 3</label>
-                      <input type="text" id="ref3" name="ref3" placeholder="" />
+                      <input type="text" id="ref3" name="ref3" placeholder="" autocomplete="off" />
                     </div>
 
                     <div
@@ -1246,6 +1250,7 @@
                         type="text"
                         id="envelopePickup"
                         name="envelopePickup"
+                        autocomplete="off"
                       />
                     </div>
 
@@ -1255,6 +1260,7 @@
                         type="text"
                         id="envelopeTripContact"
                         name="envelopeTripContact"
+                        autocomplete="off"
                       />
                     </div>
 
@@ -1264,7 +1270,7 @@
                         type="tel"
                         id="envelopeTripPhone"
                         name="envelopeTripPhone"
-                        autocomplete="tel"
+                        autocomplete="off"
                         inputmode="tel"
                       />
                     </div>
@@ -1276,6 +1282,7 @@
                         id="comments"
                         name="comments"
                         placeholder=""
+                        autocomplete="off"
                       />
                     </div>
 

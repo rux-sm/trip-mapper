@@ -350,6 +350,7 @@
 /* Right Sidebar Card - Shadow spills LEFT onto the main content */
 .o-app-layout__sidebar--right > .rux-card:not(.is-hidden) {
   position: relative;
+  overflow: visible;
   box-shadow: var(--card-shadow-left);
   border: 2px solid var(--rux-border-s);
 }
@@ -357,6 +358,7 @@
 /* Left Sidebar Card - Shadow spills RIGHT onto the main content */
 .o-app-layout__sidebar--left > .rux-card:not(.is-hidden) {
   position: relative;
+  overflow: visible;
   box-shadow: var(--card-shadow-right);
   border: 2px solid var(--rux-border-s);;
 }
@@ -386,6 +388,28 @@
   color: var(--rux-text-2);
   padding-inline: var(--rux-space-4);
   background-color: var(--rux-bg-2);
+}
+
+/* Debug surface overlays: add .debug-surfaces to <body> to trace layout layers. */
+body.debug-surfaces .o-app-layout__sidebar--left:not(.is-collapsed),
+body.debug-surfaces .o-app-layout__sidebar--right:not(.is-collapsed) {
+  background: var(--rux-debug-red);
+}
+
+body.debug-surfaces .o-app-layout__sidebar--left > .rux-card,
+body.debug-surfaces .o-app-layout__sidebar--right > .rux-card {
+  background: var(--rux-debug-blue);
+}
+
+body.debug-surfaces .o-app-layout__sidebar--left > .rux-card:not(.is-hidden),
+body.debug-surfaces .o-app-layout__sidebar--right > .rux-card:not(.is-hidden) {
+  border-color: var(--rux-debug-blue);
+}
+
+body.debug-surfaces .o-app-layout__sidebar--left > .rux-card:not(.is-hidden) .rux-card__body,
+body.debug-surfaces .o-app-layout__sidebar--right > .rux-card:not(.is-hidden) .rux-card__body {
+  background-color: var(--rux-debug-yellow);
+  border-radius: var(--rux-radius-9);
 }
 
 /* ==========================================================================
