@@ -283,8 +283,6 @@ function wireDelegatedBarEvents() {
           openDriverContactModal(tripKey);
         } else if (action === "envelope") {
           openEnvelopeModal(tripKey);
-        } else if (action === "tripReview") {
-          openTripDetailsModal(tripKey);
         } else if (action === "moveBus") {
           const rect = actionBtn.getBoundingClientRect();
           showBusPicker(bar, rect);

@@ -10,7 +10,7 @@
   --size-toolbar-action:  32px;
 
   /* Panel / sidebar geometry */
-  --panel-width:           400px;
+  --panel-width:           360px;
   --panel-header-h:        56px;
   --panel-body-top-gap:    0.75rem;
   --panel-footer-h:        56px;
@@ -154,9 +154,8 @@
   display: flex;
   flex-direction: row;
   overflow: visible;
-  background: var(--rux-bg-4);
+  background: var(--rux-bg-3);
   border-radius: 0 var(--rux-radius-9) var(--rux-radius-9) 0;
-  border: 1px solid var(--rux-border-s);
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -167,52 +166,81 @@
   display: flex;
   flex-direction: row;
   overflow: visible;
-  background: var(--rux-bg-4);
+  background: var(--rux-bg-3);
   border-radius: var(--rux-radius-9) 0 0 var(--rux-radius-9);
-  border: 1px solid var(--rux-border-s);
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .o-app-layout__sidebar--left  { order: 0; }
 .o-app-layout__sidebar--right { order: 2; }
 
-/* Collapsed = rail only (64px) */
+/* Collapsed = rail only (64px base width) */
 .o-app-layout__sidebar--left.is-collapsed,
 .o-app-layout__sidebar--right.is-collapsed {
-  width: 64px;
+  width: 56px; 
   pointer-events: auto;
 }
 
-/* Expanded = rail + panel */
+/* Expanded = tightly wrapped rail (44px) + panel width */
 .o-app-layout__sidebar--left:not(.is-collapsed),
 .o-app-layout__sidebar--right:not(.is-collapsed) {
-  width: calc(64px + var(--panel-width));
+  width: calc(44px + var(--panel-width)); 
 }
+
 
 /* ── Icon rail ───────────────────────────────────────────────────────────── */
 
 .sidebar__rail {
-  width: 64px;
-  flex: 0 0 64px;
+  position: relative;
+  z-index: 10; /* Forces the rail to sit above the sliding panel */
+  
+  width: 56px;
+  flex: 0 0 56px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 4px;
-  padding: 12px 0;
-  background: transparent; /* unified surface — container owns the bg */
+  padding: 12px;
+  border-radius: var(--rux-radius-9);
+  background: var(--rux-bg-3);
+  
+  /* Animate the rail shrinking from 64px down to 44px */
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              flex 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .o-app-layout__sidebar.is-collapsed .sidebar__rail {
-  width: 64px;
-  flex: 0 0 64px;
   visibility: visible;
   pointer-events: auto;
 }
-.o-app-layout__sidebar--left  .sidebar__rail { order: 0; }
-.o-app-layout__sidebar--right .sidebar__rail { order: 1; }
+
+/* Base Alignments */
+.o-app-layout__sidebar--left  .sidebar__rail { order: 0; align-items: flex-start; }
+.o-app-layout__sidebar--right .sidebar__rail { order: 1; align-items: flex-end; }
+
+
+/* Left Sidebar Expanded State */
+.o-app-layout__sidebar--left:not(.is-collapsed) .sidebar__rail {
+  padding-right: 0; 
+  width: 44px;    /* Snaps tightly to button + left padding */
+  flex: 0 0 44px; 
+}
+
+/* Right Sidebar Expanded State */
+.o-app-layout__sidebar--right:not(.is-collapsed) .sidebar__rail {
+  padding-left: 0; 
+  width: 44px;    /* Snaps tightly to button + right padding */
+  flex: 0 0 44px; 
+}
+
+
+/* ── Rail Buttons ────────────────────────────────────────────────────────── */
 
 .sidebar__icon-btn {
-  width: 44px;
-  height: 44px;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0; /* Prevents squishing during rail animation */
   border-radius: var(--rux-radius-3);
   background: transparent;
   border: none;
@@ -223,9 +251,27 @@
   color: var(--rux-text-2);
   transition: background var(--transition-fast), color var(--transition-fast);
 }
-.sidebar__icon-btn:hover    { background: var(--rux-bg-3); color: var(--rux-text-1); }
-.sidebar__icon-btn.is-active { background: var(--rux-bg-4); color: var(--rux-color-accent); }
+
+.sidebar__icon-btn:hover { background: var(--rux-bg-3); color: var(--rux-text-1); }
+.sidebar__icon-btn.is-active { background: var(--rux-color-accent); color: var(--rux-color-white); }
 .sidebar__icon-btn .material-symbols-outlined { font-size: 22px; }
+
+
+/* ── Content Panel (Ensure this class or similar exists in your CSS) ─────── */
+
+.sidebar__panel {
+  position: relative;
+  z-index: 1; /* Sits beneath the rail (z-index: 10) */
+  width: var(--panel-width);
+  flex-shrink: 0; 
+  overflow: hidden; 
+  transition: opacity 0.2s ease; 
+}
+
+.o-app-layout__sidebar.is-collapsed .sidebar__panel {
+  opacity: 0;
+  pointer-events: none;
+}
 
 /* ── Content slot ────────────────────────────────────────────────────────── */
 

@@ -194,9 +194,9 @@ async function fetchWeekDataCached(start, end, notesKey, force = false) {
   if (!force) {
     const fresh = getCachedWeek(key);
     if (fresh) return fresh;
-  }
 
-  if (state.weekInFlight.has(key)) return state.weekInFlight.get(key);
+    if (state.weekInFlight.has(key)) return state.weekInFlight.get(key);
+  }
 
   const p = (async () => {
     try {

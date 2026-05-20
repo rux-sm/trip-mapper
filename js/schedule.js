@@ -888,7 +888,6 @@ function _renderAgendaInner() {
           { action: "pdf", icon: "upload_file", title: "Attach itinerary PDF" },
           { action: "driverContact", icon: "chat", title: "Driver contact info" },
           { action: "envelope", icon: "mail_outline", title: "Envelope" },
-          { action: "tripReview", icon: "manage_search", title: "Trip review" },
           { action: "more", icon: "more_horiz", title: "More options" },
         ].forEach(({ action, icon, title }) => {
           const btn = document.createElement("button");
