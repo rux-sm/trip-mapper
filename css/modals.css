@@ -1007,7 +1007,7 @@
 }
 .driver-contact__tab.is-active {
   background: var(--rux-btn-bg-primary);
-  color: var(--rux-color-white);
+  color: var(--rux-color-black);
 }
 
 #driverContactModal.modal--itinerary .modal__card {

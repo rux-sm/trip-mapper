@@ -1121,8 +1121,8 @@ async function openTripForEdit(tripKey) {
     populateFormFromData(serverTrip, mergedAssigns);
     setFormDisabled(false);
     setSidePanelMode("trip");
+    if (typeof resetTripEditorTabs === "function") resetTripEditorTabs();
     state.tripFormDirty = false;
-    $("destination")?.focus?.({ preventScroll: true });
 
     showHeaderStatusNotice("Trip ready", "success", {
       duration: 1200,

@@ -773,19 +773,6 @@ body.bars-compact {
   --tripbar-height:     var(--tripbar-height-collapsed);
 }
 
-/* Restore the same r7-r10 budget as :root so expanded compact bars align
-   with --tripbar-height-active and keep r1 at a stable top offset. */
-body.bars-compact .schedule-grid__trip-bar.expanded {
-  --tripbar-r7-row-height:  15px;
-  --tripbar-r8-row-height:  15px;
-  --tripbar-r9-row-height:  15px;
-  --tripbar-r10-row-height: 15px;
-  --tripbar-r7-gap-above:   1px;
-  --tripbar-r8-gap-above:   1px;
-  --tripbar-r9-gap-above:   1px;
-  --tripbar-r10-gap-above:  1px;
-}
-
 /* ── Row base ─────────────────────────────────────────────────────────────── */
 
 .schedule-grid__trip-bar__row {

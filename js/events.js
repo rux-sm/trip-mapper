@@ -379,28 +379,19 @@ function wireDelegatedBarEvents() {
           if (expandedTr?.tagName === "TR") expandedTr.style.zIndex = "60";
 
           // 4. Read the state height tokens now that .expanded is applied.
-          //    CSS owns the tuneable heights:
-          //    collapsed = rows 1-6, expanded = rows 1-10, active = rows 1-11.
+          //    CSS owns the tuneable heights. In compact mode, expanding only
+          //    reveals the action row; full mode still grows to the active height.
           const cs = getComputedStyle(clickedBar);
           const insetTop = parseFloat(cs.getPropertyValue("--tripbar-inset-top")) || 0;
           const activeH = parseFloat(cs.getPropertyValue("--tripbar-height-active")) || 0;
           const actionRowH = parseFloat(cs.getPropertyValue("--tripbar-r11-row-height")) || 30;
           const rowGapH = parseFloat(cs.getPropertyValue("--tripbar-row-gap")) || 0;
-          // In compact mode rows 7-10 are 0px when collapsed but CSS
-          // restores them once .expanded is added — account for their heights here.
-          const hiddenRowsH = document.body.classList.contains("bars-compact")
-            ? (parseFloat(cs.getPropertyValue("--tripbar-r7-row-height"))  || 0) +
-              (parseFloat(cs.getPropertyValue("--tripbar-r8-row-height"))  || 0) +
-              (parseFloat(cs.getPropertyValue("--tripbar-r9-row-height"))  || 0) +
-              (parseFloat(cs.getPropertyValue("--tripbar-r10-row-height")) || 0) +
-              (parseFloat(cs.getPropertyValue("--tripbar-r7-gap-above"))   || 0) +
-              (parseFloat(cs.getPropertyValue("--tripbar-r8-gap-above"))   || 0) +
-              (parseFloat(cs.getPropertyValue("--tripbar-r9-gap-above"))   || 0) +
-              (parseFloat(cs.getPropertyValue("--tripbar-r10-gap-above"))  || 0)
-            : 0;
-          const expandedH = activeH > collapsedPx
-            ? activeH
-            : collapsedPx + hiddenRowsH + actionRowH + rowGapH;
+          const isCompact = document.body.classList.contains("bars-compact");
+          const expandedH = isCompact
+            ? collapsedPx + actionRowH + rowGapH
+            : activeH > collapsedPx
+              ? activeH
+              : collapsedPx + actionRowH + rowGapH;
           clickedBar.style.height = expandedH + "px";
           const collapsedTop = parseFloat(clickedBar.dataset.collapsedTop) || insetTop;
           const tr = clickedBar.closest("tr");
@@ -493,7 +484,6 @@ function wireEvents() {
     if (e.key !== "Escape") return;
     const modalClosers = [
       { el: document.getElementById("busPicker"), close: closeBusPicker },
-      { el: dom.profilePopover,          close: closeProfilePopover },
       { el: dom.itineraryModal,          close: closeItineraryModal },
       { el: dom.tripDetailsModal,        close: closeTripDetailsModal },
       { el: dom.envelopeModal,           close: closeEnvelopeModal },
@@ -1645,6 +1635,7 @@ function wireProfilePopover() {
   const btn     = dom.avatarBtn;
   const popover = dom.profilePopover;
   if (!btn || !popover) return;
+  const isPanelCard = popover.classList.contains("profile-settings-card");
 
   function profileOutsideClick(e) {
     if (!popover.contains(e.target) && !btn.contains(e.target)) {
@@ -1653,22 +1644,24 @@ function wireProfilePopover() {
     }
   }
 
-  btn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    if (popover.hidden) {
-      closeAllFloatingMenus();
-      openProfilePopover();
-      requestAnimationFrame(() => document.addEventListener("click", profileOutsideClick));
-    } else {
-      closeProfilePopover();
-      document.removeEventListener("click", profileOutsideClick);
-    }
-  });
+  if (!isPanelCard) {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (popover.hidden) {
+        closeAllFloatingMenus();
+        openProfilePopover();
+        requestAnimationFrame(() => document.addEventListener("click", profileOutsideClick));
+      } else {
+        closeProfilePopover();
+        document.removeEventListener("click", profileOutsideClick);
+      }
+    });
+  }
 
   // Auto-close on any dropdown__item click inside the popover
   // (excludes preference toggles which are rux-btn, not dropdown__item)
   popover.addEventListener("click", (e) => {
-    if (e.target.closest(".dropdown__item")) {
+    if (!isPanelCard && e.target.closest(".dropdown__item")) {
       closeProfilePopover();
       document.removeEventListener("click", profileOutsideClick);
     }
@@ -1766,8 +1759,10 @@ function wireProfilePopover() {
   // ── Preferences ────────────────────────────────────────────────────────────
 
   document.getElementById("profileThemeToggle")?.addEventListener("click", () => {
-    dom.themeToggle?.click();
-    const newTheme = document.documentElement.getAttribute("data-theme") || "dark";
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    try { localStorage.setItem("theme", newTheme); } catch (_) {}
     setPref("theme", newTheme);
     const b = document.getElementById("profileThemeToggle");
     if (b) {

@@ -115,52 +115,27 @@
     </div>
 
     <div class="app">
-      <header class="rux-app__header">
-        <div class="rux-app__branding">
-          <div class="rux-app__logo-wrap">
-            <img
-              src="assets/logo.png"
-              class="rux-app__logo"
-              alt="Escamilla Tour Buses"
-            />
-          </div>
-          <h1
-            class="rux-app__title"
-            id="topbarTitle"
-          >
-            <span class="rux-app__title--prefix"
-              >
-              <span class="rux-app__title--name">TripBoard</span>
-            <span
-              class="rux-app__version"
-              id="appVersionBadge"
-              aria-label="Application version"
-            ></span>
-          </h1>
+      <div class="app-shell-utilities" hidden>
+        <!-- Hidden button stubs keep existing JS listeners from throwing -->
+        <button id="tripInputBtn" type="button"></button>
+        <button id="driversBtn"   type="button"></button>
+        <button id="notesBtn"     type="button"></button>
+        <button id="todoBtn"      type="button"></button>
+        <div id="presenceStrip" class="presence-strip" hidden aria-label="Online users" role="status"></div>
+      </div>
+
+      <!-- Profile & Settings Card -->
+      <div
+        id="profilePopover"
+        class="rux-card rux-card--compact is-hidden profile-settings-card"
+        data-js="panel-card-profile"
+        hidden
+      >
+        <div class="rux-panel__header">
+          <h2 class="rux-header__title">Profile & Settings</h2>
+          <div class="rux-header__actions"></div>
         </div>
-
-        <div class="rux-app__actions">
-          <!-- quoteBtn hidden (WIP) — keep for future use -->
-          <!-- Panel buttons live in sidebar icon rails -->
-          <!-- Presence strip -->
-          <!-- Hidden button stubs keep existing JS listeners from throwing -->
-          <button id="tripInputBtn" type="button" style="display:none"></button>
-          <button id="driversBtn"   type="button" style="display:none"></button>
-          <button id="notesBtn"     type="button" style="display:none"></button>
-          <button id="todoBtn"      type="button" style="display:none"></button>
-          <div id="presenceStrip" class="presence-strip" hidden aria-label="Online users" role="status"></div>
-
-          <!-- Profile avatar + popover -->
-          <div class="dropdown" id="profileMenuWrap">
-            <button
-              id="avatarBtn"
-              class="rux-btn rux-btn--square"
-              type="button"
-              aria-haspopup="true"
-              aria-expanded="false"
-              aria-label="My profile"
-            ></button>
-            <div id="profilePopover" class="dropdown__menu profile-popover" hidden>
+        <div class="rux-card__body profile-settings__body">
               <div class="profile-popover__header">
                 <div id="profilePopoverAvatar"></div>
                 <div class="profile-popover__identity">
@@ -270,10 +245,8 @@
                 Sign out
               </button>
               <div id="appVersionMenuItem" class="dropdown__item dropdown__item--meta" role="note"></div>
-            </div>
-          </div>
         </div>
-      </header>
+      </div>
 
       <main class="main">
         <div class="container">
@@ -293,6 +266,15 @@
                 <button class="sidebar__icon-btn" data-card="notes"   title="Notes"              aria-pressed="false"><span class="material-symbols-outlined">sticky_note_2</span></button>
                 <button class="sidebar__icon-btn" data-card="todo"    title="Daily Checklist"    aria-pressed="false"><span class="material-symbols-outlined">checklist</span></button>
                 <button class="sidebar__icon-btn" data-card="log"     title="Activity Log"       aria-pressed="false"><span class="material-symbols-outlined">history</span></button>
+                <button
+                  id="avatarBtn"
+                  class="sidebar__icon-btn sidebar__profile-btn"
+                  data-card="profile"
+                  type="button"
+                  title="Profile & Settings"
+                  aria-label="Profile & Settings"
+                  aria-pressed="false"
+                ></button>
               </div>
               <div class="sidebar__content"></div>
             </div>
@@ -1491,6 +1473,16 @@
                   data-js="schedule-agenda-header"
                 >
                   <div class="agenda-header__date-left">
+                    <img
+                      src="assets/logo.png"
+                      alt=""
+                      class="agenda-header__logo"
+                      aria-hidden="true"
+                    />
+                    <span
+                      class="agenda-header__separator"
+                      aria-hidden="true"
+                    ></span>
                     <div
                       id="dateWrapper"
                       class="date-picker-wrapper"

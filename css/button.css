@@ -14,7 +14,7 @@
 
 :root {
   --rux-btn-bg-primary:   var(--rux-color-accent);
-  --rux-btn-bg-secondary: oklch(from var(--rux-color-gray) 50% c h);
+  --rux-btn-bg-secondary: var(--rux-bg-4);
   --rux-btn-bg-danger:    oklch(from var(--rux-color-red)  50% c h);
   --rux-btn-text:         var(--rux-color-white);
   --rux-btn-hover-lift:   0.1;
@@ -123,7 +123,7 @@ button {
     "opsz" var(--rux-btn-icon-opsz);
 }
 
-.rux-btn--primary   { --btn-background: var(--rux-btn-bg-primary);   --btn-shadow: var(--rux-btn-shadow-inset); }
+.rux-btn--primary   { --btn-background: var(--rux-btn-bg-primary);   --btn-shadow: var(--rux-btn-shadow-inset); --btn-text: var(--rux-color-black); }
 .rux-btn--secondary { --btn-background: var(--rux-btn-bg-secondary); --btn-shadow: var(--rux-btn-shadow-inset); }
 .rux-btn--danger    { --btn-background: var(--rux-btn-bg-danger);    --btn-shadow: var(--rux-btn-shadow-inset); }
 
@@ -146,8 +146,14 @@ button {
   padding:   0;
 }
 
-.rux-btn--square:active          { transform: none; }
-.rux-btn--square[aria-pressed="true"] { background-color: var(--rux-btn-bg-primary); }
+.rux-btn--square:active {
+  color: var(--rux-color-black);
+  transform: none;
+}
+.rux-btn--square[aria-pressed="true"] {
+  background-color: var(--rux-btn-bg-primary);
+  color: var(--rux-color-black);
+}
 
 .rux-btn--square .material-symbols-outlined {
   font-size: var(--rux-btn-square-icon-size);
@@ -184,7 +190,7 @@ button {
 .rux-btn--toggle.is-active {
   --btn-background:    var(--rux-btn-bg-primary);
   --btn-border:        none;
-  --btn-text:          var(--rux-text-1);
+  --btn-text:          var(--rux-color-black);
   --rux-btn-icon-fill: 1;
 }
 

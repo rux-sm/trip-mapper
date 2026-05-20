@@ -9,14 +9,14 @@
 
   /* ── Avatar color palette ── */
 
-  --avatar-color-1: oklch(60% 0.18 24);
-  --avatar-color-2: oklch(60% 0.18 65);
-  --avatar-color-3: oklch(60% 0.18 100);
-  --avatar-color-4: oklch(60% 0.18 155);
-  --avatar-color-5: oklch(60% 0.18 210);
-  --avatar-color-6: oklch(60% 0.18 260);
-  --avatar-color-7: oklch(60% 0.15 290);
-  --avatar-color-8: oklch(60% 0.15 350);
+  --avatar-color-1: oklch(80% 0.18 24);
+  --avatar-color-2: oklch(80% 0.18 65);
+  --avatar-color-3: oklch(80% 0.18 100);
+  --avatar-color-4: oklch(80% 0.18 155);
+  --avatar-color-5: oklch(80% 0.18 210);
+  --avatar-color-6: oklch(80% 0.18 260);
+  --avatar-color-7: oklch(80% 0.15 290);
+  --avatar-color-8: oklch(80% 0.15 350);
   --avatar-color-9: oklch(100% 0 350);
   --avatar-color-10: oklch(75% 0 350);
 
@@ -70,6 +70,16 @@
 #avatarBtn .profile-avatar {
   width:  100%;
   height: 100%;
+}
+
+.sidebar__profile-btn {
+  margin-top: auto;
+}
+
+.profile-settings-card .profile-settings__body {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
 }
 
 /* ==========================================================================

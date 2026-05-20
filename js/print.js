@@ -128,11 +128,11 @@ function buildPrintScheduleTwoPages() {
 
       const dateLeft = headerClone.querySelector(".agenda-header__date-left");
       if (dateLeft) {
-        const logoImg = document.createElement("img");
+        const logoImg = dateLeft.querySelector(".agenda-header__logo") || document.createElement("img");
         logoImg.src = "assets/logo.png";
-        logoImg.className = "print-header-logo-img";
+        logoImg.classList.add("print-header-logo-img");
         logoImg.alt = "Logo";
-        dateLeft.insertBefore(logoImg, dateLeft.firstChild);
+        if (!logoImg.parentElement) dateLeft.insertBefore(logoImg, dateLeft.firstChild);
       }
       card.appendChild(headerClone);
     } else {
@@ -233,11 +233,11 @@ function buildPrintScheduleLegalCSSGrid() {
         .forEach((el) => el.remove());
       const dateLeft = headerClone.querySelector(".agenda-header__date-left");
       if (dateLeft) {
-        const logoImg = document.createElement("img");
+        const logoImg = dateLeft.querySelector(".agenda-header__logo") || document.createElement("img");
         logoImg.src = "assets/logo.png";
-        logoImg.className = "print-header-logo-img";
+        logoImg.classList.add("print-header-logo-img");
         logoImg.alt = "Logo";
-        dateLeft.insertBefore(logoImg, dateLeft.firstChild);
+        if (!logoImg.parentElement) dateLeft.insertBefore(logoImg, dateLeft.firstChild);
       }
       card.appendChild(headerClone);
     }
@@ -456,4 +456,3 @@ function setPrintPageSize(size) {
 }
 
 window.addEventListener("afterprint", clearPrintRoot);
-

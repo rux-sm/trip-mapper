@@ -24,6 +24,7 @@ const CARD_CONFIG = {
   quote: { card: dom.quoteCard, btn: dom.quoteBtn },
   todo: { card: dom.todoCard, btn: dom.todoBtn },
   log: { card: dom.logCard, btn: dom.logBtn },
+  profile: { card: dom.profileCard, btn: dom.avatarBtn },
 };
 
 const MAX_CARDS_PER_PANEL = 1;
@@ -176,6 +177,9 @@ function showCardInPanel(cardType, panel) {
   if (cardType === "todo") {
     renderTodoCard();
   }
+  if (cardType === "profile") {
+    openProfilePopover();
+  }
 
   scheduleAgendaReflow();
 }
@@ -187,12 +191,20 @@ function hideCard(cardType, options = {}) {
   suppressScrollbarDuringResize();
 
   const panel = state.cardPanelAssignments[cardType];
+  const isProfilePanelCard = cardType === "profile" && config.card.classList.contains("profile-settings-card");
 
   state.cardPanelAssignments[cardType] = null;
 
   if (cardType === "trip") {
     state.tripFormOpen = false;
     state.tripFormWeekKey = null;
+  }
+  if (cardType === "profile") {
+    if (isProfilePanelCard) {
+      dom.avatarBtn?.setAttribute("aria-expanded", "false");
+    } else {
+      closeProfilePopover();
+    }
   }
 
   syncCardButtonStates();
@@ -205,6 +217,7 @@ function hideCard(cardType, options = {}) {
   if (options.immediate) {
     config.card.classList.remove("slide-in-left", "slide-in-right", "slide-out-left", "slide-out-right");
     config.card.classList.add("is-hidden");
+    if (isProfilePanelCard) config.card.hidden = true;
     updatePanelCollapsedStates();
     scheduleAgendaReflow();
     return;
@@ -221,6 +234,7 @@ function hideCard(cardType, options = {}) {
   // Delay "display: none" so the closing animation can visually complete
   config.card._hideTimeout = setTimeout(() => {
     config.card.classList.add("is-hidden");
+    if (isProfilePanelCard) config.card.hidden = true;
     config.card._hideTimeout = null;
   }, 300);
 

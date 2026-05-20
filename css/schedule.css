@@ -33,7 +33,7 @@
   --bus-lift-color: oklch(from var(--rux-color-white) 50% c h);
   --bus-sleeper-color: oklch(from var(--rux-color-white) 50% c h);
   --bus-accent-color: var(--rux-bg-4);
-  --bus-grid-row-gap: 4px;
+  --bus-grid-row-gap: 8px;
   --bus-driver-block-gap: 4px;
   --bus-header-margin: 4px;
 
@@ -89,11 +89,27 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.agenda-header__logo {
+  display: block;
+  flex: 0 0 auto;
+  width: auto;
+  height: 20px;
+  object-fit: contain;
+}
+
+.agenda-header__separator {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 20px;
+  margin-inline: 4px;
+  background: var(--rux-border-2);
+}
+
 /* --- Left / Right containers --- */
 .agenda-header__date-left {
   grid-column: 1;
   display: flex;
-  align-items: bottom;
+  align-items: center;
   justify-content: flex-start;
   gap: 8px;
   /* Perfect tight gap for the arrow buttons */
@@ -804,7 +820,7 @@ body.debug-surfaces .o-app-layout__sidebar--right > .rux-card:not(.is-hidden) .r
   width: 24px;
   height: 24px;
   background: var(--rux-color-accent);
-  color: var(--rux-text-1);
+  color: var(--rux-color-black);
   border-radius: 50%;
   text-shadow: none;
   font-weight: 600;
@@ -1186,7 +1202,7 @@ body.debug-surfaces .o-app-layout__sidebar--right > .rux-card:not(.is-hidden) .r
 
 .driver-week__table tbody tr .driver-week__name-cell.is-selected {
   background-color: var(--rux-btn-bg-primary);
-  color: var(--rux-color-white);
+  color: var(--rux-color-black);
   font-weight: 600;
 }
 
@@ -1320,7 +1336,7 @@ body.driver-filter-active .schedule-grid__trip-bar.selected {
 
 .bus-assign__driver-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 72px;
+  grid-template-columns: minmax(0, 8fr) minmax(96px, 4fr);
   gap: var(--rux-fld-col-gap);
   align-items: center;
 }
@@ -1359,7 +1375,7 @@ body.driver-filter-active .schedule-grid__trip-bar.selected {
 
 .bus-assign-header {
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) 72px;
+  grid-template-columns: 48px minmax(0, 8fr) minmax(96px, 4fr);
   column-gap: var(--rux-fld-col-gap);
   margin-bottom: var(--rux-fld-label-margin);
 }

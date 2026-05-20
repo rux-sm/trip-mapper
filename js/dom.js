@@ -95,6 +95,7 @@ const dom = {
   logFilterBadge: $("logFilterBadge"),
   logCard: document.querySelector('[data-js="panel-card-log"]') || $("logCard"),
   logList: $("logList"),
+  profileCard: document.querySelector('[data-js="panel-card-profile"]') || $("profilePopover"),
   waitingListBtn: $("waitingListBtn"),
   quoteBtn: $("quoteBtn"),
   waitingBody: document.querySelector('[data-js="schedule-waiting-body"]') || $("waitingBody"),
