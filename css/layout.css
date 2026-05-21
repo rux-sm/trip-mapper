@@ -196,7 +196,6 @@
   flex-direction: column;
   gap: 4px;
   padding: 12px;
-  border-radius: var(--rux-radius-9);
   background: var(--rux-bg-3);
   
   /* Animate the rail shrinking from 64px down to 44px */
@@ -211,9 +210,10 @@
 }
 
 /* Base Alignments */
-.o-app-layout__sidebar--left  .sidebar__rail { order: 0; align-items: flex-start; }
-.o-app-layout__sidebar--right .sidebar__rail { order: 1; align-items: flex-end; }
-
+.o-app-layout__sidebar--left  .sidebar__rail { order: 0; align-items: flex-start; 
+border-radius: 0 var(--rux-radius-9) var(--rux-radius-9) 0;}
+.o-app-layout__sidebar--right .sidebar__rail { order: 1; align-items: flex-end;
+border-radius: var(--rux-radius-9) 0 0 var(--rux-radius-9);}
 
 /* Left Sidebar Expanded State */
 .o-app-layout__sidebar--left:not(.is-collapsed) .sidebar__rail {
@@ -249,7 +249,50 @@
 
 .sidebar__icon-btn:hover { background: var(--rux-bg-3); color: var(--rux-text-1); }
 .sidebar__icon-btn.is-active { background: var(--rux-color-accent); color: var(--rux-color-black); }
-.sidebar__icon-btn .material-symbols-outlined { font-size: 22px; }
+.sidebar__icon-btn .material-symbols-outlined {
+  display: inline-block;
+  font-size: 22px;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  transition: font-variation-settings var(--transition-fast);
+}
+
+.sidebar__icon-btn.is-active .material-symbols-outlined,
+.sidebar__icon-btn.is-deactivating .material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.sidebar__icon-btn.is-active .material-symbols-outlined {
+  animation: railIconActivateSpin 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar__icon-btn.is-deactivating .material-symbols-outlined {
+  animation: railIconDeactivateSpin 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes railIconActivateSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes railIconDeactivateSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar__icon-btn.is-active .material-symbols-outlined,
+  .sidebar__icon-btn.is-deactivating .material-symbols-outlined {
+    animation: none;
+  }
+}
 
 
 /* ── Content Panel (Ensure this class or similar exists in your CSS) ─────── */

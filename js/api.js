@@ -334,7 +334,7 @@ const api = {
 
     // ── Create / Update ──────────────────────────────────────────────────────
     const isCreate = action === "create" || !tripKey;
-    const key      = isCreate ? generateTripKey() : tripKey;
+    const key      = tripKey || generateTripKey();
     const oldTrip  = isCreate ? null : (state.tripByKey?.[tripKey] || null);
     const base     = isCreate ? { tripKey: key } : (oldTrip || { tripKey: key });
 
@@ -348,12 +348,26 @@ const api = {
       trip.tripId = p2str(p.tripId) || oldTrip?.tripId || "";
     }
 
-    const { data: savedTrip, error: tripErr } = await _sb
-      .from("trips")
-      .upsert(trip, { onConflict: "tripKey" })
-      .select()
-      .single();
-    if (tripErr) sbErr(tripErr, "saveTrip.upsert");
+    let savedTrip;
+    if (isCreate) {
+      const { data, error: tripErr } = await _sb
+        .from("trips")
+        .upsert(trip, { onConflict: "tripKey" })
+        .select()
+        .single();
+      if (tripErr) sbErr(tripErr, "saveTrip.upsert");
+      savedTrip = data;
+    } else {
+      const { data, error: tripErr } = await _sb
+        .from("trips")
+        .update(trip)
+        .eq("tripKey", key)
+        .select()
+        .maybeSingle();
+      if (tripErr) sbErr(tripErr, "saveTrip.update");
+      if (!data) throw new Error(`[saveTrip.update] Trip not found for tripKey: ${key}`);
+      savedTrip = data;
+    }
 
     // ── Replace bus assignments ──────────────────────────────────────────────
     const existingAssignments = state.assignmentsByTripKey?.[key] || [];

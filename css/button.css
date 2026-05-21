@@ -15,8 +15,9 @@
 :root {
   --rux-btn-bg-primary:   var(--rux-color-accent);
   --rux-btn-bg-secondary: var(--rux-bg-4);
-  --rux-btn-bg-danger:    oklch(from var(--rux-color-red)  50% c h);
+  --rux-btn-bg-danger:    var(--rux-bg-4);
   --rux-btn-text:         var(--rux-color-white);
+  --rux-btn-text-danger: oklch(from var(--rux-color-red)  80% 0.3 h);
   --rux-btn-hover-lift:   0.1;
 
   --rux-btn-height:      32px;
@@ -125,7 +126,7 @@ button {
 
 .rux-btn--primary   { --btn-background: var(--rux-btn-bg-primary);   --btn-shadow: var(--rux-btn-shadow-inset); --btn-text: var(--rux-color-black); }
 .rux-btn--secondary { --btn-background: var(--rux-btn-bg-secondary); --btn-shadow: var(--rux-btn-shadow-inset); }
-.rux-btn--danger    { --btn-background: var(--rux-btn-bg-danger);    --btn-shadow: var(--rux-btn-shadow-inset); }
+.rux-btn--danger    { --btn-background: var(--rux-btn-bg-secondary); --btn-shadow: var(--rux-btn-shadow-inset); --rux-btn-text: var(--rux-btn-text-danger)}
 
 .rux-btn--tertiary {
   --btn-background:        transparent;

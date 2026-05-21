@@ -883,8 +883,8 @@ function _renderAgendaInner() {
         rAction.className = "schedule-grid__trip-bar__row--11";
         let pdfBtn = null;
         [
-          { action: "load",    icon: "edit",        title: "Load trip" },
-          { action: "moveBus", icon: "swap_horiz",  title: "Move to bus" },
+          { action: "load",    icon: "add_circle",  title: "Load trip" },
+          { action: "moveBus", icon: "swap_vert",   title: "Reassign bus" },
           { action: "pdf", icon: "upload_file", title: "Attach itinerary PDF" },
           { action: "driverContact", icon: "chat", title: "Driver contact info" },
           { action: "envelope", icon: "mail_outline", title: "Envelope" },

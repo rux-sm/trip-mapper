@@ -63,7 +63,7 @@
   flex-shrink: 0;
   padding-inline: var(--rux-space-4);
   padding-top: var(--rux-space-4);
-  padding-bottom: var(--rux-space-3);
+  padding-bottom: var(--rux-space-4);
   overflow-x: auto;
   overflow-y: hidden;
 
@@ -90,11 +90,26 @@
 }
 
 .agenda-header__logo {
-  display: block;
+  display: none;
   flex: 0 0 auto;
   width: auto;
   height: 20px;
   object-fit: contain;
+}
+
+.agenda-header__date-left::before {
+  content: "";
+  display: block;
+  flex: 0 0 auto;
+  width: 104px;
+  height: 20px;
+  background: var(--rux-text-2);
+  -webkit-mask: url("../assets/logo.png") center / contain no-repeat;
+  mask: url("../assets/logo.png") center / contain no-repeat;
+}
+
+#printRoot .agenda-header__date-left::before {
+  content: none;
 }
 
 .agenda-header__separator {
@@ -253,17 +268,12 @@
   font-size: var(--rux-size-6);
   line-height: normal;
   white-space: nowrap;
-  padding-left: 8px;
-  /* The Optical Nudge: Pulls the text up by 1.5 pixels
-     to perfectly align the center of the capital letters
-     with the center of the arrow icons */
   display: inline-block;
 }
 
 /* Specific text colors and weights - Let spans just be text! */
 .agenda-header__week-date .wk-month,
 .agenda-header__week-date .wk-month-end {
-  margin-right: 4px;
   text-transform: uppercase;
   color: var(--rux-color-accent);
   font-weight: var(--rux-weight-semibold);
@@ -371,6 +381,14 @@
   box-shadow: var(--card-shadow-right);
 }
 
+body.right-rail-hidden #panelEnd {
+  display: none;
+}
+
+body.right-rail-hidden .o-app-layout {
+  padding-right: var(--rux-layout-spacing);
+}
+
 /* Inset shadow overlay — paints above all card content including sticky headers */
 .o-app-layout__main > .rux-card::after,
 .o-app-layout__sidebar--left > .rux-card:not(.is-hidden)::after,
@@ -432,24 +450,24 @@ body.debug-surfaces .o-app-layout__sidebar--right > .rux-card:not(.is-hidden) .r
 
 .notes-textarea,
 .notes__textarea {
-  font-family: "Shadows Into Light", cursive;
+  font-family: "Indie Flower", cursive;
   font-size: 1rem;
-  font-weight: 800;
-  line-height: 1.7;
-  padding: 1.5rem;
+  font-weight: 500;
+  line-height: 1.55;
+  padding: 1rem;
   background: #FDF3C8;
-  color: #333333;
+  color: #181818;
   border-radius: var(--rux-fld-radius);
   resize: none;
   flex: 1;
-  width: 100%;
+  width: auto;
   box-sizing: border-box;
   min-height: 200px;
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
   outline: none;
-  margin: 0;
+  margin: 0 var(--rux-space-4);
   transition: box-shadow 0.12s ease;
 }
 .notes__textarea::-webkit-scrollbar { display: none; }
@@ -467,10 +485,17 @@ body.debug-surfaces .o-app-layout__sidebar--right > .rux-card:not(.is-hidden) .r
   overflow: hidden;
 }
 
-.notes-wrap,
+#notesCard .rux-panel__header,
+#notesCard .rux-panel__footer {
+  background: var(--rux-bg-2);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 .notes__footer {
   display: flex;
-  gap: 1rem;
+  gap: var(--rux-space-3);
+  flex-wrap: nowrap;
 }
 
 .notes__footer > .rux-btn {

@@ -16,7 +16,7 @@
                frame-src 'self' https://script.google.com https://script.googleusercontent.com;
                img-src 'self' data: https://*.supabase.co;"
     />
-    <title>ETB Schedule</title>
+    <title>TripBoard</title>
     <link
       rel="icon"
       type="image/png"
@@ -37,7 +37,7 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;600;700;800;900&display=swap"
       rel="stylesheet"
     />
 
@@ -185,6 +185,12 @@
                     <span class="material-symbols-outlined">view_column_2</span>
                   </button>
                 </div>
+                <div class="profile-pref-row">
+                  <span>Right rail</span>
+                  <button type="button" id="profileRightRailToggle" class="rux-btn rux-btn--square" aria-pressed="true">
+                    <span class="material-symbols-outlined">right_panel_close</span>
+                  </button>
+                </div>
               </div>
               <hr class="dropdown__divider" />
               <!-- Views -->
@@ -261,7 +267,7 @@
               data-js="panel-sidebar-left"
             >
               <div class="sidebar__rail">
-                <button class="sidebar__icon-btn" data-card="trip"    title="Trip Editor"        aria-pressed="false"><span class="material-symbols-outlined">edit_note</span></button>
+                <button class="sidebar__icon-btn" data-card="trip"    title="Trip Editor"        aria-pressed="false"><span class="material-symbols-outlined">add_circle</span></button>
                 <button class="sidebar__icon-btn" data-card="drivers" title="Driver Assignments"  aria-pressed="false"><span class="material-symbols-outlined">groups</span></button>
                 <button class="sidebar__icon-btn" data-card="notes"   title="Notes"              aria-pressed="false"><span class="material-symbols-outlined">sticky_note_2</span></button>
                 <button class="sidebar__icon-btn" data-card="todo"    title="Daily Checklist"    aria-pressed="false"><span class="material-symbols-outlined">checklist</span></button>
@@ -286,7 +292,7 @@
               data-js="panel-sidebar-right"
             >
               <div class="sidebar__rail">
-                <button class="sidebar__icon-btn" data-card="trip"    title="Trip Editor"        aria-pressed="false"><span class="material-symbols-outlined">edit_note</span></button>
+                <button class="sidebar__icon-btn" data-card="trip"    title="Trip Editor"        aria-pressed="false"><span class="material-symbols-outlined">add_circle</span></button>
                 <button class="sidebar__icon-btn" data-card="drivers" title="Driver Assignments"  aria-pressed="false"><span class="material-symbols-outlined">groups</span></button>
                 <button class="sidebar__icon-btn" data-card="notes"   title="Notes"              aria-pressed="false"><span class="material-symbols-outlined">sticky_note_2</span></button>
                 <button class="sidebar__icon-btn" data-card="todo"    title="Daily Checklist"    aria-pressed="false"><span class="material-symbols-outlined">checklist</span></button>

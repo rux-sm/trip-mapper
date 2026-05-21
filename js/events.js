@@ -556,6 +556,10 @@ function wireEvents() {
 
   dom.todayBtn?.addEventListener("click", () => {
     if (!confirmDiscardIfDirty()) return;
+    if (state.activeAbortController) {
+      state.activeAbortController.abort();
+      state.activeAbortController = null;
+    }
     state.currentDate = startOfWeek(new Date());
     updateWeekDates();
   });
@@ -1489,9 +1493,17 @@ function wireEvents() {
       .then((resp) => {
         const sKey = resp.trip ? String(resp.trip.tripKey || key) : key;
         if (resp.trip) {
+          if (sKey !== key) {
+            delete state.tripByKey[key];
+            delete state.assignmentsByTripKey[key];
+          }
           state.tripByKey[sKey] = resp.trip;
-          const idx = state.trips.findIndex((t) => String(t.tripKey) === sKey);
+          let idx = state.trips.findIndex((t) => String(t.tripKey) === sKey);
+          if (idx < 0 && sKey !== key) {
+            idx = state.trips.findIndex((t) => String(t.tripKey) === key);
+          }
           if (idx >= 0) state.trips[idx] = resp.trip;
+          else state.trips.push(resp.trip);
         }
         if (resp.assignments) {
           state.assignmentsByTripKey[sKey] = resp.assignments
@@ -1549,16 +1561,14 @@ function wireEvents() {
 
     // Reset custom selects to placeholder so triggers sync (form.reset doesn't fire change)
     setSelectToPlaceholder("busesNeeded");
-    setSelectToPlaceholder("tripColor");
+    syncTripColorSwatches("Round-Trip");
     setSelectToPlaceholder("driverStatus");
     syncStatusToggle("paymentStatus", "");
     syncStatusToggle("invoiceStatus", "");
 
     dom.busesNeeded.value = "";
     syncBusSegButtons();
-    updateBusRowVisibility();
-    syncBusPanelState();
-    refreshBusSelectOptions();
+    rebuildBusRows(0);
 
     // Reset bus/driver selects and sync triggers
     state.busRows.forEach((r) => {
@@ -1790,6 +1800,34 @@ function wireProfilePopover() {
     document.getElementById("profileCompactToggle")?.setAttribute("aria-pressed", String(isCompact));
   });
 
+  // Sync right-rail toggle to match current state (in case it was restored from localStorage)
+  (() => {
+    const b = document.getElementById("profileRightRailToggle");
+    if (!b) return;
+    const hidden = document.body.classList.contains("right-rail-hidden");
+    b.setAttribute("aria-pressed", String(!hidden));
+    const icon = b.querySelector(".material-symbols-outlined");
+    if (icon) icon.textContent = hidden ? "right_panel_open" : "right_panel_close";
+  })();
+
+  document.getElementById("profileRightRailToggle")?.addEventListener("click", () => {
+    const isHiding = !document.body.classList.contains("right-rail-hidden");
+
+    if (isHiding) {
+      getOpenCardTypesInPanel("right").slice().forEach(cardType => showCardInPanel(cardType, "left"));
+    }
+
+    document.body.classList.toggle("right-rail-hidden", isHiding);
+    try { localStorage.setItem("rightRailHidden", isHiding ? "1" : "0"); } catch (_) {}
+
+    const b = document.getElementById("profileRightRailToggle");
+    if (b) {
+      b.setAttribute("aria-pressed", String(!isHiding));
+      const icon = b.querySelector(".material-symbols-outlined");
+      if (icon) icon.textContent = isHiding ? "right_panel_open" : "right_panel_close";
+    }
+  });
+
   // ── Data ───────────────────────────────────────────────────────────────────
   // Note: todayHighlightBtn, waitingListBtn, logBtn already wired in wireEvents()
 
@@ -1801,6 +1839,10 @@ function wireProfilePopover() {
 
   document.getElementById("todayBtn2")?.addEventListener("click", () => {
     if (!confirmDiscardIfDirty()) return;
+    if (state.activeAbortController) {
+      state.activeAbortController.abort();
+      state.activeAbortController = null;
+    }
     state.currentDate = startOfWeek(new Date());
     updateWeekDates();
   });

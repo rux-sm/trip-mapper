@@ -230,8 +230,10 @@ async function fetchWeekDataCached(start, end, notesKey, force = false) {
 }
 
 function applyWeekRespToState(resp, weekStart, weekEnd) {
-  if (state.tripFormOpen) {
-    // Only block the week the form is editing — other weeks render immediately.
+  if (state.tripFormOpen && state.tripFormDirty) {
+    // Only block the week the form is actively editing (has unsaved changes).
+    // A clean open form doesn't need protection — navigating back to its week
+    // must re-render bars (otherwise they stay showing the previously-loaded week).
     const formSameWeek = !state.tripFormWeekKey || !weekStart
       || weekStart === state.tripFormWeekKey;
     if (formSameWeek) {
@@ -536,6 +538,9 @@ function loadPrefs() {
   try {
     state.weekStartsOnMonday = localStorage.getItem("weekStartMonday") === "1";
     state.viewDays = localStorage.getItem("viewDays") === "14" ? 14 : 7;
+    if (localStorage.getItem("rightRailHidden") === "1") {
+      document.body.classList.add("right-rail-hidden");
+    }
   } catch {
     state.weekStartsOnMonday = false;
     state.viewDays = 7;

@@ -106,11 +106,12 @@ function updateStatusSelect(el) {
 }
 
 function syncTripColorSwatches(value) {
+  const normalizedValue = value === "Round-Trip" ? "" : value;
   const sel = $("tripColor");
   if (sel) sel.value = value;
 
   document.querySelectorAll("#tripColorDropdown .trip-color-swatch").forEach((s) => {
-    s.classList.toggle("is-selected", s.dataset.value === value);
+    s.classList.toggle("is-selected", s.dataset.value === normalizedValue);
   });
 
   // Sync trigger preview to the selected swatch's appearance
@@ -120,11 +121,11 @@ function syncTripColorSwatches(value) {
     if (value === "Out of Service") {
       preview.classList.add("trip-color-swatch--oos");
       preview.style.background = "";
-    } else if (!value) {
+    } else if (!normalizedValue) {
       preview.classList.add("trip-color-swatch--none");
       preview.style.background = "";
     } else {
-      const src = document.querySelector(`#tripColorDropdown [data-value="${value}"]`);
+      const src = document.querySelector(`#tripColorDropdown [data-value="${normalizedValue}"]`);
       preview.style.background = src ? src.style.background : "";
     }
   }
@@ -749,7 +750,7 @@ function clearTripInfoCardForNextTrip() {
   setModeNew();
 
   setSelectToPlaceholder("busesNeeded");
-  syncTripColorSwatches("");
+  syncTripColorSwatches("Round-Trip");
   setSelectToPlaceholder("itineraryStatus");
   setSelectToPlaceholder("contactStatus");
   syncStatusToggle("paymentStatus", "");
@@ -758,9 +759,7 @@ function clearTripInfoCardForNextTrip() {
 
   dom.busesNeeded.value = "";
   syncBusSegButtons();
-  updateBusRowVisibility();
-  syncBusPanelState();
-  refreshBusSelectOptions();
+  rebuildBusRows(0);
 
   ["paymentStatus", "driverStatus", "invoiceStatus"].forEach(
     (id) => updateStatusSelect($(id)),

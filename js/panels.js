@@ -28,6 +28,8 @@ const CARD_CONFIG = {
 };
 
 const MAX_CARDS_PER_PANEL = 1;
+const PANEL_ANIMATION_MS = 300;
+let panelTransitionToken = 0;
 
 function getCardPanel(cardType) {
   return state.cardPanelAssignments[cardType] || null;
@@ -78,12 +80,31 @@ function syncCardButtonStates() {
     const active = !!cardType && state.cardPanelAssignments[cardType] === panel;
     btn.classList.toggle("is-active", active);
     btn.setAttribute("aria-pressed", active ? "true" : "false");
+    if (active) {
+      clearTimeout(btn._deactivatingTimeout);
+      btn._deactivatingTimeout = null;
+      btn.classList.remove("is-deactivating");
+    }
   });
 
   Object.entries(CARD_CONFIG).forEach(([cardType, config]) => {
     if (config.btn) {
       config.btn.setAttribute("aria-pressed", getCardPanel(cardType) ? "true" : "false");
     }
+  });
+}
+
+function markRailButtonDeactivating(cardType, panel) {
+  document.querySelectorAll(".sidebar__icon-btn[data-card]").forEach((btn) => {
+    if (btn.dataset.card !== cardType || getPanelForButton(btn) !== panel) return;
+    clearTimeout(btn._deactivatingTimeout);
+    btn.classList.remove("is-deactivating");
+    void btn.offsetWidth;
+    btn.classList.add("is-deactivating");
+    btn._deactivatingTimeout = setTimeout(() => {
+      btn.classList.remove("is-deactivating");
+      btn._deactivatingTimeout = null;
+    }, PANEL_ANIMATION_MS);
   });
 }
 
@@ -108,7 +129,8 @@ function suppressScrollbarDuringResize() {
 
 function getFirstAvailablePanel() {
   if (dom.panelStart && getOpenCardTypesInPanel("left").length < MAX_CARDS_PER_PANEL) return "left";
-  if (dom.panelEnd && getOpenCardTypesInPanel("right").length < MAX_CARDS_PER_PANEL) return "right";
+  if (dom.panelEnd && !document.body.classList.contains("right-rail-hidden") &&
+      getOpenCardTypesInPanel("right").length < MAX_CARDS_PER_PANEL) return "right";
   return null; // Both panels occupied
 }
 
@@ -125,6 +147,8 @@ function showCardInPanel(cardType, panel) {
   if (config.card._hideTimeout) {
     clearTimeout(config.card._hideTimeout);
     config.card._hideTimeout = null;
+    config.card._hideResolve?.();
+    config.card._hideResolve = null;
   }
 
   // Remove card from current location if it's inside a sidebar__content
@@ -186,12 +210,15 @@ function showCardInPanel(cardType, panel) {
 
 function hideCard(cardType, options = {}) {
   const config = CARD_CONFIG[cardType];
-  if (!config || !config.card) return;
+  if (!config || !config.card) return Promise.resolve();
 
   suppressScrollbarDuringResize();
 
   const panel = state.cardPanelAssignments[cardType];
+  if (!panel && config.card.classList.contains("is-hidden")) return Promise.resolve();
   const isProfilePanelCard = cardType === "profile" && config.card.classList.contains("profile-settings-card");
+
+  if (!options.immediate) markRailButtonDeactivating(cardType, panel);
 
   state.cardPanelAssignments[cardType] = null;
 
@@ -212,6 +239,8 @@ function hideCard(cardType, options = {}) {
   if (config.card._hideTimeout) {
     clearTimeout(config.card._hideTimeout);
     config.card._hideTimeout = null;
+    config.card._hideResolve?.();
+    config.card._hideResolve = null;
   }
 
   if (options.immediate) {
@@ -220,7 +249,7 @@ function hideCard(cardType, options = {}) {
     if (isProfilePanelCard) config.card.hidden = true;
     updatePanelCollapsedStates();
     scheduleAgendaReflow();
-    return;
+    return Promise.resolve();
   }
 
   // Explicitly trigger the slide-out animation independently from the wrapper's CSS
@@ -232,24 +261,37 @@ function hideCard(cardType, options = {}) {
   updatePanelCollapsedStates();
 
   // Delay "display: none" so the closing animation can visually complete
-  config.card._hideTimeout = setTimeout(() => {
-    config.card.classList.add("is-hidden");
-    if (isProfilePanelCard) config.card.hidden = true;
-    config.card._hideTimeout = null;
-  }, 300);
+  const hidePromise = new Promise((resolve) => {
+    config.card._hideTimeout = setTimeout(() => {
+      config.card.classList.add("is-hidden");
+      if (isProfilePanelCard) config.card.hidden = true;
+      config.card._hideTimeout = null;
+      config.card._hideResolve = null;
+      resolve();
+    }, PANEL_ANIMATION_MS);
+    config.card._hideResolve = resolve;
+  });
 
   scheduleAgendaReflow();
+  return hidePromise;
 }
 
-function activateRailCard(cardType, panel) {
+async function activateRailCard(cardType, panel) {
   const config = CARD_CONFIG[cardType];
   const panelEl = getPanelElement(panel);
   if (!config || !panelEl) return;
 
+  const transitionToken = ++panelTransitionToken;
   const isCurrentCardOpen = state.cardPanelAssignments[cardType] === panel;
   if (isCurrentCardOpen && !panelEl.classList.contains("is-collapsed")) {
-    hideCard(cardType);
+    await hideCard(cardType);
     return;
+  }
+
+  const closingCards = getOpenCardTypesInPanel(panel).filter((openCardType) => openCardType !== cardType);
+  for (const openCardType of closingCards) {
+    await hideCard(openCardType);
+    if (transitionToken !== panelTransitionToken) return;
   }
 
   showCardInPanel(cardType, panel);
@@ -268,12 +310,14 @@ function toggleCard(cardType) {
 }
 
 // Legacy function for backward compatibility (if needed)
-function setSidePanelMode(mode) {
+async function setSidePanelMode(mode) {
+  const transitionToken = ++panelTransitionToken;
+
   if (mode === "off") {
     state.tripFormOpen = false;
     state.tripFormWeekKey = null;
     // Close all cards
-    Object.keys(CARD_CONFIG).forEach((cardType) => hideCard(cardType));
+    await Promise.all(Object.keys(CARD_CONFIG).map((cardType) => hideCard(cardType)));
   } else {
     if (mode === "trip") {
       state.tripFormOpen = true;
@@ -283,7 +327,8 @@ function setSidePanelMode(mode) {
     const currentPanel = getCardPanel(mode);
     if (!currentPanel) {
       // Close anything else
-      Object.keys(CARD_CONFIG).forEach((cardType) => hideCard(cardType));
+      await Promise.all(Object.keys(CARD_CONFIG).map((cardType) => hideCard(cardType)));
+      if (transitionToken !== panelTransitionToken) return;
       showCardInPanel(mode, "left");
     } else {
       // Card is assigned to a panel — ensure that panel is actually expanded

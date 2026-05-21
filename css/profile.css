@@ -1,26 +1,34 @@
 /* ── Tier 3 tokens ───────────────────────────────────────────────────────── */
 
 :root {
-  --profile-avatar-size-lg:    32px;
+  --profile-avatar-size-lg:    24px;
   --profile-avatar-size-sm:    24px;
-  --profile-avatar-radius:     50%;
+  --profile-avatar-button-size: 32px;
+  --profile-avatar-ring-gap:    2px;
+  --profile-avatar-ring-width:  2px;
+  --profile-avatar-radius:     var(--rux-btn-radius);
   --profile-popover-width:     300px;
   --profile-color-swatch-size: 22px;
 
   /* ── Avatar color palette ── */
 
-  --avatar-color-1: oklch(80% 0.18 24);
-  --avatar-color-2: oklch(80% 0.18 65);
-  --avatar-color-3: oklch(80% 0.18 100);
-  --avatar-color-4: oklch(80% 0.18 155);
-  --avatar-color-5: oklch(80% 0.18 210);
-  --avatar-color-6: oklch(80% 0.18 260);
-  --avatar-color-7: oklch(80% 0.15 290);
-  --avatar-color-8: oklch(80% 0.15 350);
-  --avatar-color-9: oklch(100% 0 350);
-  --avatar-color-10: oklch(75% 0 350);
+/* 1. Rose Red (Striking and energetic) */
+  --avatar-color-1: oklch(70% 0.18 350); 
 
+  /* 2. Peach (Warm, approachable - replacing the other oranges) */
+  --avatar-color-2: oklch(70% 0.18 45);  
 
+  /* 3. Amber Gold (Premium, avoids the greenish tint of pure yellow) */
+  --avatar-color-3: oklch(70% 0.18 85);  
+
+  /* 4. Seafoam (Fresh, modern alternative to harsh green) */
+  --avatar-color-4: oklch(70% 0.18 170); 
+
+/* 5. Azure Blue (The perfect, trustworthy classic UI blue) */
+  --avatar-color-5: oklch(70% 0.18 250); 
+
+  /* 6. Electric Indigo (Your new vibrant purple) */
+  --avatar-color-6: oklch(70% 0.18 285);
 
 }
 
@@ -29,7 +37,7 @@
    ========================================================================== */
 
 .profile-avatar {
-  border-radius: var(--profile-avatar-radius);
+  border-radius: 4px;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -54,16 +62,17 @@
    ========================================================================== */
 
 #avatarBtn {
-  width:  var(--profile-avatar-size-lg);
-  height: var(--profile-avatar-size-lg);
-  padding: 0;
+  width:  var(--profile-avatar-button-size);
+  height: var(--profile-avatar-button-size);
+  padding: var(--profile-avatar-ring-gap);
+  border: var(--profile-avatar-ring-width) solid var(--avatar-ring-color, var(--rux-border-2));
   border-radius: var(--profile-avatar-radius);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* dark gap + user color ring — on the button itself so overflow:hidden doesn't clip it */
-  box-shadow: 0 0 0 2px var(--rux-bg-1), 0 0 0 4px var(--avatar-ring-color, var(--rux-border-2));
+  background: var(--rux-bg-1);
+  box-shadow: none;
   outline: none;
 }
 
