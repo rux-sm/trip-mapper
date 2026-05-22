@@ -13,11 +13,11 @@
 /* ── Tier 3 tokens ───────────────────────────────────────────────────────── */
 
 :root {
-  --rux-btn-bg-primary:   var(--rux-color-accent);
-  --rux-btn-bg-secondary: var(--rux-bg-4);
-  --rux-btn-bg-danger:    var(--rux-bg-4);
+  --rux-btn-bg-primary:   oklch(from var(--rux-color-accent) 60% c h);
+  --rux-btn-bg-secondary: oklch(from var(--rux-color-gray) 30% c h);
+  --rux-btn-bg-danger:    oklch(from var(--rux-color-gray) 30% c h);
   --rux-btn-text:         var(--rux-color-white);
-  --rux-btn-text-danger: oklch(from var(--rux-color-red)  80% 0.3 h);
+  --rux-btn-text-danger: oklch(from var(--rux-color-red) 80% .3 h);
   --rux-btn-hover-lift:   0.1;
 
   --rux-btn-height:      32px;
@@ -103,8 +103,8 @@ button {
 .rux-btn:active { background-color: var(--btn-active-background); transform: scale(0.97); --btn-shadow: var(--rux-btn-shadow-active); }
 
 .rux-btn:focus-visible {
-  outline: 3px solid var(--rux-color-white);
-  border-color: transparent;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .rux-btn:disabled,
@@ -124,15 +124,15 @@ button {
     "opsz" var(--rux-btn-icon-opsz);
 }
 
-.rux-btn--primary   { --btn-background: var(--rux-btn-bg-primary);   --btn-shadow: var(--rux-btn-shadow-inset); --btn-text: var(--rux-color-black); }
+.rux-btn--primary   { --btn-background: var(--rux-btn-bg-primary);   --btn-shadow: var(--rux-btn-shadow-inset);  }
 .rux-btn--secondary { --btn-background: var(--rux-btn-bg-secondary); --btn-shadow: var(--rux-btn-shadow-inset); }
-.rux-btn--danger    { --btn-background: var(--rux-btn-bg-secondary); --btn-shadow: var(--rux-btn-shadow-inset); --rux-btn-text: var(--rux-btn-text-danger)}
+.rux-btn--danger    { --btn-background: var(--rux-btn-bg-danger); --btn-shadow: var(--rux-btn-shadow-inset);--rux-btn-text: var(--rux-btn-text-danger); }
 
 .rux-btn--tertiary {
   --btn-background:        transparent;
   --btn-border:            var(--rux-border-3);
-  --btn-hover-background:  oklch(from var(--rux-color-white) l c h / 0.08);
-  --btn-active-background: oklch(from var(--rux-color-white) l c h / 0.15);
+  --btn-hover-background:  var(--overlay-hover-up);
+  --btn-active-background: var(--overlay-active-up);
 }
 
 /* ── 4. Square — icon-only 28×28 ────────────────────────────────────────── */

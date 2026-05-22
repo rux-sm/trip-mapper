@@ -27,7 +27,7 @@
   height: auto;
   padding-top: var(--rux-space-3);
   padding-bottom: var(--rux-space-2);
-  padding-inline: var(--rux-space-4);
+  padding-inline: var(--rux-space-3);
   background-color: var(--rux-bg-1);
   box-shadow: none;
 }
@@ -43,7 +43,7 @@
   align-items: center;
   height: 100%;
   position: relative;
-  padding-right: var(--rux-space-4);
+  padding-right: var(--rux-space-3);
 }
 
 /* Vertical divider */
@@ -62,7 +62,7 @@
 }
 
 .rux-app__title {
-  margin-left: var(--rux-space-4);
+  margin-left: var(--rux-space-3);
   font-size: var(--heading-1-size);
   line-height: var(--heading-1-line-height);
   color: var(--heading-1-color);
@@ -189,8 +189,8 @@
   height: 52px;
   width: auto;
   flex-shrink: 0;
-  padding-inline:var(--rux-space-4);
-  padding-block: var(--rux-space-4);
+  padding-inline:var(--rux-space-3);
+  padding-block: var(--rux-space-3);
   z-index: 10;
 
   position: sticky;

@@ -275,6 +275,42 @@ function refreshEmptyStateUI() {
   }
 }
 
+function parseTimeToMinutes(timeValue) {
+  const hhmm = normalizeTime(timeValue);
+  if (!hhmm) return null;
+  const [hours, minutes] = hhmm.split(":").map(Number);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return null;
+  return hours * 60 + minutes;
+}
+
+function formatDurationAsHours(totalMinutes) {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours}:${String(minutes).padStart(2, "0")}`;
+}
+
+function getSameDayOnDutyHoursPlaceholder() {
+  const departureDate = String($("tripDate")?.value || "").slice(0, 10);
+  const arrivalDate = String($("arrivalDate")?.value || departureDate || "").slice(0, 10);
+  if (!departureDate || !arrivalDate || departureDate !== arrivalDate) return "";
+
+  const departureMinutes = parseTimeToMinutes($("departureTime")?.value);
+  const arrivalMinutes = parseTimeToMinutes($("arrivalTime")?.value);
+  if (departureMinutes == null || arrivalMinutes == null) return "";
+
+  const durationMinutes =
+    arrivalMinutes > departureMinutes
+      ? arrivalMinutes - departureMinutes
+      : arrivalMinutes + 24 * 60 - departureMinutes;
+  return durationMinutes > 0 ? formatDurationAsHours(durationMinutes) : "";
+}
+
+function syncOnDutyHoursPlaceholder() {
+  const input = $("onDutyHours");
+  if (!input) return;
+  input.placeholder = getSameDayOnDutyHoursPlaceholder();
+}
+
 function syncEmptyStateForForm() {
   const form = dom.tripForm;
   if (!form) return;
@@ -296,6 +332,7 @@ function syncEmptyStateForForm() {
 
   // Always sync current state
   fields.forEach(syncOne);
+  syncOnDutyHoursPlaceholder();
 
   // Only wire event listeners once to prevent memory leak
   if (!state.formListenersWired) {
@@ -310,6 +347,13 @@ function syncEmptyStateForForm() {
       el.addEventListener("input", markDirtyAndSync);
       el.addEventListener("change", markDirtyAndSync);
       el.addEventListener("blur", () => syncOne(el));
+    });
+
+    ["tripDate", "arrivalDate", "departureTime", "arrivalTime"].forEach((id) => {
+      const el = $(id);
+      if (!el) return;
+      el.addEventListener("input", syncOnDutyHoursPlaceholder);
+      el.addEventListener("change", syncOnDutyHoursPlaceholder);
     });
 
     // Status toggle groups — click any button to set the hidden input and sync
@@ -747,6 +791,7 @@ function clearTripInfoCardForNextTrip() {
   });
   resetRequirementToggles();
   refreshEmptyStateUI();
+  syncOnDutyHoursPlaceholder();
   setModeNew();
 
   setSelectToPlaceholder("busesNeeded");
@@ -863,6 +908,7 @@ function setTripFormFromState(tripKey) {
   syncBusPanelState();
   if (typeof syncBusSelectEmptyState === "function") syncBusSelectEmptyState();
   if (typeof refreshEmptyStateUI === "function") refreshEmptyStateUI();
+  syncOnDutyHoursPlaceholder();
   if (typeof syncEmptyFields === "function") syncEmptyFields();
 
   dom.action.value = "update";
@@ -976,6 +1022,7 @@ function populateFormFromData(t, assigns) {
   syncBusPanelState();
   syncBusSelectEmptyState();
   refreshEmptyStateUI();
+  syncOnDutyHoursPlaceholder();
   if (typeof syncEmptyFields === "function") syncEmptyFields();
   refreshShortcutRow();
 }
@@ -997,6 +1044,8 @@ function refreshShortcutRow() {
 }
 
 async function openTripForEdit(tripKey) {
+  dom.tripInfoCard?.classList.add("is-loading");
+  setTimeout(() => dom.tripInfoCard?.classList.remove("is-loading"), 500);
   if (tripLoadInFlight) {
     toast("Trip is already loading…", "info", 1200);
     return;

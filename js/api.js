@@ -22,7 +22,7 @@ function p2str(v) {
 // For UPDATE: keep existing value if incoming is empty (guards against partial form load)
 function mergeStr(incoming, existing) {
   const v = p2str(incoming);
-  return v !== "" ? v : (p2str(existing) || "");
+  return v !== "" ? v : p2str(existing) || "";
 }
 
 function p2date(v) {
@@ -52,8 +52,7 @@ async function withRetry(
   let lastErr;
   for (let attempt = 1; attempt <= tries; attempt++) {
     try {
-      if (Date.now() > deadline)
-        throw new Error(`Operation timed out after ${totalTimeoutMs}ms`);
+      if (Date.now() > deadline) throw new Error(`Operation timed out after ${totalTimeoutMs}ms`);
       return await fn(attempt);
     } catch (err) {
       lastErr = err;
@@ -73,59 +72,59 @@ async function withRetry(
 // isCreate=true → p2str only (no existing to fall back to)
 // isCreate=false → mergeStr (preserve existing DB value if form field came back empty)
 function tripFromParams(p, base = {}, isCreate = true) {
-  const m = (v, k) => isCreate ? p2str(v) : mergeStr(v, base[k]);
+  const m = (v, k) => (isCreate ? p2str(v) : mergeStr(v, base[k]));
   return {
-    tripKey:              p2str(p.tripKey)       || base.tripKey,
-    tripId:               p2str(p.tripId)        || base.tripId  || "",
-    destination:          m(p.destination,         "destination"),
-    customer:             m(p.customer,             "customer"),
-    contactName:          m(p.contactName,          "contactName"),
-    phone:                m(p.phone,                "phone"),
-    departureDate:        p2date(p.tripDate || p.departureDate) || base.departureDate || null,
-    arrivalDate:          p2date(p.arrivalDate)  || base.arrivalDate || null,
-    departureTime:        m(p.departureTime,        "departureTime"),
-    spotTime:             m(p.spotTime,             "spotTime"),
-    arrivalTime:          m(p.arrivalTime,          "arrivalTime"),
-    itineraryStatus:      m(p.itineraryStatus,      "itineraryStatus"),
-    contactStatus:        m(p.contactStatus,        "contactStatus"),
-    paymentStatus:        m(p.paymentStatus,        "paymentStatus"),
-    driverStatus:         m(p.driverStatus,         "driverStatus"),
-    invoiceStatus:        m(p.invoiceStatus,        "invoiceStatus"),
-    invoiceNumber:        m(p.invoiceNumber,        "invoiceNumber"),
-    busesNeeded:          m(p.busesNeeded,          "busesNeeded"),
-    tripColor:            m(p.tripColor,            "tripColor"),
-    oneWay:               p2bool(p.oneWay),
-    notes:                m(p.notes,               "notes"),
-    itinerary:            m(p.itinerary,           "itinerary"),
-    comments:             m(p.comments,            "comments"),
-    req56Pass:            p2bool(p.req56Pass),
-    reqSleeper:           p2bool(p.reqSleeper),
-    reqLift:              p2bool(p.reqLift),
-    reqRelief:            p2bool(p.reqRelief),
-    reqRelief2:           p2bool(p.reqRelief2),
-    reqCoDriver:          p2bool(p.reqCoDriver),
-    reqHotel:             p2bool(p.reqHotel),
-    reqFuelCard:          p2bool(p.reqFuelCard),
-    reqWifi:              p2bool(p.reqWifi),
-    envelopePickup:       m(p.envelopePickup,       "envelopePickup"),
-    envelopeTripContact:  m(p.envelopeTripContact,  "envelopeTripContact"),
-    envelopeTripPhone:    m(p.envelopeTripPhone,    "envelopeTripPhone"),
-    envelopeTripNotes:    m(p.envelopeTripNotes,    "envelopeTripNotes"),
-    itineraryPdfUrl:      p2str(p.itineraryPdfUrl) || p2str(base.itineraryPdfUrl),
-    paymentType:          m(p.paymentType,          "paymentType"),
-    estimatedMileage:     m(p.estimatedMileage,     "estimatedMileage"),
-    drivingHours:         m(p.drivingHours,         "drivingHours"),
-    onDutyHours:          m(p.onDutyHours,          "onDutyHours"),
-    quotedPrice:          m(p.quotedPrice,          "quotedPrice").replace(/^\$/, ""),
-    driverInfoSent:       p2bool(p.driverInfoSent),
-    tripReminderSent:     p2bool(p.tripReminderSent),
-    tripMiles:            m(p.tripMiles,            "tripMiles"),
-    datePaid:             p2date(p.datePaid)     || base.datePaid || null,
-    tripReviewed:         p2bool(p.tripReviewed),
-    ref1:                 m(p.ref1, "ref1"),
-    ref2:                 m(p.ref2, "ref2"),
-    ref3:                 m(p.ref3, "ref3"),
-    updatedAt:            new Date().toISOString(),
+    tripKey: p2str(p.tripKey) || base.tripKey,
+    tripId: p2str(p.tripId) || base.tripId || "",
+    destination: m(p.destination, "destination"),
+    customer: m(p.customer, "customer"),
+    contactName: m(p.contactName, "contactName"),
+    phone: m(p.phone, "phone"),
+    departureDate: p2date(p.tripDate || p.departureDate) || base.departureDate || null,
+    arrivalDate: p2date(p.arrivalDate) || base.arrivalDate || null,
+    departureTime: m(p.departureTime, "departureTime"),
+    spotTime: m(p.spotTime, "spotTime"),
+    arrivalTime: m(p.arrivalTime, "arrivalTime"),
+    itineraryStatus: m(p.itineraryStatus, "itineraryStatus"),
+    contactStatus: m(p.contactStatus, "contactStatus"),
+    paymentStatus: m(p.paymentStatus, "paymentStatus"),
+    driverStatus: m(p.driverStatus, "driverStatus"),
+    invoiceStatus: m(p.invoiceStatus, "invoiceStatus"),
+    invoiceNumber: m(p.invoiceNumber, "invoiceNumber"),
+    busesNeeded: m(p.busesNeeded, "busesNeeded"),
+    tripColor: m(p.tripColor, "tripColor"),
+    oneWay: p2bool(p.oneWay),
+    notes: m(p.notes, "notes"),
+    itinerary: m(p.itinerary, "itinerary"),
+    comments: m(p.comments, "comments"),
+    req56Pass: p2bool(p.req56Pass),
+    reqSleeper: p2bool(p.reqSleeper),
+    reqLift: p2bool(p.reqLift),
+    reqRelief: p2bool(p.reqRelief),
+    reqRelief2: p2bool(p.reqRelief2),
+    reqCoDriver: p2bool(p.reqCoDriver),
+    reqHotel: p2bool(p.reqHotel),
+    reqFuelCard: p2bool(p.reqFuelCard),
+    reqWifi: p2bool(p.reqWifi),
+    envelopePickup: m(p.envelopePickup, "envelopePickup"),
+    envelopeTripContact: m(p.envelopeTripContact, "envelopeTripContact"),
+    envelopeTripPhone: m(p.envelopeTripPhone, "envelopeTripPhone"),
+    envelopeTripNotes: m(p.envelopeTripNotes, "envelopeTripNotes"),
+    itineraryPdfUrl: p2str(p.itineraryPdfUrl) || p2str(base.itineraryPdfUrl),
+    paymentType: m(p.paymentType, "paymentType"),
+    estimatedMileage: m(p.estimatedMileage, "estimatedMileage"),
+    drivingHours: m(p.drivingHours, "drivingHours"),
+    onDutyHours: m(p.onDutyHours, "onDutyHours"),
+    quotedPrice: m(p.quotedPrice, "quotedPrice").replace(/^\$/, ""),
+    driverInfoSent: p2bool(p.driverInfoSent),
+    tripReminderSent: p2bool(p.tripReminderSent),
+    tripMiles: m(p.tripMiles, "tripMiles"),
+    datePaid: p2date(p.datePaid) || base.datePaid || null,
+    tripReviewed: p2bool(p.tripReviewed),
+    ref1: m(p.ref1, "ref1"),
+    ref2: m(p.ref2, "ref2"),
+    ref3: m(p.ref3, "ref3"),
+    updatedAt: new Date().toISOString(),
   };
 }
 
@@ -141,20 +140,20 @@ function assignmentsFromParams(p, tripKey) {
     result.push({
       tripKey,
       busId,
-      busName:       bus.busName || "",
-      busNumber:     i,
-      driver1:       p2str(p[`bus${i}_driver1`]),
-      driver2:       p2str(p[`bus${i}_driver2`]),
-      driver3:       p2str(p[`bus${i}_driver3`]),
-      driver4:       p2str(p[`bus${i}_driver4`]),
+      busName: bus.busName || "",
+      busNumber: i,
+      driver1: p2str(p[`bus${i}_driver1`]),
+      driver2: p2str(p[`bus${i}_driver2`]),
+      driver3: p2str(p[`bus${i}_driver3`]),
+      driver4: p2str(p[`bus${i}_driver4`]),
       driver1Status: p2str(p[`bus${i}_driver1Status`]),
       driver2Status: p2str(p[`bus${i}_driver2Status`]),
       driver3Status: p2str(p[`bus${i}_driver3Status`]),
       driver4Status: p2str(p[`bus${i}_driver4Status`]),
-      driver1Pay:    p2str(p[`bus${i}_driver1Pay`]),
-      driver2Pay:    p2str(p[`bus${i}_driver2Pay`]),
-      driver3Pay:    p2str(p[`bus${i}_driver3Pay`]),
-      driver4Pay:    p2str(p[`bus${i}_driver4Pay`]),
+      driver1Pay: p2str(p[`bus${i}_driver1Pay`]),
+      driver2Pay: p2str(p[`bus${i}_driver2Pay`]),
+      driver3Pay: p2str(p[`bus${i}_driver3Pay`]),
+      driver4Pay: p2str(p[`bus${i}_driver4Pay`]),
     });
   }
   return result;
@@ -176,17 +175,53 @@ async function generateTripId(depDate) {
 // ── Activity logging ─────────────────────────────────────────────────────────
 
 const TRACKED_FIELDS = [
-  "destination", "customer", "contactName", "phone",
-  "departureDate", "arrivalDate", "departureTime", "spotTime", "arrivalTime",
-  "itineraryStatus", "contactStatus", "paymentStatus", "driverStatus",
-  "invoiceStatus", "invoiceNumber", "busesNeeded", "tripColor",
-  "notes", "itinerary", "comments",
-  "req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2",
-  "reqCoDriver", "reqHotel", "reqFuelCard", "reqWifi",
-  "envelopePickup", "envelopeTripContact", "envelopeTripPhone", "envelopeTripNotes",
-  "itineraryPdfUrl", "paymentType", "estimatedMileage", "drivingHours",
-  "onDutyHours", "quotedPrice", "driverInfoSent", "tripReminderSent",
-  "tripMiles", "datePaid", "tripReviewed", "ref1", "ref2", "ref3",
+  "destination",
+  "customer",
+  "contactName",
+  "phone",
+  "departureDate",
+  "arrivalDate",
+  "departureTime",
+  "spotTime",
+  "arrivalTime",
+  "itineraryStatus",
+  "contactStatus",
+  "paymentStatus",
+  "driverStatus",
+  "invoiceStatus",
+  "invoiceNumber",
+  "busesNeeded",
+  "tripColor",
+  "notes",
+  "itinerary",
+  "comments",
+  "req56Pass",
+  "reqSleeper",
+  "reqLift",
+  "reqRelief",
+  "reqRelief2",
+  "reqCoDriver",
+  "reqHotel",
+  "reqFuelCard",
+  "reqWifi",
+  "envelopePickup",
+  "envelopeTripContact",
+  "envelopeTripPhone",
+  "envelopeTripNotes",
+  "itineraryPdfUrl",
+  "paymentType",
+  "estimatedMileage",
+  "drivingHours",
+  "onDutyHours",
+  "quotedPrice",
+  "driverInfoSent",
+  "tripReminderSent",
+  "tripMiles",
+  "datePaid",
+  "tripReviewed",
+  "ref1",
+  "ref2",
+  "ref3",
 ];
 
 async function logTripChanges(action, newTrip, oldTrip) {
@@ -195,10 +230,12 @@ async function logTripChanges(action, newTrip, oldTrip) {
   if (action === "create" || action === "delete") {
     entries.push({
       timestamp: ts,
-      tripKey:  newTrip.tripKey,
-      tripId:   newTrip.tripId,
+      tripKey: newTrip.tripKey,
+      tripId: newTrip.tripId,
       action,
-      field: "", oldValue: "", newValue: "",
+      field: "",
+      oldValue: "",
+      newValue: "",
     });
   } else {
     for (const field of TRACKED_FIELDS) {
@@ -207,9 +244,9 @@ async function logTripChanges(action, newTrip, oldTrip) {
       if (ov !== nv) {
         entries.push({
           timestamp: ts,
-          tripKey:  newTrip.tripKey,
-          tripId:   newTrip.tripId,
-          action:   "update",
+          tripKey: newTrip.tripKey,
+          tripId: newTrip.tripId,
+          action: "update",
           field,
           oldValue: ov,
           newValue: nv,
@@ -239,6 +276,46 @@ const api = {
     return { ok: true, buses: data };
   },
 
+  async saveDriver(driver) {
+    const payload = { ...driver };
+    const { data, error } = await _sb
+      .from("drivers")
+      .upsert(payload, { onConflict: "driverId" })
+      .select()
+      .maybeSingle();
+    if (error) sbErr(error, "saveDriver");
+    return { ok: true, driver: data || payload };
+  },
+
+  async deleteDriver(driverId) {
+    const id = String(driverId || "").trim();
+    if (!id) throw new Error("driverId required");
+    const { error } = await _sb.from("drivers").delete().eq("driverId", id);
+    if (error) sbErr(error, "deleteDriver");
+    return { ok: true };
+  },
+
+  async saveBus(bus) {
+    const payload = { ...bus };
+    const { data, error } = await _sb
+      .from("buses")
+      .upsert(payload, { onConflict: "busId" })
+      .select()
+      .maybeSingle();
+    if (error) sbErr(error, "saveBus");
+    return { ok: true, bus: data || payload };
+  },
+
+  async reorderBuses(buses) {
+    const updates = buses.map((bus, idx) => ({
+      busId: bus.busId,
+      orderNum: idx + 1,
+    }));
+    const { error } = await _sb.from("buses").upsert(updates, { onConflict: "busId" });
+    if (error) sbErr(error, "reorderBuses");
+    return { ok: true };
+  },
+
   async weekData(start, end) {
     const { data, error } = await _sb.rpc("week_data", { p_start: start, p_end: end });
     if (error) sbErr(error, "weekData");
@@ -248,13 +325,20 @@ const api = {
   async saveWeekNote(notes) {
     const { error } = await _sb
       .from("week_notes")
-      .upsert({ weekStart: "global", notes, lastUpdated: new Date().toISOString() }, { onConflict: "weekStart" });
+      .upsert(
+        { weekStart: "global", notes, lastUpdated: new Date().toISOString() },
+        { onConflict: "weekStart" },
+      );
     if (error) sbErr(error, "saveWeekNote");
     return { ok: true };
   },
 
   async getTrip(tripKey) {
-    const { data, error } = await _sb.from("trips").select("*").eq("tripKey", tripKey).maybeSingle();
+    const { data, error } = await _sb
+      .from("trips")
+      .select("*")
+      .eq("tripKey", tripKey)
+      .maybeSingle();
     if (error) sbErr(error, "getTrip");
     return { ok: !!data, trip: data };
   },
@@ -269,8 +353,16 @@ const api = {
     return { ok: !error };
   },
 
-  async swapTripBuses(tripKeyA, busNumberA, busIdA, busNameA,
-                      tripKeyB, busNumberB, busIdB, busNameB) {
+  async swapTripBuses(
+    tripKeyA,
+    busNumberA,
+    busIdA,
+    busNameA,
+    tripKeyB,
+    busNumberB,
+    busIdB,
+    busNameB,
+  ) {
     const r1 = await this.moveTripBus(tripKeyA, busNumberA, busIdB, busNameB);
     if (!r1.ok) return { ok: false };
     const r2 = await this.moveTripBus(tripKeyB, busNumberB, busIdA, busNameA);
@@ -307,7 +399,9 @@ const api = {
       await _sb.from("unavailability").delete().eq("driverName", driverName).in("dateYmd", dates);
     } else {
       const rows = dates.map((d) => ({ driverName, dateYmd: d }));
-      await _sb.from("unavailability").upsert(rows, { onConflict: "driverName,dateYmd", ignoreDuplicates: true });
+      await _sb
+        .from("unavailability")
+        .upsert(rows, { onConflict: "driverName,dateYmd", ignoreDuplicates: true });
     }
     return { ok: true };
   },
@@ -319,8 +413,10 @@ const api = {
   },
 
   async saveTrip(body) {
-    const p = Object.fromEntries(body instanceof URLSearchParams ? body : new URLSearchParams(body));
-    const action  = p2str(p.action);
+    const p = Object.fromEntries(
+      body instanceof URLSearchParams ? body : new URLSearchParams(body),
+    );
+    const action = p2str(p.action);
     const tripKey = p2str(p.tripKey);
 
     // ── Delete ──────────────────────────────────────────────────────────────
@@ -334,15 +430,15 @@ const api = {
 
     // ── Create / Update ──────────────────────────────────────────────────────
     const isCreate = action === "create" || !tripKey;
-    const key      = tripKey || generateTripKey();
-    const oldTrip  = isCreate ? null : (state.tripByKey?.[tripKey] || null);
-    const base     = isCreate ? { tripKey: key } : (oldTrip || { tripKey: key });
+    const key = tripKey || generateTripKey();
+    const oldTrip = isCreate ? null : state.tripByKey?.[tripKey] || null;
+    const base = isCreate ? { tripKey: key } : oldTrip || { tripKey: key };
 
     const trip = tripFromParams(p, base, isCreate);
     trip.tripKey = key;
 
     if (isCreate) {
-      trip.tripId    = await generateTripId(trip.departureDate);
+      trip.tripId = await generateTripId(trip.departureDate);
       trip.createdAt = new Date().toISOString();
     } else {
       trip.tripId = p2str(p.tripId) || oldTrip?.tripId || "";
@@ -393,12 +489,13 @@ const api = {
   async setChecklist(tripKey, date, saved, signal) {
     const { error } = await _sb.from("checklist").upsert(
       {
-        tripKey, date,
-        envelope:   !!saved.envelope,
-        reminder:   !!saved.reminder,
+        tripKey,
+        date,
+        envelope: !!saved.envelope,
+        reminder: !!saved.reminder,
         driverInfo: !!saved.driverInfo,
-        fuelCard:   !!saved.fuelCard,
-        hos:        !!saved.hos,
+        fuelCard: !!saved.fuelCard,
+        hos: !!saved.hos,
       },
       { onConflict: "tripKey,date" },
     );
@@ -413,6 +510,22 @@ const api = {
     if (error) sbErr(error, "updateTripPdfUrl");
     return { ok: true };
   },
+
+  async searchTrips(query, limit = 15) {
+    const q = (query || "").trim();
+    if (!q) return [];
+    const like = `%${q}%`;
+    const { data, error } = await _sb
+      .from("trips")
+      .select("tripKey, tripId, destination, customer, departureDate, arrivalDate, contactName")
+      .or(
+        `destination.ilike.${like},customer.ilike.${like},tripId.ilike.${like},contactName.ilike.${like},ref1.ilike.${like}`,
+      )
+      .order("departureDate", { ascending: false })
+      .limit(limit);
+    if (error) throw error;
+    return data || [];
+  },
 };
 
 // ======================================================
@@ -426,9 +539,7 @@ function checkPotentialConflicts(trip, assignments) {
     const busId = String(a.busId || "").trim();
     if (!busId || busId === "None" || busId === "WAITING_LIST") continue;
 
-    const existingTrips = state.trips.filter(
-      (t) => String(t.tripKey) !== String(trip.tripKey),
-    );
+    const existingTrips = state.trips.filter((t) => String(t.tripKey) !== String(trip.tripKey));
 
     for (const t of existingTrips) {
       const tDepY = ymd(parseYMD(t.departureDate));
@@ -500,7 +611,7 @@ function checkDriverDoubleBookings() {
     [r.d1Sel, r.d2Sel].forEach((sel) => {
       const v = String(sel.value || "").trim();
       const isPrimary = v && v !== "None" && conflicts.has(v);
-      const isRelief  = v && v !== "None" && reliefConflicts.has(v);
+      const isRelief = v && v !== "None" && reliefConflicts.has(v);
       const isConflict = isPrimary || isRelief;
       const wrapper = sel.closest(".select-dropdown");
       const trigger = wrapper?.querySelector(".select-trigger");
@@ -509,8 +620,8 @@ function checkDriverDoubleBookings() {
         trigger.title = isPrimary
           ? `${v} is already assigned as a driver on these dates`
           : isRelief
-          ? `${v} is already assigned as a relief driver on these dates`
-          : "";
+            ? `${v} is already assigned as a relief driver on these dates`
+            : "";
       }
     });
   });
@@ -583,10 +694,19 @@ function initRealtime() {
   if (_realtimeInit) return;
   _realtimeInit = true;
 
-  _sb.channel("trip-board-changes")
+  _sb
+    .channel("trip-board-changes")
     .on("postgres_changes", { event: "*", schema: "public", table: "trips" }, onTripChange)
-    .on("postgres_changes", { event: "*", schema: "public", table: "bus_assignments" }, onAssignmentChange)
-    .on("postgres_changes", { event: "*", schema: "public", table: "week_notes" }, onWeekNotesChange)
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "bus_assignments" },
+      onAssignmentChange,
+    )
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "week_notes" },
+      onWeekNotesChange,
+    )
     .subscribe((status) => {
       if (status === "SUBSCRIBED") console.info("[realtime] connected");
     });
@@ -601,10 +721,10 @@ function initRealtime() {
     .subscribe(async (status) => {
       if (status === "SUBSCRIBED" && state.profile?.id) {
         await _presenceChannel.track({
-          userId:      state.profile.id,
+          userId: state.profile.id,
           displayName: state.profile.displayName,
           avatarColor: state.profile.avatarColor,
-          avatarUrl:   state.profile.avatarUrl,
+          avatarUrl: state.profile.avatarUrl,
         });
       }
     });
@@ -613,10 +733,10 @@ function initRealtime() {
 async function retrackPresence() {
   if (!_presenceChannel || !state.profile?.id) return;
   await _presenceChannel.track({
-    userId:      state.profile.id,
+    userId: state.profile.id,
     displayName: state.profile.displayName,
     avatarColor: state.profile.avatarColor,
-    avatarUrl:   state.profile.avatarUrl,
+    avatarUrl: state.profile.avatarUrl,
   });
 }
 

@@ -18,11 +18,17 @@ const dom = {
   saveBtn: $("saveBtn"),
   deleteBtn: $("deleteBtn"),
   newBtn: $("newBtn"),
-  shortcutEnvelopeBtn:  $("shortcutEnvelopeBtn"),
+  shortcutEnvelopeBtn: $("shortcutEnvelopeBtn"),
   shortcutItineraryBtn: $("shortcutItineraryBtn"),
-  shortcutPdfBtn:       $("shortcutPdfBtn"),
+  shortcutPdfBtn: $("shortcutPdfBtn"),
   requirementsSection:
     document.querySelector('[data-js="trip-requirements-section"]') || $("requirementsSection"),
+  pdfViewerModal: $("pdfViewerModal"),
+  pdfViewerFrame: $("pdfViewerFrame"),
+  pdfViewerOpenTabBtn: $("pdfViewerOpenTabBtn"),
+  pdfViewerPrintBtn: $("pdfViewerPrintBtn"),
+  pdfViewerCloseBtn: $("pdfViewerCloseBtn"),
+
   itineraryModal: $("itineraryModal"),
   itineraryField: $("itinerary"),
   itineraryModalField: $("itineraryModalField"),
@@ -81,6 +87,7 @@ const dom = {
   driverWeekHeadRow:
     document.querySelector('[data-js="driver-week-head-row"]') || $("driverWeekHeadRow"),
   driverWeekBody: document.querySelector('[data-js="driver-week-body"]') || $("driverWeekBody"),
+  driverWeekScheduleBtn: $("driverWeekScheduleBtn"),
 
   driversBtn: $("driversBtn"),
   notesBtn: $("notesBtn"),
@@ -116,14 +123,20 @@ const dom = {
   quoteDriver2Pay: $("quoteDriver2Pay"),
   quoteFinalTotal: $("quoteFinalTotal"),
 
-  presenceStrip:  $("presenceStrip"),
-  avatarBtn:      $("avatarBtn"),
+  presenceStrip: $("presenceStrip"),
+  avatarBtn: $("avatarBtn"),
   profilePopover: $("profilePopover"),
   todayBtn2: $("todayBtn2"),
   themeToggle: $("themeToggle"),
   themeText2: $("themeText2"),
   printBtn2: $("printBtn2"),
   printBtn2Full: $("printBtn2Full"),
+  driverManagerBtn: $("driverManagerBtn"),
+  fleetManagerBtn: $("fleetManagerBtn"),
+  driverManagerCard: $("driverManagerCard"),
+  driverManagerBody: $("driverManagerBody"),
+  fleetManagerCard: $("fleetManagerCard"),
+  fleetManagerBody: $("fleetManagerBody"),
   weekStartToggle: $("weekStartToggle"),
   refreshBtn2: $("refreshBtn2"),
   nextDayReportBtn: $("nextDayReportBtn"),
@@ -179,6 +192,11 @@ const dom = {
   ctxNewTripBtn: $("ctxNewTripBtn"),
 
   itineraryPdfInput: $("itineraryPdfInput"),
+
+  searchToggleBtn: $("searchToggleBtn"),
+  searchRow: $("searchRow"),
+  searchInput: $("searchInput"),
+  searchDropdown: $("searchDropdown"),
 };
 
 const SELECTORS = {

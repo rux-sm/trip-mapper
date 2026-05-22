@@ -18,7 +18,7 @@ function clamp(n, min, max) {
 function safeUUID() {
   try {
     return crypto.randomUUID();
-  } catch { }
+  } catch {}
   return `tk_${Date.now()}_${Math.floor(Math.random() * 1e9)}`;
 }
 
@@ -56,6 +56,8 @@ function normalizeDriverRecord(driver) {
   const fullName = asStr(d.full_name ?? d.driverNameFull ?? d.fullName).trim();
   const phone = asStr(d.phone_number ?? d.phone ?? d.driverPhone).trim();
   const notes = asStr(d.driver_notes ?? d.driverNotes ?? d.notes).trim();
+  const dateOfBirth = asStr(d.dateOfBirth ?? d.date_of_birth).trim();
+  const ssnLast4 = asStr(d.ssnLast4 ?? d.ssn_last4).trim();
 
   return {
     ...d,
@@ -68,7 +70,59 @@ function normalizeDriverRecord(driver) {
     phone,
     driver_notes: notes,
     driverNotes: notes,
+    dateOfBirth,
+    date_of_birth: dateOfBirth,
+    ssnLast4,
+    ssn_last4: ssnLast4,
   };
+}
+
+function getDriverRosterStatusRank(driver) {
+  const d = normalizeDriverRecord(driver);
+  const status = asStr(d.status)
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, "-");
+  if (status === "full-time" || status === "fulltime") return 0;
+  if (status === "part-time" || status === "parttime") return 1;
+  return status ? 2 : 3;
+}
+
+function getDriverRosterSortName(driver) {
+  const d = normalizeDriverRecord(driver);
+  return asStr(d.driverName || d.driverNameFull || d.full_name || d.driverId).trim();
+}
+
+function driverRosterActiveBool(value) {
+  return value === true || asStr(value).trim().toLowerCase() === "true";
+}
+
+function compareDriversByRosterOrder(a, b) {
+  const activeA = driverRosterActiveBool(a?.active);
+  const activeB = driverRosterActiveBool(b?.active);
+  if (activeA !== activeB) return activeA ? -1 : 1;
+
+  const statusDelta = getDriverRosterStatusRank(a) - getDriverRosterStatusRank(b);
+  if (statusDelta) return statusDelta;
+
+  const nameDelta = getDriverRosterSortName(a).localeCompare(
+    getDriverRosterSortName(b),
+    undefined,
+    {
+      numeric: true,
+      sensitivity: "base",
+    },
+  );
+  if (nameDelta) return nameDelta;
+
+  return asStr(a?.driverId).localeCompare(asStr(b?.driverId), undefined, {
+    numeric: true,
+    sensitivity: "base",
+  });
+}
+
+function sortDriversForDisplay(drivers) {
+  return [...asArray(drivers)].sort(compareDriversByRosterOrder);
 }
 
 function findDriverByName(name) {
@@ -78,30 +132,34 @@ function findDriverByName(name) {
   return (
     (state.driversList || []).find((driver) => {
       const d = normalizeDriverRecord(driver);
-      return [d.driverName, d.full_name, d.driverNameFull]
-        .some((value) => asStr(value).trim().toLowerCase() === needle);
+      return [d.driverName, d.full_name, d.driverNameFull].some(
+        (value) => asStr(value).trim().toLowerCase() === needle,
+      );
     }) || null
   );
 }
 
 function getDriverFullName(driverOrName) {
-  const driver = typeof driverOrName === "object"
-    ? normalizeDriverRecord(driverOrName)
-    : normalizeDriverRecord(findDriverByName(driverOrName) || { driverName: driverOrName });
+  const driver =
+    typeof driverOrName === "object"
+      ? normalizeDriverRecord(driverOrName)
+      : normalizeDriverRecord(findDriverByName(driverOrName) || { driverName: driverOrName });
   return driver.full_name || driver.driverName || "";
 }
 
 function getDriverPhone(driverOrName) {
-  const driver = typeof driverOrName === "object"
-    ? normalizeDriverRecord(driverOrName)
-    : normalizeDriverRecord(findDriverByName(driverOrName) || {});
+  const driver =
+    typeof driverOrName === "object"
+      ? normalizeDriverRecord(driverOrName)
+      : normalizeDriverRecord(findDriverByName(driverOrName) || {});
   return driver.phone_number || driver.phone || "";
 }
 
 function getDriverNotes(driverOrName) {
-  const driver = typeof driverOrName === "object"
-    ? normalizeDriverRecord(driverOrName)
-    : normalizeDriverRecord(findDriverByName(driverOrName) || {});
+  const driver =
+    typeof driverOrName === "object"
+      ? normalizeDriverRecord(driverOrName)
+      : normalizeDriverRecord(findDriverByName(driverOrName) || {});
   return driver.driver_notes || driver.driverNotes || "";
 }
 
@@ -299,7 +357,19 @@ function truthyRequirement(v) {
 }
 
 function setRequirementTogglesFromTrip(t = {}) {
-  const ids = ["oneWay", "req56Pass", "reqSleeper", "reqLift", "reqRelief", "reqRelief2", "reqCoDriver", "reqHotel", "reqFuelCard", "driverInfoSent", "tripReminderSent"];
+  const ids = [
+    "oneWay",
+    "req56Pass",
+    "reqSleeper",
+    "reqLift",
+    "reqRelief",
+    "reqRelief2",
+    "reqCoDriver",
+    "reqHotel",
+    "reqFuelCard",
+    "driverInfoSent",
+    "tripReminderSent",
+  ];
   ids.forEach((id) => {
     const btn = document.getElementById(id);
     if (!btn) return;
@@ -467,7 +537,7 @@ function sanitizeWeekResp(resp) {
         paymentType: asStr(t?.paymentType),
         estimatedMileage: asStr(t?.estimatedMileage),
         drivingHours: asStr(t?.drivingHours),
-        onDutyHours:  asStr(t?.onDutyHours),
+        onDutyHours: asStr(t?.onDutyHours),
         quotedPrice: asStr(t?.quotedPrice).replace(/^\$/, ""),
         driverInfoSent: !!t?.driverInfoSent && t?.driverInfoSent !== "false",
         tripReminderSent: !!t?.tripReminderSent && t?.tripReminderSent !== "false",

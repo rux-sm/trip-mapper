@@ -654,7 +654,7 @@ samp {
 .context-menu {
   position: absolute;
   z-index: var(--z-dropdown);
-  min-width: 180px;
+  min-width: 200px;
   background-color: var(--rux-bg-3);
   border: none;
   box-shadow: var(--rux-shadow-3);
@@ -713,7 +713,7 @@ samp {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--rux-space-3) var(--rux-space-4);
+  padding: var(--rux-space-3);
   border-bottom: 1px solid var(--rux-border-1);
   gap: var(--rux-space-3);
 }
@@ -756,7 +756,7 @@ samp {
 }
 
 .trip-quick-edit__body {
-  padding: var(--rux-space-4);
+  padding: var(--rux-space-3);
   overflow-y: auto;
   max-height: 340px;
   display: flex;
@@ -838,7 +838,7 @@ samp {
 }
 
 .trip-quick-edit__footer {
-  padding: var(--rux-space-3) var(--rux-space-4);
+  padding: var(--rux-space-3);
   border-top: 1px solid var(--rux-border-1);
   display: flex;
   justify-content: flex-end;
@@ -1003,7 +1003,7 @@ samp {
 .dropdown-icon.is-active,
 .dropdown__icon.is-active,
 .dropdown-item.is-active {
-  color: var(--rux-color-blue);
+  color: var(--rux-color-accent);
   /* Carbon uses primary blue to indicate current selection */
   font-weight: 600;
 }

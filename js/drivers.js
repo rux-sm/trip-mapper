@@ -13,9 +13,10 @@ function renderDriverWeekHeader() {
   const weekDates = getWeekDates(); // Returns 7 days in correct order
   // In a Monday-start world, index 5 is Saturday.
   // In a Sunday-start world, index 6 is Saturday.
-  const dayLabels = state.weekStartsOnMonday
+  const baseDayLabels = state.weekStartsOnMonday
     ? ["M", "T", "W", "T", "F", "S", "S"]
     : ["S", "M", "T", "W", "T", "F", "S"];
+  const dayLabels = weekDates.map((_, i) => baseDayLabels[i % 7]);
 
   weekDates.forEach((dStr, i) => {
     const th = document.createElement("th");
@@ -36,11 +37,22 @@ function renderDriverWeekGrid() {
 
   renderDriverWeekHeader();
 
-  const weekDates = getWeekDates(); // Full 7 days
+  const weekDates = getWeekDates();
+
+  const table = dom.driverWeekHeadRow.closest("table");
+  // 33px per extra column (32 content + 1 border). In 7-day mode width is
+  // exactly 100% so the browser fits everything without pixel-rounding issues.
+  const extraCols = weekDates.length - 7;
+  if (table) table.style.width = extraCols > 0
+    ? `calc(100% + ${extraCols * 33}px)`
+    : "100%";
+  // Clear any previously set inline width on the name th so CSS auto takes over
+  const nameTh = dom.driverWeekHeadRow.querySelector("th:first-child");
+  if (nameTh) nameTh.style.width = "";
 
   const weekIndex = new Map(weekDates.map((d, i) => [d, i]));
   const weekStart = weekDates[0];
-  const weekEnd = weekDates[6]; // 7 days, so last index is 6
+  const weekEnd = weekDates[weekDates.length - 1];
 
   const onDaysByDriver = new Map();     // primary (driver1/driver2)
   const reliefDaysByDriver = new Map(); // relief  (driver3/driver4)
@@ -136,7 +148,7 @@ function renderDriverWeekGrid() {
 
       return `
 <tr>
-<td class="driver-week__name-cell" data-driver-name="${escHtml(name)}"><span class="material-symbols-outlined driver-week__schedule-icon" data-action="showDriverWeekSchedule" data-driver-name="${escHtml(name)}" title="Week schedule for ${escHtml(displayName)}">assignment</span>${escHtml(displayName)}</td>
+<td class="driver-week__name-cell" data-driver-name="${escHtml(name)}">${escHtml(displayName)}</td>
 ${cells}
 </tr>
 `;

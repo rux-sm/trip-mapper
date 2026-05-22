@@ -1,4 +1,56 @@
 // ======================================================
+// 26b) PDF VIEWER MODAL
+// ======================================================
+function _toDrivePreviewUrl(url) {
+  const fileId = _getDriveFileId(url);
+  if (fileId) return `https://drive.google.com/file/d/${fileId}/preview?embedded=true`;
+  return url;
+}
+
+function _getDriveFileId(url) {
+  const fileMatch = String(url || "").match(/\/file\/d\/([^/?#]+)/);
+  if (fileMatch) return fileMatch[1];
+  const openMatch = String(url || "").match(/[?&]id=([^&]+)/);
+  return openMatch ? openMatch[1] : "";
+}
+
+function _toDriveBrowserPdfUrl(url) {
+  const fileId = _getDriveFileId(url);
+  return fileId ? `https://drive.google.com/file/d/${fileId}/view` : url;
+}
+
+function openPdfModal(rawUrl) {
+  dom.pdfViewerFrame.src = _toDrivePreviewUrl(rawUrl);
+  dom.pdfViewerOpenTabBtn.href = rawUrl;
+  if (dom.pdfViewerPrintBtn) dom.pdfViewerPrintBtn.dataset.pdfUrl = rawUrl;
+  openModalA11y(dom.pdfViewerModal, dom.pdfViewerCloseBtn);
+}
+
+function closePdfModal() {
+  dom.pdfViewerFrame.src = "";
+  if (dom.pdfViewerPrintBtn) delete dom.pdfViewerPrintBtn.dataset.pdfUrl;
+  closeModalA11y(dom.pdfViewerModal);
+}
+
+function printPdfFromModal() {
+  const rawUrl =
+    dom.pdfViewerPrintBtn?.dataset.pdfUrl ||
+    dom.pdfViewerOpenTabBtn?.href ||
+    "";
+  if (!rawUrl) {
+    toast("No itinerary PDF to print.", "warning", 1600);
+    return;
+  }
+
+  const win = window.open(_toDriveBrowserPdfUrl(rawUrl), "_blank", "noopener");
+  if (!win) {
+    toast("Popup blocked. Open the PDF in a new tab to print.", "danger", 3000);
+    return;
+  }
+  toast("PDF opened for printing.", "info", 1800);
+}
+
+// ======================================================
 // 27) ITINERARY MODAL
 // ======================================================
 function openItineraryModal() {

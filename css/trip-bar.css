@@ -276,16 +276,16 @@
 
   /* ── Text Color ──────────────────────────────────────────────────────── */
 
-  --tripbar-r1-color-l:  90%;
+  --tripbar-r1-color-l:  80%;
   --tripbar-r2-color-l:  80%;
   --tripbar-r3-color-l:  80%;
   --tripbar-r4-color-l:  80%;
-  --tripbar-r5-color-l:  90%;
+  --tripbar-r5-color-l:  80%;
   --tripbar-r6-color-l:  100%;
-  --tripbar-r7-color-l:  90%;
-  --tripbar-r8-color-l:  90%;
-  --tripbar-r9-color-l:  90%;
-  --tripbar-r10-color-l: 90%;
+  --tripbar-r7-color-l:  100%;
+  --tripbar-r8-color-l:  100%;
+  --tripbar-r9-color-l:  100%;
+  --tripbar-r10-color-l: 100%;
 
   --tripbar-r1-color-a:  1;
   --tripbar-r2-color-a:  1;
@@ -532,7 +532,7 @@
   --tripbar-r9-color:  oklch(from var(--tripbar-active-variant-color) var(--tripbar-r9-color-l) c h / var(--tripbar-r9-color-a));
   --tripbar-r10-color: oklch(from var(--tripbar-active-variant-color) var(--tripbar-r10-color-l) c h / var(--tripbar-r10-color-a));
   --tripbar-time-color: var(--tripbar-r5-color);
-  --tripbar-time-color-flagged: oklch(from var(--tripbar-active-variant-color) var(--tripbar-r5-color-l) c var(--tripbar-time-flagged-hue) / var(--tripbar-r5-color-a));
+  --tripbar-time-color-flagged: oklch(from var(--tripbar-active-variant-color) var(--tripbar-r5-color-l) 0.1 var(--tripbar-time-flagged-hue) / var(--tripbar-r5-color-a));
 
   background: var(--tripbar-background);
 

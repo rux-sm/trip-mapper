@@ -4,7 +4,7 @@
 // Card-to-panel mapping
 const TIME_SEVERITY_CONFIG = {
   depart: { flagBeforeMinutes: 4 * 60 + 30 }, // before 4:30 AM → flagged
-  arrive: { flagAfter: 23, flagBefore: 3 },    // 11:00 PM+ or midnight–2:59 AM → flagged
+  arrive: { flagAfter: 23, flagBefore: 3 }, // 11:00 PM+ or midnight–2:59 AM → flagged
 };
 
 function getTimeSeverity(timeStr, role) {
@@ -20,6 +20,8 @@ function getTimeSeverity(timeStr, role) {
 const CARD_CONFIG = {
   trip: { card: dom.tripInfoCard, btn: dom.tripInputBtn },
   drivers: { card: dom.driverWeekCard, btn: dom.driversBtn },
+  driverManager: { card: dom.driverManagerCard, btn: dom.driverManagerBtn },
+  fleetManager: { card: dom.fleetManagerCard, btn: dom.fleetManagerBtn },
   notes: { card: dom.notesCard, btn: dom.notesBtn },
   quote: { card: dom.quoteCard, btn: dom.quoteBtn },
   todo: { card: dom.todoCard, btn: dom.todoBtn },
@@ -49,7 +51,9 @@ function getPanelForButton(btn) {
 }
 
 function getCardTypeForElement(cardEl) {
-  return Object.keys(CARD_CONFIG).find((cardType) => CARD_CONFIG[cardType]?.card === cardEl) || null;
+  return (
+    Object.keys(CARD_CONFIG).find((cardType) => CARD_CONFIG[cardType]?.card === cardEl) || null
+  );
 }
 
 function getOpenCardTypesInPanel(panel) {
@@ -58,10 +62,11 @@ function getOpenCardTypesInPanel(panel) {
 
   return Array.from(content.children)
     .map(getCardTypeForElement)
-    .filter((cardType) =>
-      cardType &&
-      state.cardPanelAssignments[cardType] === panel &&
-      !CARD_CONFIG[cardType].card.classList.contains("is-hidden")
+    .filter(
+      (cardType) =>
+        cardType &&
+        state.cardPanelAssignments[cardType] === panel &&
+        !CARD_CONFIG[cardType].card.classList.contains("is-hidden"),
     );
 }
 
@@ -109,7 +114,9 @@ function markRailButtonDeactivating(cardType, panel) {
 }
 
 function ensurePanelCapacity(panel, incomingCardType) {
-  const openCards = getOpenCardTypesInPanel(panel).filter((cardType) => cardType !== incomingCardType);
+  const openCards = getOpenCardTypesInPanel(panel).filter(
+    (cardType) => cardType !== incomingCardType,
+  );
 
   while (openCards.length >= MAX_CARDS_PER_PANEL) {
     const oldestCard = openCards.shift();
@@ -129,8 +136,12 @@ function suppressScrollbarDuringResize() {
 
 function getFirstAvailablePanel() {
   if (dom.panelStart && getOpenCardTypesInPanel("left").length < MAX_CARDS_PER_PANEL) return "left";
-  if (dom.panelEnd && !document.body.classList.contains("right-rail-hidden") &&
-      getOpenCardTypesInPanel("right").length < MAX_CARDS_PER_PANEL) return "right";
+  if (
+    dom.panelEnd &&
+    !document.body.classList.contains("right-rail-hidden") &&
+    getOpenCardTypesInPanel("right").length < MAX_CARDS_PER_PANEL
+  )
+    return "right";
   return null; // Both panels occupied
 }
 
@@ -153,8 +164,8 @@ function showCardInPanel(cardType, panel) {
 
   // Remove card from current location if it's inside a sidebar__content
   const currentParent = config.card.parentElement;
-  const leftContent  = panelStart?.querySelector('.sidebar__content');
-  const rightContent = panelEndEl?.querySelector('.sidebar__content');
+  const leftContent = panelStart?.querySelector(".sidebar__content");
+  const rightContent = panelEndEl?.querySelector(".sidebar__content");
   if (currentParent === leftContent || currentParent === rightContent) {
     currentParent.removeChild(config.card);
   }
@@ -176,7 +187,13 @@ function showCardInPanel(cardType, panel) {
   // Reset animation
   const inClass = panel === "right" ? "slide-in-right" : "slide-in-left";
   const outClass = panel === "right" ? "slide-out-right" : "slide-out-left";
-  config.card.classList.remove("slide-in-left", "slide-in-right", "slide-out-left", "slide-out-right", "fade-in");
+  config.card.classList.remove(
+    "slide-in-left",
+    "slide-in-right",
+    "slide-out-left",
+    "slide-out-right",
+    "fade-in",
+  );
   void config.card.offsetWidth; // force reflow
   config.card.classList.add(inClass);
 
@@ -198,6 +215,12 @@ function showCardInPanel(cardType, panel) {
   if (cardType === "drivers") {
     updateDriverWeekIfVisible();
   }
+  if (cardType === "driverManager" && typeof openReferenceManagerPanel === "function") {
+    openReferenceManagerPanel("drivers");
+  }
+  if (cardType === "fleetManager" && typeof openReferenceManagerPanel === "function") {
+    openReferenceManagerPanel("buses");
+  }
   if (cardType === "todo") {
     renderTodoCard();
   }
@@ -216,7 +239,8 @@ function hideCard(cardType, options = {}) {
 
   const panel = state.cardPanelAssignments[cardType];
   if (!panel && config.card.classList.contains("is-hidden")) return Promise.resolve();
-  const isProfilePanelCard = cardType === "profile" && config.card.classList.contains("profile-settings-card");
+  const isProfilePanelCard =
+    cardType === "profile" && config.card.classList.contains("profile-settings-card");
 
   if (!options.immediate) markRailButtonDeactivating(cardType, panel);
 
@@ -244,7 +268,12 @@ function hideCard(cardType, options = {}) {
   }
 
   if (options.immediate) {
-    config.card.classList.remove("slide-in-left", "slide-in-right", "slide-out-left", "slide-out-right");
+    config.card.classList.remove(
+      "slide-in-left",
+      "slide-in-right",
+      "slide-out-left",
+      "slide-out-right",
+    );
     config.card.classList.add("is-hidden");
     if (isProfilePanelCard) config.card.hidden = true;
     updatePanelCollapsedStates();
@@ -254,7 +283,12 @@ function hideCard(cardType, options = {}) {
 
   // Explicitly trigger the slide-out animation independently from the wrapper's CSS
   const outClass = panel === "right" ? "slide-out-right" : "slide-out-left";
-  config.card.classList.remove("slide-in-left", "slide-in-right", "slide-out-left", "slide-out-right");
+  config.card.classList.remove(
+    "slide-in-left",
+    "slide-in-right",
+    "slide-out-left",
+    "slide-out-right",
+  );
   void config.card.offsetWidth; // force reflow
   config.card.classList.add(outClass);
 
@@ -288,7 +322,9 @@ async function activateRailCard(cardType, panel) {
     return;
   }
 
-  const closingCards = getOpenCardTypesInPanel(panel).filter((openCardType) => openCardType !== cardType);
+  const closingCards = getOpenCardTypesInPanel(panel).filter(
+    (openCardType) => openCardType !== cardType,
+  );
   for (const openCardType of closingCards) {
     await hideCard(openCardType);
     if (transitionToken !== panelTransitionToken) return;

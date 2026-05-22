@@ -4,7 +4,7 @@
   --login-overlay-bg:    var(--rux-bg-1);
   --login-card-bg:       var(--rux-bg-4);
   --login-card-border:   var(--rux-border-2);
-  --login-card-radius:   var(--rux-radius-5);
+  --login-card-radius:   8px;
   --login-card-padding:  2.5rem;
   --login-card-width:    360px;
   --login-card-shadow:   0 24px 48px oklch(0% 0 0 / 50%);
@@ -21,7 +21,7 @@
   --login-error-color:   var(--rux-status-red);
   --login-error-bg:      var(--rux-status-red-alpha);
   --login-error-radius:  var(--rux-radius-2);
-  --login-error-padding: var(--rux-space-3) var(--rux-space-4);
+  --login-error-padding: var(--rux-space-3);
 
 }
 

@@ -12,24 +12,17 @@
 
   /* ── Avatar color palette ── */
 
-/* 1. Rose Red (Striking and energetic) */
-  --avatar-color-1: oklch(70% 0.18 350); 
 
-  /* 2. Peach (Warm, approachable - replacing the other oranges) */
-  --avatar-color-2: oklch(70% 0.18 45);  
 
-  /* 3. Amber Gold (Premium, avoids the greenish tint of pure yellow) */
-  --avatar-color-3: oklch(70% 0.18 85);  
-
-  /* 4. Seafoam (Fresh, modern alternative to harsh green) */
-  --avatar-color-4: oklch(70% 0.18 170); 
-
-/* 5. Azure Blue (The perfect, trustworthy classic UI blue) */
-  --avatar-color-5: oklch(70% 0.18 250); 
-
-  /* 6. Electric Indigo (Your new vibrant purple) */
-  --avatar-color-6: oklch(70% 0.18 285);
-
+  --avatar-color-1: oklch(77% 0.19 45);  
+  --avatar-color-2: oklch(77% 0.19 85);  
+  --avatar-color-3: oklch(77% 0.19 120);
+  --avatar-color-4: oklch(77% 0.19 145); 
+  --avatar-color-5: oklch(77% 0.19 200);
+  --avatar-color-6: oklch(77% 0.19 260); 
+  --avatar-color-7: oklch(77% 0.19 285);
+  --avatar-color-8: oklch(77% 0.19 320);
+  --avatar-color-9: oklch(77% 0.19 350); 
 }
 
 /* ==========================================================================
@@ -82,7 +75,7 @@
 }
 
 .sidebar__profile-btn {
-  margin-top: auto;
+  margin-top: 0;
 }
 
 .profile-settings-card .profile-settings__body {
@@ -154,8 +147,8 @@
 .profile-popover__header {
   display: flex;
   align-items: center;
-  gap: var(--rux-space-4);
-  padding: var(--rux-space-5) var(--rux-space-5) var(--rux-space-4);
+  gap: var(--rux-space-3);
+  padding: var(--rux-space-5) var(--rux-space-5) var(--rux-space-3);
 }
 
 .profile-popover__header .profile-avatar {
@@ -189,7 +182,9 @@
 }
 
 .profile-popover__name-input:focus {
+  outline: none;
   border-bottom-color: var(--rux-color-accent);
+  box-shadow: var(--focus-ring);
 }
 
 .profile-popover__email {
@@ -204,7 +199,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--rux-space-3);
-  padding: var(--rux-space-4) var(--rux-space-5);
+  padding: var(--rux-space-3) var(--rux-space-5);
 }
 
 .profile-popover__section-title {
@@ -230,13 +225,11 @@
   border: none;
   cursor: pointer;
   padding: 0;
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  transition: outline-color var(--transition-fast), transform var(--transition-fast);
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 
 .profile-color-swatch:hover  { transform: scale(1.15); }
-.profile-color-swatch.is-selected { outline-color: var(--rux-text-1); }
+.profile-color-swatch.is-selected { box-shadow: var(--focus-ring); }
 
 /* ── Pref rows ───────────────────────────────────────────────────────────── */
 
@@ -244,7 +237,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--rux-space-4);
+  gap: var(--rux-space-3);
   font-size: var(--rux-size-4);
   color: var(--rux-text-1);
 }

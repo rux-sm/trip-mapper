@@ -7,6 +7,9 @@
      from component CSS — use Tier 2 tokens instead.
      ============================================================ */
 
+     --rux-radius-container: 4px;
+     --rux-radius-card: 2px
+
   /* 1A. Color Seeds
   ──────────────────────────────────────────────────────────────── */
 
@@ -108,16 +111,16 @@
   /* 2A. Panel Header & Footer
   ──────────────────────────────────────────────────────────────── */
   --rux-header-height: 57px;
-  --rux-header-padding-x: var(--rux-space-4);
-  --rux-header-padding-y: var(--rux-space-4);
-  --rux-header-gap: var(--rux-space-4);
+  --rux-header-padding-x: var(--rux-space-3);
+  --rux-header-padding-y: var(--rux-space-3);
+  --rux-header-gap: var(--rux-space-3);
   --rux-header-bg: var(--rux-bg-3);
   --rux-header-shadow: var(--rux-panel-shadow-top);
 
   --rux-footer-height: 48px;
-  --rux-footer-padding-x: var(--rux-space-4);
-  --rux-footer-padding-y: var(--rux-space-4);
-  --rux-footer-gap: var(--rux-space-4);
+  --rux-footer-padding-x: var(--rux-space-3);
+  --rux-footer-padding-y: var(--rux-space-3);
+  --rux-footer-gap: var(--rux-space-3);
   --rux-footer-bg: var(--rux-bg-2);
   --rux-footer-shadow: var(--rux-panel-shadow-bottom);
 
@@ -133,9 +136,9 @@
   ──────────────────────────────────────────────────────────────── */
 
   --rux-bg-1: oklch(from var(--rux-color-gray) 0% c h); /* App canvas — pure black */
-  --rux-bg-field: oklch(from var(--rux-color-gray) 26% c h);
+  --rux-bg-field: oklch(from var(--rux-color-gray) 28% c h);
   --rux-bg-2: oklch(from var(--rux-color-gray) 20% c h); /* Panels, sidebar, inputs */
-  --rux-bg-3: oklch(from var(--rux-color-gray) 20% c h); /* Headers, footers, menus */
+  --rux-bg-3: oklch(from var(--rux-color-gray) 24% c h); /* Headers, footers, menus */
   --rux-bg-4: oklch(from var(--rux-color-gray) 26% c h); /* Cards, grouped sections */
   --rux-bg-5: oklch(from var(--rux-color-gray) 32% c h); /* Modals — highest elevation */
   --rux-bg-notes: oklch(from var(--rux-color-yellow) 80% 0.15 h); /* Form fields, dropdowns, popovers */
@@ -212,7 +215,7 @@
   ──────────────────────────────────────────────────────────────── */
 
   --rux-radius-control: var(--rux-radius-2); /* inputs, selects — 6px */
-  --rux-radius-section: var(--rux-radius-5); /* groups inside cards — 14px */
+  --rux-radius-section: 8px; /* groups inside cards — 14px */
   --rux-radius-surface: var(--rux-radius-3); /* cards, panels — 8px */
   --rux-radius-overlay: var(--rux-radius-4); /* modals, popovers — 10px */
   --rux-radius-badge: var(--rux-radius-0); /* chips, mini-badges — 0px */
@@ -220,9 +223,12 @@
   /* 2G. Effects */
 
   --focus-ring-color: var(--rux-color-accent);
-  --focus-ring: inset 0 0 0 2px var(--focus-ring-color);
+  --focus-ring: 0 0 0 2px var(--focus-ring-color);
   --transition-fast: var(--rux-duration-1) var(--rux-ease-1);
-  --overlay-hover: oklch(0% 0 0 / 5%);
+  --overlay-hover:      oklch(0% 0 0 / 5%);
+  --overlay-hover-up:   oklch(from var(--rux-color-white) l c h / 8%);
+  --overlay-active-up:  oklch(from var(--rux-color-white) l c h / 15%);
+  --rux-color-accent-subtle: oklch(from var(--rux-color-accent) l c h / 15%);
   --text-shadow: none;
 
   /* Surface inset highlight/bevel */
@@ -245,5 +251,5 @@
   --card-shadow-right: 4px 4px 12px oklch(0% 0 0 / 40%);
 
   /* Layout */
-  --rux-layout-spacing: var(--rux-space-4);
+  --rux-layout-spacing: var(--rux-space-3);
 }

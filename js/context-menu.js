@@ -32,10 +32,12 @@ function selectDriverBars(driverName) {
       .querySelectorAll(".schedule-grid__trip-bar.selected")
       .forEach((el) => el.classList.remove("selected"));
     document.body.classList.remove("driver-filter-active");
+    if (dom.driverWeekScheduleBtn) dom.driverWeekScheduleBtn.disabled = true;
     return;
   }
 
   selectedDriverName = driverName;
+  if (dom.driverWeekScheduleBtn) dom.driverWeekScheduleBtn.disabled = false;
   document.body.classList.add("driver-filter-active");
 
   // Highlight the name cell
@@ -64,6 +66,7 @@ function selectTripBar(barEl) {
     document
       .querySelectorAll(".driver-week__name-cell.is-selected")
       .forEach((el) => el.classList.remove("is-selected"));
+    if (dom.driverWeekScheduleBtn) dom.driverWeekScheduleBtn.disabled = true;
   }
 
   // Toggle off only when clicking the exact same bar element (not a sibling
@@ -373,9 +376,9 @@ function renderQuickEditTab(tabId, trip, assigns) {
         options: [
           ["", ""],
           ["Pending Quote", "Pending"],
-          ["Contract Signed", "Signed"],
-          ["PO Received", "PO Rec'd"],
           ["Not Required", "N/A"],
+          ["Contract Signed", "Signed"],
+          ["PO Received", "PO"],
         ],
       },
       {
@@ -698,8 +701,8 @@ function showQuickEditPopover(tripKey, barEl) {
     left = barRect.left - popW - 10 + scrollX;
     arrow.classList.add("arrow-right");
   }
-  if (top + popH > window.innerHeight + scrollY - 12) {
-    top = window.innerHeight + scrollY - popH - 12; // --rux-space-4
+  if (top + popH > window.innerHeight + scrollY - 8) {
+    top = window.innerHeight + scrollY - popH - 8; // --rux-space-3
   }
   if (top < scrollY + 8) top = scrollY + 8;
 

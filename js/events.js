@@ -20,7 +20,6 @@ function wireDelegatedBarEvents() {
     }
   });
 
-
   dom.ctxAttachItineraryPdfBtn?.addEventListener("click", () => {
     if (!activeContextTripKey) return;
     if (!dom.itineraryPdfInput) {
@@ -273,7 +272,7 @@ function wireDelegatedBarEvents() {
         } else if (action === "pdf") {
           if (actionBtn.dataset.pdfState === "view") {
             const trip = state.tripByKey?.[tripKey];
-            if (trip?.itineraryPdfUrl) window.open(trip.itineraryPdfUrl, "_blank");
+            if (trip?.itineraryPdfUrl) openPdfModal(trip.itineraryPdfUrl);
           } else {
             // Reuse the existing hidden file input + upload handler
             state.pendingItineraryTripKey = tripKey;
@@ -302,7 +301,7 @@ function wireDelegatedBarEvents() {
         document.querySelectorAll(".schedule-grid__trip-bar.expanded").forEach((b) => {
           b.classList.remove("expanded");
           b.style.height = b.dataset.collapsedHeight || "";
-          b.style.top    = b.dataset.collapsedTop    || "";
+          b.style.top = b.dataset.collapsedTop || "";
           delete b.dataset.collapsedHeight;
           delete b.dataset.collapsedTop;
           const overlay = b.parentElement;
@@ -311,12 +310,16 @@ function wireDelegatedBarEvents() {
           overlay.style.zIndex = "45";
           if (td?.tagName === "TD") td.style.zIndex = "45";
           if (tr?.tagName === "TR") tr.style.zIndex = "55";
-          b.addEventListener("transitionend", () => {
-            if (overlay.querySelector(".schedule-grid__trip-bar.expanded")) return;
-            overlay.style.zIndex = "";
-            if (td?.tagName === "TD") td.style.zIndex = "";
-            if (tr?.tagName === "TR") tr.style.zIndex = "";
-          }, { once: true });
+          b.addEventListener(
+            "transitionend",
+            () => {
+              if (overlay.querySelector(".schedule-grid__trip-bar.expanded")) return;
+              overlay.style.zIndex = "";
+              if (td?.tagName === "TD") td.style.zIndex = "";
+              if (tr?.tagName === "TR") tr.style.zIndex = "";
+            },
+            { once: true },
+          );
         });
       }
 
@@ -342,12 +345,16 @@ function wireDelegatedBarEvents() {
           overlay.style.zIndex = "45";
           if (td?.tagName === "TD") td.style.zIndex = "45";
           if (tr?.tagName === "TR") tr.style.zIndex = "55";
-          b.addEventListener("transitionend", () => {
-            if (overlay.querySelector(".schedule-grid__trip-bar.expanded")) return;
-            overlay.style.zIndex = "";
-            if (td?.tagName === "TD") td.style.zIndex = "";
-            if (tr?.tagName === "TR") tr.style.zIndex = "";
-          }, { once: true });
+          b.addEventListener(
+            "transitionend",
+            () => {
+              if (overlay.querySelector(".schedule-grid__trip-bar.expanded")) return;
+              overlay.style.zIndex = "";
+              if (td?.tagName === "TD") td.style.zIndex = "";
+              if (tr?.tagName === "TR") tr.style.zIndex = "";
+            },
+            { once: true },
+          );
         });
 
         if (!wasExpanded) {
@@ -398,14 +405,13 @@ function wireDelegatedBarEvents() {
           const isLastRow = tr && tr.parentElement?.lastElementChild === tr;
           const isWaiting = !!clickedBar.closest(".waiting-list-row");
           if (isLastRow || isWaiting) {
-            clickedBar.style.top = (collapsedTop + collapsedPx - expandedH) + "px";
+            clickedBar.style.top = collapsedTop + collapsedPx - expandedH + "px";
           } else {
             clickedBar.style.top = insetTop + "px";
           }
         }
         return;
       }
-
     });
 
     // Enter/Space — same as clicking the bar
@@ -439,6 +445,7 @@ function setTripEditorTab(targetId = "tab-details", options = {}) {
     const active = tab.dataset.tabTarget === nextId;
     tab.classList.toggle("is-active", active);
     tab.setAttribute("aria-selected", active ? "true" : "false");
+    tab.setAttribute("aria-pressed", active ? "true" : "false");
   });
 
   panels.forEach((panel) => {
@@ -484,16 +491,18 @@ function wireEvents() {
     if (e.key !== "Escape") return;
     const modalClosers = [
       { el: document.getElementById("busPicker"), close: closeBusPicker },
-      { el: dom.itineraryModal,          close: closeItineraryModal },
-      { el: dom.tripDetailsModal,        close: closeTripDetailsModal },
-      { el: dom.envelopeModal,           close: closeEnvelopeModal },
-      { el: dom.nextDayReportModal,      close: () => closeModalA11y(dom.nextDayReportModal) },
+      { el: dom.pdfViewerModal, close: closePdfModal },
+      { el: dom.searchRow, close: closeSearch },
+      { el: dom.itineraryModal, close: closeItineraryModal },
+      { el: dom.tripDetailsModal, close: closeTripDetailsModal },
+      { el: dom.envelopeModal, close: closeEnvelopeModal },
+      { el: dom.nextDayReportModal, close: () => closeModalA11y(dom.nextDayReportModal) },
       {
         el: dom.dailyMaintenancePlanModal,
         close: () => closeModalA11y(dom.dailyMaintenancePlanModal),
       },
       { el: dom.driverWeekScheduleModal, close: () => closeModalA11y(dom.driverWeekScheduleModal) },
-      { el: dom.driverContactModal,      close: () => closeModalA11y(dom.driverContactModal) },
+      { el: dom.driverContactModal, close: () => closeModalA11y(dom.driverContactModal) },
     ];
     for (const { el, close } of modalClosers) {
       if (el && !el.hidden) {
@@ -547,12 +556,15 @@ function wireEvents() {
   });
 
   // Safety-net refresh — real-time handles live updates; this catches any missed events
-  setInterval(() => {
-    if (navigator.onLine && !document.hidden) {
-      refreshWeekData({ silent: true });
-      if (state.cardPanelAssignments?.todo) syncChecklistFromServer(ymd(new Date()));
-    }
-  }, 30 * 60 * 1000);
+  setInterval(
+    () => {
+      if (navigator.onLine && !document.hidden) {
+        refreshWeekData({ silent: true });
+        if (state.cardPanelAssignments?.todo) syncChecklistFromServer(ymd(new Date()));
+      }
+    },
+    30 * 60 * 1000,
+  );
 
   dom.todayBtn?.addEventListener("click", () => {
     if (!confirmDiscardIfDirty()) return;
@@ -576,47 +588,66 @@ function wireEvents() {
     wash.className = "swipe-wash";
     card.appendChild(wash);
 
-    let startX = 0, startY = 0, tracking = false;
+    let startX = 0,
+      startY = 0,
+      tracking = false;
     const THRESHOLD = 80;
 
-    grid.addEventListener("pointerdown", (e) => {
-      startX = e.clientX; startY = e.clientY; tracking = true;
-    }, { passive: true });
+    grid.addEventListener(
+      "pointerdown",
+      (e) => {
+        startX = e.clientX;
+        startY = e.clientY;
+        tracking = true;
+      },
+      { passive: true },
+    );
 
-    grid.addEventListener("pointermove", (e) => {
-      if (!tracking) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      const absDx = Math.abs(dx), absDy = Math.abs(dy);
-      if (absDx > absDy * 1.5 && absDx > 10) {
-        wash.className = `swipe-wash ${dx > 0 ? "swipe-wash--left" : "swipe-wash--right"}`;
-        wash.style.opacity = Math.min(absDx / THRESHOLD, 1);
-      } else if (dy > absDx * 1.5 && dy > 10) {
-        wash.className = "swipe-wash swipe-wash--down";
-        wash.style.opacity = Math.min(dy / THRESHOLD, 1);
-      } else {
-        wash.style.opacity = 0;
-      }
-    }, { passive: true });
+    grid.addEventListener(
+      "pointermove",
+      (e) => {
+        if (!tracking) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const absDx = Math.abs(dx),
+          absDy = Math.abs(dy);
+        if (absDx > absDy * 1.5 && absDx > 10) {
+          wash.className = `swipe-wash ${dx > 0 ? "swipe-wash--left" : "swipe-wash--right"}`;
+          wash.style.opacity = Math.min(absDx / THRESHOLD, 1);
+        } else if (dy > absDx * 1.5 && dy > 10) {
+          wash.className = "swipe-wash swipe-wash--down";
+          wash.style.opacity = Math.min(dy / THRESHOLD, 1);
+        } else {
+          wash.style.opacity = 0;
+        }
+      },
+      { passive: true },
+    );
 
     const clearWash = () => {
       tracking = false;
       wash.style.opacity = 0;
-      setTimeout(() => { wash.className = "swipe-wash"; }, 120);
+      setTimeout(() => {
+        wash.className = "swipe-wash";
+      }, 120);
     };
 
-    grid.addEventListener("pointerup", (e) => {
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      clearWash();
-      if (Math.abs(dx) > THRESHOLD && Math.abs(dx) > Math.abs(dy) * 1.5) {
-        changeWeek(dx < 0 ? 1 : -1);
-      } else if (dy > THRESHOLD && dy > Math.abs(dx) * 1.5) {
-        if (!confirmDiscardIfDirty()) return;
-        state.currentDate = startOfWeek(new Date());
-        updateWeekDates();
-      }
-    }, { passive: true });
+    grid.addEventListener(
+      "pointerup",
+      (e) => {
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        clearWash();
+        if (Math.abs(dx) > THRESHOLD && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          changeWeek(dx < 0 ? 1 : -1);
+        } else if (dy > THRESHOLD && dy > Math.abs(dx) * 1.5) {
+          if (!confirmDiscardIfDirty()) return;
+          state.currentDate = startOfWeek(new Date());
+          updateWeekDates();
+        }
+      },
+      { passive: true },
+    );
 
     grid.addEventListener("pointercancel", clearWash, { passive: true });
   })();
@@ -648,7 +679,9 @@ function wireEvents() {
       });
       // Re-render so bars reposition against the new row height
       _renderAgendaInner();
-      try { localStorage.setItem("barsCompact", compact ? "1" : "0"); } catch (_) {}
+      try {
+        localStorage.setItem("barsCompact", compact ? "1" : "0");
+      } catch (_) {}
     }
 
     // Restore persisted state
@@ -676,7 +709,9 @@ function wireEvents() {
     function applyViewDays(days) {
       state.viewDays = days;
       syncViewToggleBtn(days);
-      try { localStorage.setItem("viewDays", String(days)); } catch (_) {}
+      try {
+        localStorage.setItem("viewDays", String(days));
+      } catch (_) {}
       buildScheduleHeader();
       buildAgendaRows();
       refreshWeekData();
@@ -739,20 +774,18 @@ function wireEvents() {
   document.addEventListener("click", (e) => {
     if (!document.body.classList.contains("trip-bar-selected")) return;
     const inSchedule = e.target.closest(SELECTORS.scheduleGridWrapHook);
-    const inPanel    = dom.panelStart?.contains(e.target) ||
-                       dom.panelEnd?.contains(e.target);
+    const inPanel = dom.panelStart?.contains(e.target) || dom.panelEnd?.contains(e.target);
     if (!inSchedule && !inPanel) selectTripBar(null);
   });
 
   dom.driverWeekBody?.addEventListener("click", (e) => {
-    const scheduleIcon = e.target.closest('[data-action="showDriverWeekSchedule"]');
-    if (scheduleIcon) {
-      openDriverWeekScheduleModal(scheduleIcon.dataset.driverName);
-      return;
-    }
     const nameCell = e.target.closest(".driver-week__name-cell");
     if (!nameCell) return;
     selectDriverBars(nameCell.dataset.driverName);
+  });
+
+  dom.driverWeekScheduleBtn?.addEventListener("click", () => {
+    if (selectedDriverName) openDriverWeekScheduleModal(selectedDriverName);
   });
 
   dom.driverWeekBody.addEventListener("mousedown", (e) => {
@@ -984,12 +1017,15 @@ function wireEvents() {
     }
     const trip = state.tripByKey?.[key];
     if (trip?.itineraryPdfUrl) {
-      window.open(trip.itineraryPdfUrl, "_blank");
+      openPdfModal(trip.itineraryPdfUrl);
     } else {
       state.pendingItineraryTripKey = key;
       dom.itineraryPdfInput.click();
     }
   });
+  dom.pdfViewerCloseBtn.addEventListener("click", closePdfModal);
+  dom.pdfViewerPrintBtn?.addEventListener("click", printPdfFromModal);
+  dom.pdfViewerModal.querySelector("[data-close-pdf]").addEventListener("click", closePdfModal);
   dom.itinerarySaveBtn.addEventListener("click", closeItineraryModal);
   dom.itineraryCopyBtn.addEventListener("click", async () => {
     try {
@@ -1028,12 +1064,14 @@ function wireEvents() {
   });
 
   (() => {
-    const bnTrigger  = document.getElementById("busesNeededTrigger");
+    const bnTrigger = document.getElementById("busesNeededTrigger");
     const bnDropdown = document.getElementById("busesNeededDropdown");
 
     function closeBusesDropdown() {
       if (!bnDropdown) return;
-      bnDropdown.querySelectorAll(".buses-needed-option").forEach((o) => o.classList.remove("is-visible"));
+      bnDropdown
+        .querySelectorAll(".buses-needed-option")
+        .forEach((o) => o.classList.remove("is-visible"));
       bnDropdown.classList.remove("is-open");
       bnTrigger?.setAttribute("aria-expanded", "false");
     }
@@ -1061,7 +1099,11 @@ function wireEvents() {
     });
 
     document.addEventListener("click", (e) => {
-      if (bnDropdown?.classList.contains("is-open") && !bnDropdown.contains(e.target) && e.target !== bnTrigger) {
+      if (
+        bnDropdown?.classList.contains("is-open") &&
+        !bnDropdown.contains(e.target) &&
+        e.target !== bnTrigger
+      ) {
         closeBusesDropdown();
       }
     });
@@ -1140,7 +1182,9 @@ function wireEvents() {
 
     const _pwDep2 = tripDate ? parseYMD(tripDate) : null;
     const _pwWs2 = _pwDep2 ? startOfWeek(_pwDep2) : null;
-    const writeWeekKey = _pwWs2 ? weekKey(ymd(_pwWs2), ymd(addDays(_pwWs2, state.viewDays - 1))) : null;
+    const writeWeekKey = _pwWs2
+      ? weekKey(ymd(_pwWs2), ymd(addDays(_pwWs2, state.viewDays - 1)))
+      : null;
 
     state.pendingWrite = {
       action: "delete",
@@ -1472,7 +1516,9 @@ function wireEvents() {
 
     const _pwDep = parseYMD(optimisticTrip.departureDate);
     const _pwWs = _pwDep ? startOfWeek(_pwDep) : null;
-    const writeWeekKey = _pwWs ? weekKey(ymd(_pwWs), ymd(addDays(_pwWs, state.viewDays - 1))) : null;
+    const writeWeekKey = _pwWs
+      ? weekKey(ymd(_pwWs), ymd(addDays(_pwWs, state.viewDays - 1)))
+      : null;
 
     state.pendingWrite = {
       action,
@@ -1557,6 +1603,7 @@ function wireEvents() {
     dom.tripForm.reset();
     resetRequirementToggles();
     refreshEmptyStateUI();
+    if (typeof syncOnDutyHoursPlaceholder === "function") syncOnDutyHoursPlaceholder();
     setModeNew();
 
     // Reset custom selects to placeholder so triggers sync (form.reset doesn't fire change)
@@ -1636,13 +1683,14 @@ function wireEvents() {
   });
 
   wireProfilePopover();
+  if (typeof wireReferenceManager === "function") wireReferenceManager();
 }
 
 // ======================================================
 // 37) WIRE PROFILE POPOVER (includes all settings)
 // ======================================================
 function wireProfilePopover() {
-  const btn     = dom.avatarBtn;
+  const btn = dom.avatarBtn;
   const popover = dom.profilePopover;
   if (!btn || !popover) return;
   const isPanelCard = popover.classList.contains("profile-settings-card");
@@ -1686,23 +1734,33 @@ function wireProfilePopover() {
       state.profile.displayName = val;
       renderAvatarBtn();
       const avatarWrap = document.getElementById("profilePopoverAvatar");
-      if (avatarWrap) { avatarWrap.innerHTML = ""; avatarWrap.appendChild(buildAvatarEl(state.profile, "lg")); }
-      saveProfileToSupabase().then(() => retrackPresence()).catch(console.warn);
+      if (avatarWrap) {
+        avatarWrap.innerHTML = "";
+        avatarWrap.appendChild(buildAvatarEl(state.profile, "lg"));
+      }
+      saveProfileToSupabase()
+        .then(() => retrackPresence())
+        .catch(console.warn);
     }
   });
   document.getElementById("profileDisplayName")?.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { e.preventDefault(); e.target.blur(); }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.target.blur();
+    }
   });
 
   // ── Avatar color ───────────────────────────────────────────────────────────
 
   (() => {
-    const trigger  = document.getElementById("tripColorTrigger");
+    const trigger = document.getElementById("tripColorTrigger");
     const dropdown = document.getElementById("tripColorDropdown");
 
     function closeTripColorDropdown() {
       if (!dropdown) return;
-      dropdown.querySelectorAll(".trip-color-swatch").forEach((s) => s.classList.remove("is-visible"));
+      dropdown
+        .querySelectorAll(".trip-color-swatch")
+        .forEach((s) => s.classList.remove("is-visible"));
       dropdown.classList.remove("is-open");
       trigger?.setAttribute("aria-expanded", "false");
     }
@@ -1730,7 +1788,11 @@ function wireProfilePopover() {
     });
 
     document.addEventListener("click", (e) => {
-      if (dropdown?.classList.contains("is-open") && !dropdown.contains(e.target) && e.target !== trigger) {
+      if (
+        dropdown?.classList.contains("is-open") &&
+        !dropdown.contains(e.target) &&
+        e.target !== trigger
+      ) {
         closeTripColorDropdown();
       }
     });
@@ -1740,13 +1802,21 @@ function wireProfilePopover() {
     const swatch = e.target.closest("[data-color]");
     if (!swatch) return;
     state.profile.avatarColor = swatch.dataset.color;
-    document.getElementById("profileColorSwatches")?.querySelectorAll("[data-color]").forEach(s => {
-      s.classList.toggle("is-selected", s.dataset.color === state.profile.avatarColor);
-    });
+    document
+      .getElementById("profileColorSwatches")
+      ?.querySelectorAll("[data-color]")
+      .forEach((s) => {
+        s.classList.toggle("is-selected", s.dataset.color === state.profile.avatarColor);
+      });
     const avatarWrap = document.getElementById("profilePopoverAvatar");
-    if (avatarWrap) { avatarWrap.innerHTML = ""; avatarWrap.appendChild(buildAvatarEl(state.profile, "lg")); }
+    if (avatarWrap) {
+      avatarWrap.innerHTML = "";
+      avatarWrap.appendChild(buildAvatarEl(state.profile, "lg"));
+    }
     renderAvatarBtn();
-    saveProfileToSupabase().then(() => retrackPresence()).catch(console.warn);
+    saveProfileToSupabase()
+      .then(() => retrackPresence())
+      .catch(console.warn);
   });
 
   // ── Photo upload ───────────────────────────────────────────────────────────
@@ -1772,7 +1842,9 @@ function wireProfilePopover() {
     const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
     const newTheme = currentTheme === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", newTheme);
-    try { localStorage.setItem("theme", newTheme); } catch (_) {}
+    try {
+      localStorage.setItem("theme", newTheme);
+    } catch (_) {}
     setPref("theme", newTheme);
     const b = document.getElementById("profileThemeToggle");
     if (b) {
@@ -1797,7 +1869,9 @@ function wireProfilePopover() {
     dom.compactBarsBtn?.click();
     const isCompact = document.body.classList.contains("bars-compact");
     setPref("barsCompact", isCompact);
-    document.getElementById("profileCompactToggle")?.setAttribute("aria-pressed", String(isCompact));
+    document
+      .getElementById("profileCompactToggle")
+      ?.setAttribute("aria-pressed", String(isCompact));
   });
 
   // Sync right-rail toggle to match current state (in case it was restored from localStorage)
@@ -1814,11 +1888,15 @@ function wireProfilePopover() {
     const isHiding = !document.body.classList.contains("right-rail-hidden");
 
     if (isHiding) {
-      getOpenCardTypesInPanel("right").slice().forEach(cardType => showCardInPanel(cardType, "left"));
+      getOpenCardTypesInPanel("right")
+        .slice()
+        .forEach((cardType) => showCardInPanel(cardType, "left"));
     }
 
     document.body.classList.toggle("right-rail-hidden", isHiding);
-    try { localStorage.setItem("rightRailHidden", isHiding ? "1" : "0"); } catch (_) {}
+    try {
+      localStorage.setItem("rightRailHidden", isHiding ? "1" : "0");
+    } catch (_) {}
 
     const b = document.getElementById("profileRightRailToggle");
     if (b) {
@@ -1877,6 +1955,21 @@ function wireProfilePopover() {
 
   dom.dailyMaintenancePlanBtn?.addEventListener("click", () => {
     generateDailyMaintenancePlan();
+  });
+
+  // ── Search ─────────────────────────────────────────────────────────────────
+
+  dom.searchToggleBtn?.addEventListener("click", toggleSearch);
+
+  dom.searchInput?.addEventListener("input", (e) => {
+    clearTimeout(_searchDebounce);
+    _searchDebounce = setTimeout(() => _runSearch(e.target.value), 280);
+  });
+
+  dom.searchDropdown?.addEventListener("click", (e) => {
+    const item = e.target.closest(".search-dropdown__item");
+    if (!item) return;
+    jumpToSearchResult(item.dataset.tripkey, item.dataset.departure);
   });
 
   // ── Sign out ───────────────────────────────────────────────────────────────
@@ -1963,9 +2056,9 @@ document.addEventListener("keydown", (e) => {
 // Driver contact modal — tab switching + unified copy
 (() => {
   const tabMap = {
-    contact:  { textarea: () => dom.driverContactBody,  label: "Contact info" },
+    contact: { textarea: () => dom.driverContactBody, label: "Contact info" },
     reminder: { textarea: () => dom.driverReminderBody, label: "Reminder" },
-    trip:     { textarea: () => dom.tripInfoBody,        label: "Trip info" },
+    trip: { textarea: () => dom.tripInfoBody, label: "Trip info" },
   };
 
   document.getElementById("driverContactModal")?.addEventListener("click", (e) => {
@@ -1973,7 +2066,9 @@ document.addEventListener("keydown", (e) => {
     if (!tab) return;
     const key = tab.dataset.tab;
     // Toggle tabs
-    document.querySelectorAll(".driver-contact__tab").forEach(t => t.classList.remove("is-active"));
+    document
+      .querySelectorAll(".driver-contact__tab")
+      .forEach((t) => t.classList.remove("is-active"));
     tab.classList.add("is-active");
     // Show correct textarea
     Object.values(tabMap).forEach(({ textarea }) => textarea()?.classList.add("is-hidden"));
@@ -1982,7 +2077,8 @@ document.addEventListener("keydown", (e) => {
 
   if (dom.copyDriverContactBtn) {
     dom.copyDriverContactBtn.addEventListener("click", async () => {
-      const activeTab = document.querySelector(".driver-contact__tab.is-active")?.dataset.tab || "contact";
+      const activeTab =
+        document.querySelector(".driver-contact__tab.is-active")?.dataset.tab || "contact";
       const ta = tabMap[activeTab]?.textarea();
       const text = ta?.value;
       if (!text) return;

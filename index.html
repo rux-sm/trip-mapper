@@ -13,7 +13,7 @@
                style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
                font-src 'self' https://fonts.gstatic.com;
                connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net;
-               frame-src 'self' https://script.google.com https://script.googleusercontent.com;
+               frame-src 'self' https://script.google.com https://script.googleusercontent.com https://drive.google.com;
                img-src 'self' data: https://*.supabase.co;"
     />
     <title>TripBoard</title>
@@ -53,75 +53,193 @@
 
   <body>
     <!-- Login overlay — shown by auth.js when no session -->
-    <div id="loginOverlay" class="login" style="display:none;">
+    <div
+      id="loginOverlay"
+      class="login"
+      style="display: none"
+    >
       <div class="login__card">
         <div class="login__header">
-          <img src="assets/logo.png" alt="ETB Dispatch" class="login__logo" />
-          <div id="loginTitle" class="login__title">Sign in</div>
+          <img
+            src="assets/logo.png"
+            alt="ETB Dispatch"
+            class="login__logo"
+          />
+          <div
+            id="loginTitle"
+            class="login__title"
+          >
+            Sign in
+          </div>
         </div>
 
         <!-- View: sign in -->
         <div id="loginSignInView">
-          <form id="loginForm" class="login__form">
+          <form
+            id="loginForm"
+            class="login__form"
+          >
             <div class="form-group">
               <label for="loginEmail">Email</label>
-              <input id="loginEmail" type="email" autocomplete="email" required
-                placeholder="you@etb.com" />
+              <input
+                id="loginEmail"
+                type="email"
+                autocomplete="email"
+                required
+                placeholder="you@etb.com"
+              />
             </div>
             <div class="form-group">
               <label for="loginPassword">Password</label>
-              <input id="loginPassword" type="password" autocomplete="current-password" required
-                placeholder="••••••••" />
+              <input
+                id="loginPassword"
+                type="password"
+                autocomplete="current-password"
+                required
+                placeholder="••••••••"
+              />
             </div>
-            <div id="loginError" class="login__error"></div>
-            <button type="submit" id="loginBtn" class="rux-btn rux-btn--primary login__action-btn">Sign in</button>
-            <button type="button" id="loginForgotBtn" class="login__forgot">Forgot password?</button>
+            <div
+              id="loginError"
+              class="login__error"
+            ></div>
+            <button
+              type="submit"
+              id="loginBtn"
+              class="rux-btn rux-btn--primary login__action-btn"
+            >
+              Sign in
+            </button>
+            <button
+              type="button"
+              id="loginForgotBtn"
+              class="login__forgot"
+            >
+              Forgot password?
+            </button>
           </form>
         </div>
 
         <!-- View: forgot password -->
-        <div id="loginForgotView" hidden>
-          <form id="loginForgotForm" class="login__form">
+        <div
+          id="loginForgotView"
+          hidden
+        >
+          <form
+            id="loginForgotForm"
+            class="login__form"
+          >
             <div class="form-group">
               <label for="loginForgotEmail">Email</label>
-              <input id="loginForgotEmail" type="email" autocomplete="email" required
-                placeholder="you@etb.com" />
+              <input
+                id="loginForgotEmail"
+                type="email"
+                autocomplete="email"
+                required
+                placeholder="you@etb.com"
+              />
             </div>
-            <div id="loginForgotError" class="login__error"></div>
-            <button type="submit" id="loginResetBtn" class="rux-btn rux-btn--primary login__action-btn">Send reset link</button>
-            <button type="button" id="loginBackBtn" class="login__forgot">Back to sign in</button>
+            <div
+              id="loginForgotError"
+              class="login__error"
+            ></div>
+            <button
+              type="submit"
+              id="loginResetBtn"
+              class="rux-btn rux-btn--primary login__action-btn"
+            >
+              Send reset link
+            </button>
+            <button
+              type="button"
+              id="loginBackBtn"
+              class="login__forgot"
+            >
+              Back to sign in
+            </button>
           </form>
         </div>
 
         <!-- View: reset email sent -->
-        <div id="loginResetSentView" hidden>
+        <div
+          id="loginResetSentView"
+          hidden
+        >
           <p class="login__message">Check your inbox for a reset link.</p>
-          <button type="button" id="loginBackBtn2" class="rux-btn rux-btn--primary login__action-btn">Back to sign in</button>
+          <button
+            type="button"
+            id="loginBackBtn2"
+            class="rux-btn rux-btn--primary login__action-btn"
+          >
+            Back to sign in
+          </button>
         </div>
 
         <!-- View: set new password (recovery token in URL) -->
-        <div id="loginSetPasswordView" hidden>
-          <form id="loginSetPasswordForm" class="login__form">
+        <div
+          id="loginSetPasswordView"
+          hidden
+        >
+          <form
+            id="loginSetPasswordForm"
+            class="login__form"
+          >
             <div class="form-group">
               <label for="loginNewPassword">New password</label>
-              <input id="loginNewPassword" type="password" autocomplete="new-password" required
-                placeholder="••••••••" minlength="6" />
+              <input
+                id="loginNewPassword"
+                type="password"
+                autocomplete="new-password"
+                required
+                placeholder="••••••••"
+                minlength="6"
+              />
             </div>
-            <div id="loginSetPasswordError" class="login__error"></div>
-            <button type="submit" id="loginUpdateBtn" class="rux-btn rux-btn--primary login__action-btn">Update password</button>
+            <div
+              id="loginSetPasswordError"
+              class="login__error"
+            ></div>
+            <button
+              type="submit"
+              id="loginUpdateBtn"
+              class="rux-btn rux-btn--primary login__action-btn"
+            >
+              Update password
+            </button>
           </form>
         </div>
       </div>
     </div>
 
     <div class="app">
-      <div class="app-shell-utilities" hidden>
+      <div
+        class="app-shell-utilities"
+        hidden
+      >
         <!-- Hidden button stubs keep existing JS listeners from throwing -->
-        <button id="tripInputBtn" type="button"></button>
-        <button id="driversBtn"   type="button"></button>
-        <button id="notesBtn"     type="button"></button>
-        <button id="todoBtn"      type="button"></button>
-        <div id="presenceStrip" class="presence-strip" hidden aria-label="Online users" role="status"></div>
+        <button
+          id="tripInputBtn"
+          type="button"
+        ></button>
+        <button
+          id="driversBtn"
+          type="button"
+        ></button>
+        <button
+          id="notesBtn"
+          type="button"
+        ></button>
+        <button
+          id="todoBtn"
+          type="button"
+        ></button>
+        <div
+          id="presenceStrip"
+          class="presence-strip"
+          hidden
+          aria-label="Online users"
+          role="status"
+        ></div>
       </div>
 
       <!-- Profile & Settings Card -->
@@ -136,121 +254,230 @@
           <div class="rux-header__actions"></div>
         </div>
         <div class="rux-card__body profile-settings__body">
-              <div class="profile-popover__header">
-                <div id="profilePopoverAvatar"></div>
-                <div class="profile-popover__identity">
-                  <input id="profileDisplayName" class="profile-popover__name-input"
-                    type="text" maxlength="40" autocomplete="off" placeholder="Display name" />
-                  <div id="profileEmail" class="profile-popover__email"></div>
-                </div>
-              </div>
-              <hr class="dropdown__divider" />
-              <div class="profile-popover__section">
-                <div class="profile-popover__section-title">Color</div>
-                <div id="profileColorSwatches" class="profile-color-swatches" role="group" aria-label="Avatar color"></div>
-              </div>
-              <hr class="dropdown__divider" />
-              <div class="profile-popover__section">
-                <div class="profile-popover__section-title">Photo</div>
-                <button type="button" id="profileUploadBtn" class="rux-btn profile-upload-btn">
-                  <span class="material-symbols-outlined">upload</span>
-                  Upload photo
-                </button>
-                <input id="profilePhotoInput" type="file" accept="image/jpeg,image/png,image/webp" class="sr-file-input" />
-              </div>
-              <hr class="dropdown__divider" />
-              <div class="profile-popover__section">
-                <div class="profile-popover__section-title">Preferences</div>
-                <div class="profile-pref-row">
-                  <span>Dark theme</span>
-                  <button type="button" id="profileThemeToggle" class="rux-btn rux-btn--square" aria-pressed="true">
-                    <span class="material-symbols-outlined">dark_mode</span>
-                  </button>
-                </div>
-                <div class="profile-pref-row">
-                  <span>Week starts Monday</span>
-                  <button type="button" id="profileWeekStartToggle" class="rux-btn rux-btn--square" aria-pressed="false">
-                    <span class="material-symbols-outlined">toggle_off</span>
-                  </button>
-                </div>
-                <div class="profile-pref-row">
-                  <span>Compact bars</span>
-                  <button type="button" id="profileCompactToggle" class="rux-btn rux-btn--square" aria-pressed="false">
-                    <span class="material-symbols-outlined">unfold_less</span>
-                  </button>
-                </div>
-                <div class="profile-pref-row">
-                  <span>14-day view</span>
-                  <button type="button" id="profileViewToggle" class="rux-btn rux-btn--square" aria-pressed="false">
-                    <span class="material-symbols-outlined">view_column_2</span>
-                  </button>
-                </div>
-                <div class="profile-pref-row">
-                  <span>Right rail</span>
-                  <button type="button" id="profileRightRailToggle" class="rux-btn rux-btn--square" aria-pressed="true">
-                    <span class="material-symbols-outlined">right_panel_close</span>
-                  </button>
-                </div>
-              </div>
-              <hr class="dropdown__divider" />
-              <!-- Views -->
-              <div class="profile-popover__section profile-popover__section--actions">
-                <div class="profile-popover__section-title">Views</div>
-                <button type="button" id="todayHighlightBtn" class="dropdown__item" aria-pressed="false">
-                  <span class="dropdown__icon material-symbols-outlined">visibility</span>
-                  <span>Highlight Today's Trips</span>
-                </button>
-                <button type="button" id="waitingListBtn" class="dropdown__item">
-                  <span class="dropdown__icon material-symbols-outlined">low_priority</span>
-                  <span>Waiting List</span>
-                </button>
-                <button type="button" id="logBtn" class="dropdown__item">
-                  <span class="dropdown__icon material-symbols-outlined">history</span>
-                  <span>Activity Log</span>
-                </button>
-              </div>
-              <hr class="dropdown__divider" />
-              <!-- Data -->
-              <button type="button" id="refreshBtn2" class="dropdown__item">
-                <span class="dropdown__icon material-symbols-outlined">refresh</span>
-                <span>Refresh Data</span>
+          <div class="profile-popover__header">
+            <div id="profilePopoverAvatar"></div>
+            <div class="profile-popover__identity">
+              <input
+                id="profileDisplayName"
+                class="profile-popover__name-input"
+                type="text"
+                maxlength="40"
+                autocomplete="off"
+                placeholder="Display name"
+              />
+              <div
+                id="profileEmail"
+                class="profile-popover__email"
+              ></div>
+            </div>
+          </div>
+          <hr class="dropdown__divider" />
+          <div class="profile-popover__section">
+            <div class="profile-popover__section-title">Color</div>
+            <div
+              id="profileColorSwatches"
+              class="profile-color-swatches"
+              role="group"
+              aria-label="Avatar color"
+            ></div>
+          </div>
+          <hr class="dropdown__divider" />
+          <div class="profile-popover__section">
+            <div class="profile-popover__section-title">Photo</div>
+            <button
+              type="button"
+              id="profileUploadBtn"
+              class="rux-btn profile-upload-btn"
+            >
+              <span class="material-symbols-outlined">upload</span>
+              Upload photo
+            </button>
+            <input
+              id="profilePhotoInput"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              class="sr-file-input"
+            />
+          </div>
+          <hr class="dropdown__divider" />
+          <div class="profile-popover__section">
+            <div class="profile-popover__section-title">Preferences</div>
+            <div class="profile-pref-row">
+              <span>Dark theme</span>
+              <button
+                type="button"
+                id="profileThemeToggle"
+                class="rux-btn rux-btn--square"
+                aria-pressed="true"
+              >
+                <span class="material-symbols-outlined">dark_mode</span>
               </button>
-              <button type="button" id="todayBtn2" class="dropdown__item">
-                <span class="dropdown__icon material-symbols-outlined">today</span>
-                <span>Jump to Today</span>
+            </div>
+            <div class="profile-pref-row">
+              <span>Week starts Monday</span>
+              <button
+                type="button"
+                id="profileWeekStartToggle"
+                class="rux-btn rux-btn--square"
+                aria-pressed="false"
+              >
+                <span class="material-symbols-outlined">toggle_off</span>
               </button>
-              <hr class="dropdown__divider" />
-              <!-- Print -->
-              <div class="profile-popover__section profile-popover__section--actions">
-                <div class="profile-popover__section-title">Print</div>
-                <button type="button" id="printBtn2" class="dropdown__item">
-                  <span class="dropdown__icon material-symbols-outlined">print</span>
-                  <span>Print Schedule (Legal)</span>
-                </button>
-                <button type="button" id="printBtn2Full" class="dropdown__item">
-                  <span class="dropdown__icon material-symbols-outlined">print</span>
-                  <span>Print Full Schedule (Letter)</span>
-                </button>
-              </div>
-              <hr class="dropdown__divider" />
-              <!-- Reports -->
-              <div class="profile-popover__section profile-popover__section--actions">
-                <div class="profile-popover__section-title">Reports</div>
-                <button type="button" id="nextDayReportBtn" class="dropdown__item">
-                  <span class="dropdown__icon material-symbols-outlined">event_upcoming</span>
-                  <span>Weekly Maintenance</span>
-                </button>
-                <button type="button" id="dailyMaintenancePlanBtn" class="dropdown__item">
-                  <span class="dropdown__icon material-symbols-outlined">handyman</span>
-                  <span>Daily Maintenance Plan</span>
-                </button>
-              </div>
-              <hr class="dropdown__divider" />
-              <button type="button" id="profileSignOutBtn" class="dropdown__item">
-                <span class="dropdown__icon material-symbols-outlined">logout</span>
-                Sign out
+            </div>
+            <div class="profile-pref-row">
+              <span>Compact bars</span>
+              <button
+                type="button"
+                id="profileCompactToggle"
+                class="rux-btn rux-btn--square"
+                aria-pressed="false"
+              >
+                <span class="material-symbols-outlined">unfold_less</span>
               </button>
-              <div id="appVersionMenuItem" class="dropdown__item dropdown__item--meta" role="note"></div>
+            </div>
+            <div class="profile-pref-row">
+              <span>14-day view</span>
+              <button
+                type="button"
+                id="profileViewToggle"
+                class="rux-btn rux-btn--square"
+                aria-pressed="false"
+              >
+                <span class="material-symbols-outlined">view_column_2</span>
+              </button>
+            </div>
+            <div class="profile-pref-row">
+              <span>Right rail</span>
+              <button
+                type="button"
+                id="profileRightRailToggle"
+                class="rux-btn rux-btn--square"
+                aria-pressed="true"
+              >
+                <span class="material-symbols-outlined">right_panel_close</span>
+              </button>
+            </div>
+          </div>
+          <hr class="dropdown__divider" />
+          <!-- Views -->
+          <div class="profile-popover__section profile-popover__section--actions">
+            <div class="profile-popover__section-title">Views</div>
+            <button
+              type="button"
+              id="todayHighlightBtn"
+              class="dropdown__item"
+              aria-pressed="false"
+            >
+              <span class="dropdown__icon material-symbols-outlined">visibility</span>
+              <span>Highlight Today's Trips</span>
+            </button>
+            <button
+              type="button"
+              id="waitingListBtn"
+              class="dropdown__item"
+            >
+              <span class="dropdown__icon material-symbols-outlined">low_priority</span>
+              <span>Waiting List</span>
+            </button>
+            <button
+              type="button"
+              id="logBtn"
+              class="dropdown__item"
+            >
+              <span class="dropdown__icon material-symbols-outlined">history</span>
+              <span>Activity Log</span>
+            </button>
+          </div>
+          <hr class="dropdown__divider" />
+          <!-- Data -->
+          <button
+            type="button"
+            id="driverManagerBtn"
+            class="dropdown__item"
+          >
+            <span class="dropdown__icon material-symbols-outlined">badge</span>
+            <span>Manage Drivers</span>
+          </button>
+          <button
+            type="button"
+            id="fleetManagerBtn"
+            class="dropdown__item"
+          >
+            <span class="dropdown__icon material-symbols-outlined">directions_bus</span>
+            <span>Manage Vehicles</span>
+          </button>
+          <button
+            type="button"
+            id="refreshBtn2"
+            class="dropdown__item"
+          >
+            <span class="dropdown__icon material-symbols-outlined">refresh</span>
+            <span>Refresh Data</span>
+          </button>
+          <button
+            type="button"
+            id="todayBtn2"
+            class="dropdown__item"
+          >
+            <span class="dropdown__icon material-symbols-outlined">today</span>
+            <span>Jump to Today</span>
+          </button>
+          <hr class="dropdown__divider" />
+          <!-- Print -->
+          <div class="profile-popover__section profile-popover__section--actions">
+            <div class="profile-popover__section-title">Print</div>
+            <button
+              type="button"
+              id="printBtn2"
+              class="dropdown__item"
+            >
+              <span class="dropdown__icon material-symbols-outlined">print</span>
+              <span>Print Schedule (Legal)</span>
+            </button>
+            <button
+              type="button"
+              id="printBtn2Full"
+              class="dropdown__item"
+            >
+              <span class="dropdown__icon material-symbols-outlined">print</span>
+              <span>Print Full Schedule (Letter)</span>
+            </button>
+          </div>
+          <hr class="dropdown__divider" />
+          <!-- Reports -->
+          <div class="profile-popover__section profile-popover__section--actions">
+            <div class="profile-popover__section-title">Reports</div>
+            <button
+              type="button"
+              id="nextDayReportBtn"
+              class="dropdown__item"
+            >
+              <span class="dropdown__icon material-symbols-outlined">event_upcoming</span>
+              <span>Weekly Maintenance</span>
+            </button>
+            <button
+              type="button"
+              id="dailyMaintenancePlanBtn"
+              class="dropdown__item"
+            >
+              <span class="dropdown__icon material-symbols-outlined">handyman</span>
+              <span>Daily Maintenance Plan</span>
+            </button>
+          </div>
+          <hr class="dropdown__divider" />
+          <button
+            type="button"
+            id="profileSignOutBtn"
+            class="dropdown__item"
+          >
+            <span class="dropdown__icon material-symbols-outlined">logout</span>
+            Sign out
+          </button>
+          <div
+            id="appVersionMenuItem"
+            class="dropdown__item dropdown__item--meta"
+            role="note"
+          ></div>
         </div>
       </div>
 
@@ -267,11 +494,54 @@
               data-js="panel-sidebar-left"
             >
               <div class="sidebar__rail">
-                <button class="sidebar__icon-btn" data-card="trip"    title="Trip Editor"        aria-pressed="false"><span class="material-symbols-outlined">add_circle</span></button>
-                <button class="sidebar__icon-btn" data-card="drivers" title="Driver Assignments"  aria-pressed="false"><span class="material-symbols-outlined">groups</span></button>
-                <button class="sidebar__icon-btn" data-card="notes"   title="Notes"              aria-pressed="false"><span class="material-symbols-outlined">sticky_note_2</span></button>
-                <button class="sidebar__icon-btn" data-card="todo"    title="Daily Checklist"    aria-pressed="false"><span class="material-symbols-outlined">checklist</span></button>
-                <button class="sidebar__icon-btn" data-card="log"     title="Activity Log"       aria-pressed="false"><span class="material-symbols-outlined">history</span></button>
+                <button
+                  class="sidebar__icon-btn"
+                  data-card="trip"
+                  title="Trip Editor"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">add_circle</span>
+                </button>
+                <button
+                  class="sidebar__icon-btn"
+                  data-card="drivers"
+                  title="Driver Assignments"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">groups</span>
+                </button>
+                <button
+                  class="sidebar__icon-btn"
+                  data-card="notes"
+                  title="Notes"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">sticky_note_2</span>
+                </button>
+                <button
+                  class="sidebar__icon-btn"
+                  data-card="todo"
+                  title="Daily Checklist"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">checklist</span>
+                </button>
+                <button
+                  class="sidebar__icon-btn sidebar__icon-btn--bottom-start"
+                  data-card="driverManager"
+                  title="Manage Drivers"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">badge</span>
+                </button>
+                <button
+                  class="sidebar__icon-btn"
+                  data-card="fleetManager"
+                  title="Manage Vehicles"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">directions_bus</span>
+                </button>
                 <button
                   id="avatarBtn"
                   class="sidebar__icon-btn sidebar__profile-btn"
@@ -292,1169 +562,1648 @@
               data-js="panel-sidebar-right"
             >
               <div class="sidebar__rail">
-                <button class="sidebar__icon-btn" data-card="trip"    title="Trip Editor"        aria-pressed="false"><span class="material-symbols-outlined">add_circle</span></button>
-                <button class="sidebar__icon-btn" data-card="drivers" title="Driver Assignments"  aria-pressed="false"><span class="material-symbols-outlined">groups</span></button>
-                <button class="sidebar__icon-btn" data-card="notes"   title="Notes"              aria-pressed="false"><span class="material-symbols-outlined">sticky_note_2</span></button>
-                <button class="sidebar__icon-btn" data-card="todo"    title="Daily Checklist"    aria-pressed="false"><span class="material-symbols-outlined">checklist</span></button>
-                <button class="sidebar__icon-btn" data-card="log"     title="Activity Log"       aria-pressed="false"><span class="material-symbols-outlined">history</span></button>
+                <button
+                  class="sidebar__icon-btn"
+                  data-card="trip"
+                  title="Trip Editor"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">add_circle</span>
+                </button>
+                <button
+                  class="sidebar__icon-btn"
+                  data-card="drivers"
+                  title="Driver Assignments"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">groups</span>
+                </button>
+                <button
+                  class="sidebar__icon-btn"
+                  data-card="notes"
+                  title="Notes"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">sticky_note_2</span>
+                </button>
+                <button
+                  class="sidebar__icon-btn"
+                  data-card="todo"
+                  title="Daily Checklist"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">checklist</span>
+                </button>
+                <button
+                  class="sidebar__icon-btn sidebar__icon-btn--bottom-start"
+                  data-card="driverManager"
+                  title="Manage Drivers"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">badge</span>
+                </button>
+                <button
+                  class="sidebar__icon-btn"
+                  data-card="fleetManager"
+                  title="Manage Vehicles"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">directions_bus</span>
+                </button>
               </div>
               <div class="sidebar__content">
-              <!-- Quote Calculator Card (hidden by default) -->
-              <div
-                class="rux-card rux-card--compact is-hidden quote-calculator"
-                id="quoteCard"
-                data-js="panel-card-quote"
-              >
-                <div class="rux-panel__header">
-                  <h2 class="rux-header__title">Quote Calculator</h2>
-                </div>
-                <div class="rux-card__body">
-                  <div class="quote-calculator__layout-grid">
-                    <!-- Left Column: Static Options -->
-                    <div class="quote-calculator__col-static">
-                      <div class="form-group">
-                        <label for="quoteTotalDaysInput">Days</label>
-                        <select
-                          id="quoteTotalDaysInput"
-                          class="quote-calculator__select"
-                        >
-                          <option
-                            value="1"
-                            selected
-                          >
-                            1
-                          </option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          <option value="4">4</option>
-                          <option value="5">5</option>
-                          <option value="6">6</option>
-                          <option value="7">7</option>
-                          <option value="8">8</option>
-                          <option value="9">9</option>
-                          <option value="10">10</option>
-                          <option value="11">11</option>
-                          <option value="12">12</option>
-                          <option value="13">13</option>
-                          <option value="14">14</option>
-                          <option value="15">15</option>
-                          <option value="16">16</option>
-                          <option value="17">17</option>
-                          <option value="18">18</option>
-                          <option value="19">19</option>
-                          <option value="20">20</option>
-                          <option value="21">21</option>
-                          <option value="22">22</option>
-                          <option value="23">23</option>
-                          <option value="24">24</option>
-                          <option value="25">25</option>
-                          <option value="26">26</option>
-                          <option value="27">27</option>
-                          <option value="28">28</option>
-                          <option value="29">29</option>
-                          <option value="30">30</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="quoteLDRate">Base Rate</label>
-                        <select
-                          id="quoteLDRate"
-                          class="quote-calculator__select"
-                        >
-                          <option value="3.0">$3.0</option>
-                          <option value="3.1">$3.1</option>
-                          <option value="3.2">$3.2</option>
-                          <option value="3.3">$3.3</option>
-                          <option value="3.4">$3.4</option>
-                          <option value="3.5">$3.5</option>
-                          <option value="3.6">$3.6</option>
-                          <option value="3.7">$3.7</option>
-                          <option value="3.8">$3.8</option>
-                          <option value="3.9">$3.9</option>
-                          <option value="4.0">$4.0</option>
-                          <option value="4.1">$4.1</option>
-                          <option value="4.2">$4.2</option>
-                          <option value="4.3">$4.3</option>
-                          <option value="4.4">$4.4</option>
-                          <option
-                            value="4.5"
-                            selected
-                          >
-                            $4.5
-                          </option>
-                          <option value="4.6">$4.6</option>
-                          <option value="4.7">$4.7</option>
-                          <option value="4.8">$4.8</option>
-                          <option value="4.9">$4.9</option>
-                          <option value="5.0">$5.0</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="quoteSeasonalRate">Seasonal Rate</label>
-                        <select
-                          id="quoteSeasonalRate"
-                          class="quote-calculator__select"
-                        >
-                          <option value="">None</option>
-                          <option value="3.0">$3.0</option>
-                          <option value="3.1">$3.1</option>
-                          <option value="3.2">$3.2</option>
-                          <option value="3.3">$3.3</option>
-                          <option value="3.4">$3.4</option>
-                          <option value="3.5">$3.5</option>
-                          <option value="3.6">$3.6</option>
-                          <option value="3.7">$3.7</option>
-                          <option value="3.8">$3.8</option>
-                          <option value="3.9">$3.9</option>
-                          <option value="4.0">$4.0</option>
-                          <option value="4.1">$4.1</option>
-                          <option value="4.2">$4.2</option>
-                          <option value="4.3">$4.3</option>
-                          <option value="4.4">$4.4</option>
-                          <option value="4.5">$4.5</option>
-                          <option value="4.6">$4.6</option>
-                          <option value="4.7">$4.7</option>
-                          <option value="4.8">$4.8</option>
-                          <option value="4.9">$4.9</option>
-                          <option value="5.0">$5.0</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="quoteDiscountValue">Discount $</label>
-                        <!-- Temporarily forcing flat discount for the mockup matching, we can keep the combo box if preferred, but matching mockup cleanly: -->
-                        <!-- If the user wants both $ and %, we could do two fields, but let's stick to the current combo box for functionality but rename label -->
-                        <div class="quote-calculator__input-group">
-                          <input
-                            type="text"
-                            id="quoteDiscountValue"
-                            class="quote-calculator__input"
-                            inputmode="numeric"
-                            pattern="[0-9]*"
-                            value="0"
-                          />
+                <!-- Quote Calculator Card (hidden by default) -->
+                <div
+                  class="rux-card rux-card--compact is-hidden quote-calculator"
+                  id="quoteCard"
+                  data-js="panel-card-quote"
+                >
+                  <div class="rux-panel__header">
+                    <h2 class="rux-header__title">Quote Calculator</h2>
+                  </div>
+                  <div class="rux-card__body">
+                    <div class="quote-calculator__layout-grid">
+                      <!-- Left Column: Static Options -->
+                      <div class="quote-calculator__col-static">
+                        <div class="form-group">
+                          <label for="quoteTotalDaysInput">Days</label>
                           <select
-                            id="quoteDiscountType"
-                            class="quote-calculator__select-mini"
-                            title="Discount Type"
+                            id="quoteTotalDaysInput"
+                            class="quote-calculator__select"
                           >
                             <option
-                              value="flat"
+                              value="1"
                               selected
                             >
-                              $
+                              1
                             </option>
-                            <option value="percent">%</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="quoteLDRate">Base Rate</label>
+                          <select
+                            id="quoteLDRate"
+                            class="quote-calculator__select"
+                          >
+                            <option value="3.0">$3.0</option>
+                            <option value="3.1">$3.1</option>
+                            <option value="3.2">$3.2</option>
+                            <option value="3.3">$3.3</option>
+                            <option value="3.4">$3.4</option>
+                            <option value="3.5">$3.5</option>
+                            <option value="3.6">$3.6</option>
+                            <option value="3.7">$3.7</option>
+                            <option value="3.8">$3.8</option>
+                            <option value="3.9">$3.9</option>
+                            <option value="4.0">$4.0</option>
+                            <option value="4.1">$4.1</option>
+                            <option value="4.2">$4.2</option>
+                            <option value="4.3">$4.3</option>
+                            <option value="4.4">$4.4</option>
+                            <option
+                              value="4.5"
+                              selected
+                            >
+                              $4.5
+                            </option>
+                            <option value="4.6">$4.6</option>
+                            <option value="4.7">$4.7</option>
+                            <option value="4.8">$4.8</option>
+                            <option value="4.9">$4.9</option>
+                            <option value="5.0">$5.0</option>
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="quoteSeasonalRate">Seasonal Rate</label>
+                          <select
+                            id="quoteSeasonalRate"
+                            class="quote-calculator__select"
+                          >
+                            <option value="">None</option>
+                            <option value="3.0">$3.0</option>
+                            <option value="3.1">$3.1</option>
+                            <option value="3.2">$3.2</option>
+                            <option value="3.3">$3.3</option>
+                            <option value="3.4">$3.4</option>
+                            <option value="3.5">$3.5</option>
+                            <option value="3.6">$3.6</option>
+                            <option value="3.7">$3.7</option>
+                            <option value="3.8">$3.8</option>
+                            <option value="3.9">$3.9</option>
+                            <option value="4.0">$4.0</option>
+                            <option value="4.1">$4.1</option>
+                            <option value="4.2">$4.2</option>
+                            <option value="4.3">$4.3</option>
+                            <option value="4.4">$4.4</option>
+                            <option value="4.5">$4.5</option>
+                            <option value="4.6">$4.6</option>
+                            <option value="4.7">$4.7</option>
+                            <option value="4.8">$4.8</option>
+                            <option value="4.9">$4.9</option>
+                            <option value="5.0">$5.0</option>
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="quoteDiscountValue">Discount $</label>
+                          <!-- Temporarily forcing flat discount for the mockup matching, we can keep the combo box if preferred, but matching mockup cleanly: -->
+                          <!-- If the user wants both $ and %, we could do two fields, but let's stick to the current combo box for functionality but rename label -->
+                          <div class="quote-calculator__input-group">
+                            <input
+                              type="text"
+                              id="quoteDiscountValue"
+                              class="quote-calculator__input"
+                              inputmode="numeric"
+                              pattern="[0-9]*"
+                              value="0"
+                            />
+                            <select
+                              id="quoteDiscountType"
+                              class="quote-calculator__select-mini"
+                              title="Discount Type"
+                            >
+                              <option
+                                value="flat"
+                                selected
+                              >
+                                $
+                              </option>
+                              <option value="percent">%</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="quoteDeadMiles">Dead Miles</label>
+                          <div class="quote-calculator__input-group">
+                            <input
+                              type="text"
+                              id="quoteDeadMiles"
+                              class="quote-calculator__input"
+                              inputmode="numeric"
+                              pattern="[0-9]*"
+                              value="0"
+                            />
+                            <input
+                              type="text"
+                              id="quoteDeadMilesRate"
+                              class="quote-calculator__select-mini"
+                              inputmode="decimal"
+                              value="3.80"
+                              title="Dead miles rate ($/mi)"
+                            />
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="quoteReliefDriver">2nd Driver</label>
+                          <select
+                            id="quoteReliefDriver"
+                            class="quote-calculator__select"
+                          >
+                            <option
+                              value="false"
+                              selected
+                            >
+                              No
+                            </option>
+                            <option value="true">Yes</option>
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="quoteCCFeeToggle">CC Fee 4%</label>
+                          <select
+                            id="quoteCCFeeToggle"
+                            class="quote-calculator__select"
+                          >
+                            <option
+                              value="false"
+                              selected
+                            >
+                              No
+                            </option>
+                            <option value="true">Yes</option>
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="quoteHalfDay">Add Half Day</label>
+                          <select
+                            id="quoteHalfDay"
+                            class="quote-calculator__select"
+                          >
+                            <option
+                              value="false"
+                              selected
+                            >
+                              No
+                            </option>
+                            <option value="true">Yes</option>
                           </select>
                         </div>
                       </div>
 
-                      <div class="form-group">
-                        <label for="quoteDeadMiles">Dead Miles</label>
-                        <div class="quote-calculator__input-group">
-                          <input
-                            type="text"
-                            id="quoteDeadMiles"
-                            class="quote-calculator__input"
-                            inputmode="numeric"
-                            pattern="[0-9]*"
-                            value="0"
-                          />
-                          <input
-                            type="text"
-                            id="quoteDeadMilesRate"
-                            class="quote-calculator__select-mini"
-                            inputmode="decimal"
-                            value="3.80"
-                            title="Dead miles rate ($/mi)"
-                          />
-                        </div>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="quoteReliefDriver">2nd Driver</label>
-                        <select
-                          id="quoteReliefDriver"
-                          class="quote-calculator__select"
+                      <!-- Right Column: Dynamic Day Mileages -->
+                      <div class="quote-calculator__col-dynamic">
+                        <div
+                          id="quoteDynamicDaysContainer"
+                          data-js="quote-dynamic-days"
+                          class="quote-calculator__days"
                         >
-                          <option
-                            value="false"
-                            selected
-                          >
-                            No
-                          </option>
-                          <option value="true">Yes</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="quoteCCFeeToggle">CC Fee 4%</label>
-                        <select
-                          id="quoteCCFeeToggle"
-                          class="quote-calculator__select"
-                        >
-                          <option
-                            value="false"
-                            selected
-                          >
-                            No
-                          </option>
-                          <option value="true">Yes</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="quoteHalfDay">Add Half Day</label>
-                        <select
-                          id="quoteHalfDay"
-                          class="quote-calculator__select"
-                        >
-                          <option
-                            value="false"
-                            selected
-                          >
-                            No
-                          </option>
-                          <option value="true">Yes</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <!-- Right Column: Dynamic Day Mileages -->
-                    <div class="quote-calculator__col-dynamic">
-                      <div
-                        id="quoteDynamicDaysContainer"
-                        data-js="quote-dynamic-days"
-                        class="quote-calculator__days"
-                      >
-                        <!-- Handled by JavaScript:
+                          <!-- Handled by JavaScript:
                       <div class="form-group">
                         <label for="quoteDay1">Day 1 Mileage</label>
                         <input type="number" id="quoteDay1" class="quote-calculator__input day-mileage-input" value="0" />
                       </div>
-                      --></div>
-                      <!-- Hidden total miles input to preserve existing JS math temporarily if needed -->
-                      <input
-                        type="hidden"
-                        id="quoteTotalMilesInput"
-                        value="0"
-                      />
+                      -->
+                        </div>
+                        <!-- Hidden total miles input to preserve existing JS math temporarily if needed -->
+                        <input
+                          type="hidden"
+                          id="quoteTotalMilesInput"
+                          value="0"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div class="quote-calculator__summary">
-                  <div class="quote-summary__row">
-                    <span class="quote-summary__label">Total Miles</span>
-                    <span
-                      class="quote-summary__value"
-                      id="quoteTotalMiles"
-                      >-</span
-                    >
-                  </div>
-
-                  <div class="quote-summary__row">
-                    <span class="quote-summary__label">Total Days</span>
-                    <span class="quote-summary__value">
+                  <div class="quote-calculator__summary">
+                    <div class="quote-summary__row">
+                      <span class="quote-summary__label">Total Miles</span>
                       <span
-                        id="quoteTotalDaysCount"
-                        class="quote-summary__value-main"
+                        class="quote-summary__value"
+                        id="quoteTotalMiles"
                         >-</span
                       >
-                      <span class="quote-summary__value-sub"
-                        >(<span id="quoteBilledDaysCount">-</span> Billed •
-                        <span id="quoteFreeDaysCount">-</span> Free)</span
-                      >
-                    </span>
-                  </div>
+                    </div>
 
-                  <div class="quote-summary__row">
-                    <span class="quote-summary__label">Base Rate</span>
-                    <span
-                      class="quote-summary__value"
-                      id="quoteBaseRate"
-                      >-</span
-                    >
-                  </div>
+                    <div class="quote-summary__row">
+                      <span class="quote-summary__label">Total Days</span>
+                      <span class="quote-summary__value">
+                        <span
+                          id="quoteTotalDaysCount"
+                          class="quote-summary__value-main"
+                          >-</span
+                        >
+                        <span class="quote-summary__value-sub"
+                          >(<span id="quoteBilledDaysCount">-</span> Billed •
+                          <span id="quoteFreeDaysCount">-</span> Free)</span
+                        >
+                      </span>
+                    </div>
 
-                  <div
-                    class="quote-summary__row"
-                    id="quoteSeasonalRateRow"
-                  >
-                    <span class="quote-summary__label">Seasonal Rate</span>
-                    <span
-                      class="quote-summary__value"
-                      id="quoteSeasonalRateVal"
-                      >-</span
-                    >
-                  </div>
-
-                  <div
-                    class="quote-summary__row"
-                    id="quoteCCFeeRow"
-                  >
-                    <span class="quote-summary__label">Credit Card Fee</span>
-                    <span
-                      class="quote-summary__value"
-                      id="quoteCCFeeVal"
-                      >-</span
-                    >
-                  </div>
-
-                  <div class="quote-summary__row">
-                    <span class="quote-summary__label">Driver 1 Pay</span>
-                    <span
-                      class="quote-summary__value"
-                      id="quoteDriver1Pay"
-                    ></span>
-                  </div>
-
-                  <div
-                    class="quote-summary__row"
-                    id="quoteDriver2Row"
-                  >
-                    <span class="quote-summary__label">Driver 2 Pay</span>
-                    <span
-                      class="quote-summary__value"
-                      id="quoteDriver2Pay"
-                      >-</span
-                    >
-                  </div>
-
-                  <div
-                    class="quote-summary__row quote-summary__row--discount"
-                    id="quoteDiscountRow"
-                  >
-                    <span class="quote-summary__label">Discount</span>
-                    <span
-                      class="quote-summary__value"
-                      id="quoteDiscountAmount"
-                      >-</span
-                    >
-                  </div>
-
-                  <div class="quote-summary__row quote-summary__row--primary">
-                    <span class="quote-summary__label">Total</span>
-                    <span
-                      class="quote-summary__value"
-                      id="quoteFinalTotal"
-                      >-</span
-                    >
-                  </div>
-                </div>
-
-                <!-- Action Footer -->
-                <div class="rux-panel__footer">
-                  <button
-                    type="button"
-                    class="rux-btn rux-btn--secondary"
-                    id="quoteInfoBtn"
-                    aria-label="View Calculator Rules & Logic"
-                  >
-                    <span class="material-symbols-outlined">info</span>
-                    <span>Rules & Logic</span>
-                  </button>
-                  <button
-                    type="button"
-                    class="rux-btn rux-btn--primary"
-                    id="quoteCopySummary"
-                  >
-                    <span class="material-symbols-outlined">content_copy</span>
-                    <span>Copy Summary</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Driver Week Card (hidden by default) -->
-              <div
-                class="rux-card rux-card--compact is-hidden"
-                id="driverWeekCard"
-                11
-                data-js="panel-card-drivers"
-              >
-                <div class="rux-panel__header">
-                  <h2 class="rux-header__title">Driver Assignments</h2>
-                  <div class="rux-header__actions"></div>
-                </div>
-                <div class="rux-card__body">
-                  <div class="driver-week__surface">
-                  <div class="driver-week__wrap">
-                    <table class="driver-week__table">
-                      <thead>
-                        <tr
-                          id="driverWeekHeadRow"
-                          data-js="driver-week-head-row"
-                        ></tr>
-                      </thead>
-                      <tbody
-                        id="driverWeekBody"
-                        data-js="driver-week-body"
-                      ></tbody>
-                    </table>
-                  </div>
-                  </div>
-                </div>
-
-              </div>
-
-              <!-- Notes Card (hidden by default) -->
-              <div
-                class="rux-card rux-card--compact is-hidden"
-                id="notesCard"
-                data-js="panel-card-notes"
-              >
-                <div class="rux-panel__header">
-                  <h2 class="rux-header__title">Notepad</h2>
-                  <div class="rux-header__actions"></div>
-                </div>
-                <div class="rux-card__body">
-                  <div class="notes__wrap">
-                    <textarea
-                      id="scheduleNotes"
-                      class="notes__textarea"
-                      placeholder="Enter notes here..."
-                    ></textarea>
-                  </div>
-                </div>
-                <div class="rux-panel__footer notes__footer">
-                  <button type="button" class="rux-btn rux-btn--danger" id="clearNotesBtn">
-                    Clear
-                  </button>
-                  <button type="button" class="rux-btn rux-btn--primary" id="saveNotesBtn">
-                    Save Notes
-                  </button>
-                </div>
-              </div>
-
-              <!-- Daily Checklist Card -->
-              <div
-                class="rux-card rux-card--compact is-hidden"
-                id="todoCard"
-                data-js="panel-card-todo"
-              >
-                <div class="rux-panel__header">
-                  <h2 class="rux-header__title">Checklist</h2>
-                  <div class="rux-header__actions"></div>
-                </div>
-                <div class="rux-card__body">
-                  <div class="todo-header" id="todoHeader"></div>
-                  <div class="todo-list" id="todoList"></div>
-                </div>
-              </div>
-
-              <!-- Activity Log Card -->
-              <div
-                class="rux-card rux-card--compact is-hidden"
-                id="logCard"
-                data-js="panel-card-log"
-              >
-                <div class="rux-panel__header">
-                  <div class="log-header__title-wrap">
-                    <h2 class="rux-header__title">Activity Log</h2>
-                    <span id="logFilterBadge" class="log-filter-badge is-hidden"></span>
-                  </div>
-                  <div class="rux-header__actions">
-                    <button
-                      id="logClearFilterBtn"
-                      class="rux-btn rux-btn--square is-hidden"
-                      type="button"
-                      title="Show all activity"
-                    >
-                      <span class="material-symbols-outlined">filter_alt_off</span>
-                    </button>
-                    <button
-                      id="logRefreshBtn"
-                      class="rux-btn rux-btn--square"
-                      type="button"
-                      title="Refresh"
-                    >
-                      <span class="material-symbols-outlined">refresh</span>
-                    </button>
-                  </div>
-                </div>
-                <div class="rux-card__body">
-                  <div id="logList" data-js="log-list" class="log-list"></div>
-                </div>
-              </div>
-
-              <!-- Trip Info Card -->
-              <div
-                class="rux-card rux-card--compact is-hidden"
-                id="tripInfoCard"
-                data-js="panel-card-trip-info"
-              >
-                <div class="rux-panel__header">
-                  <div class="trip-editor__header-row">
-                    <div class="log-header__title-wrap">
-                      <h2 class="rux-header__title">Trip Editor</h2>
+                    <div class="quote-summary__row">
+                      <span class="quote-summary__label">Base Rate</span>
                       <span
-                        id="tripIdBadge"
+                        class="quote-summary__value"
+                        id="quoteBaseRate"
+                        >-</span
+                      >
+                    </div>
+
+                    <div
+                      class="quote-summary__row"
+                      id="quoteSeasonalRateRow"
+                    >
+                      <span class="quote-summary__label">Seasonal Rate</span>
+                      <span
+                        class="quote-summary__value"
+                        id="quoteSeasonalRateVal"
+                        >-</span
+                      >
+                    </div>
+
+                    <div
+                      class="quote-summary__row"
+                      id="quoteCCFeeRow"
+                    >
+                      <span class="quote-summary__label">Credit Card Fee</span>
+                      <span
+                        class="quote-summary__value"
+                        id="quoteCCFeeVal"
+                        >-</span
+                      >
+                    </div>
+
+                    <div class="quote-summary__row">
+                      <span class="quote-summary__label">Driver 1 Pay</span>
+                      <span
+                        class="quote-summary__value"
+                        id="quoteDriver1Pay"
+                      ></span>
+                    </div>
+
+                    <div
+                      class="quote-summary__row"
+                      id="quoteDriver2Row"
+                    >
+                      <span class="quote-summary__label">Driver 2 Pay</span>
+                      <span
+                        class="quote-summary__value"
+                        id="quoteDriver2Pay"
+                        >-</span
+                      >
+                    </div>
+
+                    <div
+                      class="quote-summary__row quote-summary__row--discount"
+                      id="quoteDiscountRow"
+                    >
+                      <span class="quote-summary__label">Discount</span>
+                      <span
+                        class="quote-summary__value"
+                        id="quoteDiscountAmount"
+                        >-</span
+                      >
+                    </div>
+
+                    <div class="quote-summary__row quote-summary__row--primary">
+                      <span class="quote-summary__label">Total</span>
+                      <span
+                        class="quote-summary__value"
+                        id="quoteFinalTotal"
+                        >-</span
+                      >
+                    </div>
+                  </div>
+
+                  <!-- Action Footer -->
+                  <div class="rux-panel__footer">
+                    <button
+                      type="button"
+                      class="rux-btn rux-btn--secondary"
+                      id="quoteInfoBtn"
+                      aria-label="View Calculator Rules & Logic"
+                    >
+                      <span class="material-symbols-outlined">info</span>
+                      <span>Rules & Logic</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rux-btn rux-btn--primary"
+                      id="quoteCopySummary"
+                    >
+                      <span class="material-symbols-outlined">content_copy</span>
+                      <span>Copy Summary</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Driver Manager Card -->
+                <div
+                  class="rux-card rux-card--compact is-hidden reference-manager-card"
+                  id="driverManagerCard"
+                  data-js="panel-card-driver-manager"
+                >
+                  <div class="rux-panel__header">
+                    <h2 class="rux-header__title">Manage Drivers</h2>
+                    <div class="rux-header__actions"></div>
+                  </div>
+                  <div
+                    id="driverManagerBody"
+                    class="rux-card__body reference-manager reference-manager--panel"
+                  ></div>
+                </div>
+
+                <!-- Fleet Manager Card -->
+                <div
+                  class="rux-card rux-card--compact is-hidden reference-manager-card"
+                  id="fleetManagerCard"
+                  data-js="panel-card-fleet-manager"
+                >
+                  <div class="rux-panel__header">
+                    <h2 class="rux-header__title">Manage Vehicles</h2>
+                    <div class="rux-header__actions"></div>
+                  </div>
+                  <div
+                    id="fleetManagerBody"
+                    class="rux-card__body reference-manager reference-manager--panel"
+                  ></div>
+                </div>
+
+                <!-- Driver Week Card (hidden by default) -->
+                <div
+                  class="rux-card rux-card--compact is-hidden"
+                  id="driverWeekCard"
+                  data-js="panel-card-drivers"
+                >
+                  <div class="rux-panel__header">
+                    <h2 class="rux-header__title">Driver Assignments</h2>
+                    <div class="rux-header__actions"></div>
+                  </div>
+                  <div class="rux-card__body">
+                    <div class="driver-week__surface">
+                      <div class="driver-week__wrap">
+                        <table class="driver-week__table">
+                          <thead>
+                            <tr
+                              id="driverWeekHeadRow"
+                              data-js="driver-week-head-row"
+                            ></tr>
+                          </thead>
+                          <tbody
+                            id="driverWeekBody"
+                            data-js="driver-week-body"
+                          ></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="driver-week__foot">
+                    <button
+                      id="driverWeekScheduleBtn"
+                      type="button"
+                      class="rux-btn rux-btn--secondary rux-btn--sm"
+                      disabled
+                    >
+                      <span class="material-symbols-outlined">assignment</span>
+                      Week Schedule
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Notes Card (hidden by default) -->
+                <div
+                  class="rux-card rux-card--compact is-hidden"
+                  id="notesCard"
+                  data-js="panel-card-notes"
+                >
+                  <div class="rux-panel__header">
+                    <h2 class="rux-header__title">Notepad</h2>
+                    <div class="rux-header__actions"></div>
+                  </div>
+                  <div class="rux-card__body">
+                    <div class="notes__wrap">
+                      <textarea
+                        id="scheduleNotes"
+                        class="notes__textarea"
+                        placeholder="Enter notes here..."
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div class="rux-panel__footer notes__footer">
+                    <button
+                      type="button"
+                      class="rux-btn rux-btn--danger"
+                      id="clearNotesBtn"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      type="button"
+                      class="rux-btn rux-btn--primary"
+                      id="saveNotesBtn"
+                    >
+                      Save Notes
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Daily Checklist Card -->
+                <div
+                  class="rux-card rux-card--compact is-hidden"
+                  id="todoCard"
+                  data-js="panel-card-todo"
+                >
+                  <div class="rux-panel__header">
+                    <h2 class="rux-header__title">Checklist</h2>
+                    <div class="rux-header__actions"></div>
+                  </div>
+                  <div class="rux-card__body">
+                    <div
+                      class="todo-header"
+                      id="todoHeader"
+                    ></div>
+                    <div
+                      class="todo-list"
+                      id="todoList"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- Activity Log Card -->
+                <div
+                  class="rux-card rux-card--compact is-hidden"
+                  id="logCard"
+                  data-js="panel-card-log"
+                >
+                  <div class="rux-panel__header">
+                    <div class="log-header__title-wrap">
+                      <h2 class="rux-header__title">Activity Log</h2>
+                      <span
+                        id="logFilterBadge"
                         class="log-filter-badge is-hidden"
                       ></span>
                     </div>
-                    <div class="rux-header__actions"></div>
+                    <div class="rux-header__actions">
+                      <button
+                        id="logClearFilterBtn"
+                        class="rux-btn rux-btn--square is-hidden"
+                        type="button"
+                        title="Show all activity"
+                      >
+                        <span class="material-symbols-outlined">filter_alt_off</span>
+                      </button>
+                      <button
+                        id="logRefreshBtn"
+                        class="rux-btn rux-btn--square"
+                        type="button"
+                        title="Refresh"
+                      >
+                        <span class="material-symbols-outlined">refresh</span>
+                      </button>
+                    </div>
                   </div>
-                  <nav
-                    class="trip-editor__tabs"
-                    role="tablist"
-                    aria-label="Trip editor sections"
-                  >
-                    <button
-                      id="tripEditorTabDetails"
-                      type="button"
-                      class="trip-editor__tab is-active"
-                      role="tab"
-                      data-tab-target="tab-details"
-                      aria-controls="tab-details"
-                      aria-selected="true"
-                    >
-                      Details
-                    </button>
-                    <button
-                      id="tripEditorTabEstimate"
-                      type="button"
-                      class="trip-editor__tab"
-                      role="tab"
-                      data-tab-target="tab-estimate"
-                      aria-controls="tab-estimate"
-                      aria-selected="false"
-                    >
-                      Estimate
-                    </button>
-                    <button
-                      id="tripEditorTabBilling"
-                      type="button"
-                      class="trip-editor__tab"
-                      role="tab"
-                      data-tab-target="tab-billing"
-                      aria-controls="tab-billing"
-                      aria-selected="false"
-                    >
-                      Billing
-                    </button>
-                    <button
-                      id="tripEditorTabDispatch"
-                      type="button"
-                      class="trip-editor__tab"
-                      role="tab"
-                      data-tab-target="tab-dispatch"
-                      aria-controls="tab-dispatch"
-                      aria-selected="false"
-                    >
-                      Dispatch
-                    </button>
-                  </nav>
+                  <div class="rux-card__body">
+                    <div
+                      id="logList"
+                      data-js="log-list"
+                      class="log-list"
+                    ></div>
+                  </div>
                 </div>
-                <div class="rux-card__body">
-                  <div
-                    id="tripConflictBanner"
-                    class="alert alert--danger is-hidden u-mb-4"
-                    role="alert"
-                  >
-                    <span class="material-symbols-outlined alert__icon">warning</span>
-                    This trip was updated by someone else on the server. Review changes before
-                    saving.
+
+                <!-- Trip Info Card -->
+                <div
+                  class="rux-card rux-card--compact is-hidden"
+                  id="tripInfoCard"
+                  data-js="panel-card-trip-info"
+                >
+                  <div class="rux-panel__header">
+                    <div class="trip-editor__header-row">
+                      <div class="log-header__title-wrap">
+                        <h2 class="rux-header__title">Trip Editor</h2>
+                        <span
+                          id="tripIdBadge"
+                          class="log-filter-badge is-hidden"
+                        ></span>
+                      </div>
+                      <div class="rux-header__actions"></div>
+                    </div>
+                    <nav
+                      class="trip-editor__tabs"
+                      role="tablist"
+                      aria-label="Trip editor sections"
+                    >
+                      <button
+                        id="tripEditorTabDetails"
+                        type="button"
+                        class="rux-btn rux-btn--toggle trip-editor__tab is-active"
+                        role="tab"
+                        data-tab-target="tab-details"
+                        aria-controls="tab-details"
+                        aria-selected="true"
+                        aria-pressed="true"
+                      >
+                        Details
+                      </button>
+                      <button
+                        id="tripEditorTabEstimate"
+                        type="button"
+                        class="rux-btn rux-btn--toggle trip-editor__tab"
+                        role="tab"
+                        data-tab-target="tab-estimate"
+                        aria-controls="tab-estimate"
+                        aria-selected="false"
+                        aria-pressed="false"
+                      >
+                        Estimate
+                      </button>
+                      <button
+                        id="tripEditorTabBilling"
+                        type="button"
+                        class="rux-btn rux-btn--toggle trip-editor__tab"
+                        role="tab"
+                        data-tab-target="tab-billing"
+                        aria-controls="tab-billing"
+                        aria-selected="false"
+                        aria-pressed="false"
+                      >
+                        Billing
+                      </button>
+                      <button
+                        id="tripEditorTabDispatch"
+                        type="button"
+                        class="rux-btn rux-btn--toggle trip-editor__tab"
+                        role="tab"
+                        data-tab-target="tab-dispatch"
+                        aria-controls="tab-dispatch"
+                        aria-selected="false"
+                        aria-pressed="false"
+                      >
+                        Dispatch
+                      </button>
+                    </nav>
                   </div>
-                  <form
-                    id="tripForm"
-                    data-js="trip-form"
-                    class="form-grid"
-                    target="hidden_iframe"
-                    method="POST"
-                  >
-                    <input
-                      type="hidden"
-                      name="action"
-                      id="action"
-                      value="create"
-                    />
-                    <input
-                      type="hidden"
-                      name="tripKey"
-                      id="tripKey"
-                      value=""
-                    />
-                    <input
-                      type="hidden"
-                      name="tripId"
-                      id="tripId"
-                      value=""
-                    />
-                    <input
-                      type="hidden"
-                      name="itineraryPdfUrl"
-                      id="itineraryPdfUrl"
-                      value=""
-                    />
-                    <input
-                      type="hidden"
-                      name="req56Pass"
-                      id="req56PassValue"
-                      value="false"
-                    />
-                    <input
-                      type="hidden"
-                      name="reqSleeper"
-                      id="reqSleeperValue"
-                      value="false"
-                    />
-                    <input
-                      type="hidden"
-                      name="reqLift"
-                      id="reqLiftValue"
-                      value="false"
-                    />
-                    <input
-                      type="hidden"
-                      name="reqRelief"
-                      id="reqReliefValue"
-                      value="false"
-                    />
-                    <input
-                      type="hidden"
-                      name="reqRelief2"
-                      id="reqRelief2Value"
-                      value="false"
-                    />
-                    <input
-                      type="hidden"
-                      name="reqCoDriver"
-                      id="reqCoDriverValue"
-                      value="false"
-                    />
-                    <input
-                      type="hidden"
-                      name="reqHotel"
-                      id="reqHotelValue"
-                      value="false"
-                    />
-                    <input
-                      type="hidden"
-                      name="reqFuelCard"
-                      id="reqFuelCardValue"
-                      value="false"
-                    />
-                    <input type="hidden" name="oneWay" id="oneWayValue" value="false" />
-                    <input
-                      type="hidden"
-                      name="driverInfoSent"
-                      id="driverInfoSentValue"
-                      value="false"
-                    />
-                    <input
-                      type="hidden"
-                      name="tripReminderSent"
-                      id="tripReminderSentValue"
-                      value="false"
-                    />
-                    <!-- ── Section 1: Trip Details ─────────────────────── -->
+                  <div class="rux-card__body">
                     <div
-                      id="tab-details"
-                      class="form-section-card form-section-flat is-active"
-                      data-tab-panel="details"
-                      role="tabpanel"
-                      aria-labelledby="tripEditorTabDetails"
+                      id="tripConflictBanner"
+                      class="alert alert--danger is-hidden u-mb-4"
+                      role="alert"
                     >
-                      <div class="form-section-card__label">Trip Details</div>
-
-                    <div class="form-group col-6">
-                      <label for="tripDate">Departure Date</label>
-                      <input
-                        type="date"
-                        id="tripDate"
-                        name="departureDate"
-                        required
-                      />
+                      <span class="material-symbols-outlined alert__icon">warning</span>
+                      This trip was updated by someone else on the server. Review changes before
+                      saving.
                     </div>
-
-                    <div class="form-group col-6">
-                      <label for="arrivalDate">Arrival Date</label>
-                      <input
-                        type="date"
-                        id="arrivalDate"
-                        name="arrivalDate"
-                      />
-                    </div>
-
-                    <div class="form-group col-6">
-                      <label for="destination">Destination</label>
-                      <input
-                        type="text"
-                        id="destination"
-                        name="destination"
-                        placeholder=""
-                        autocomplete="off"
-                        required
-                      />
-                    </div>
-
-                    <div class="form-group col-6">
-                      <label for="customer">Customer</label>
-                      <input
-                        type="text"
-                        id="customer"
-                        name="customer"
-                        placeholder=""
-                        autocomplete="off"
-                      />
-                    </div>
-
-                    <div class="form-group col-6">
-                      <label for="contactName">Name</label>
-                      <input
-                        type="text"
-                        id="contactName"
-                        name="contactName"
-                        placeholder=""
-                        autocomplete="off"
-                      />
-                    </div>
-
-                    <div class="form-group col-6">
-                      <label for="phone">Phone</label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        autocomplete="off"
-                        inputmode="tel"
-                        placeholder=""
-                      />
-                    </div>
-
-                    <div class="form-group col-4">
-                      <label for="departureTime">Departure Time</label>
-                      <input
-                        type="time"
-                        id="departureTime"
-                        name="departureTime"
-                      />
-                    </div>
-
-                    <div class="form-group col-4">
-                      <label for="spotTime">Spot Time</label>
-                      <input
-                        type="time"
-                        id="spotTime"
-                        name="spotTime"
-                      />
-                    </div>
-
-                    <div class="form-group col-4">
-                      <label for="arrivalTime">Arrival Time</label>
-                      <input
-                        type="time"
-                        id="arrivalTime"
-                        name="arrivalTime"
-                      />
-                    </div>
-
-                    <div class="form-group col-6">
-                      <label for="envelopeTripContact">Trip Contact</label>
-                      <input
-                        type="text"
-                        id="envelopeTripContact"
-                        name="envelopeTripContact"
-                        autocomplete="off"
-                      />
-                    </div>
-
-                    <div class="form-group col-6">
-                      <label for="envelopeTripPhone">Trip Contact Phone</label>
-                      <input
-                        type="tel"
-                        id="envelopeTripPhone"
-                        name="envelopeTripPhone"
-                        autocomplete="off"
-                        inputmode="tel"
-                      />
-                    </div>
-
-                    <div class="form-group col-12">
-                      <label for="envelopePickup">Pick Up Address</label>
-                      <input
-                        type="text"
-                        id="envelopePickup"
-                        name="envelopePickup"
-                        autocomplete="off"
-                      />
-                    </div>
-
-                    <div class="form-group col-12">
-                      <label for="comments">Driver Instructions</label>
-                      <input
-                        type="text"
-                        id="comments"
-                        name="comments"
-                        placeholder=""
-                        autocomplete="off"
-                      />
-                    </div>
-
-                    <div class="trip-details-color-notes-row">
-                    <div class="form-group trip-details-color-field">
-                      <label>Color</label>
-                      <div id="tripColorSwatches" class="trip-color-swatches" role="group" aria-label="Trip color">
-                        <button type="button" id="tripColorTrigger" class="trip-color-trigger"
-                          aria-haspopup="true" aria-expanded="false" aria-label="Choose trip color" title="Choose color">
-                          <span class="trip-color-trigger__preview trip-color-swatch--none"></span>
-                        </button>
-                        <div id="tripColorDropdown" class="trip-color-dropdown">
-                          <button type="button" class="trip-color-swatch trip-color-swatch--none is-selected" data-value="" title="None" aria-label="No color"></button>
-                          <button type="button" class="trip-color-swatch" data-value="Cyan"           style="background:var(--rux-color-cyan)"   title="Round-Trip 2"        aria-label="Cyan"></button>
-                          <button type="button" class="trip-color-swatch" data-value="Green"          style="background:var(--rux-color-green)"  title="Round-Trip 3"        aria-label="Green"></button>
-                          <button type="button" class="trip-color-swatch" data-value="Purple"         style="background:var(--rux-color-purple)" title="MVM"                 aria-label="Purple"></button>
-                          <button type="button" class="trip-color-swatch" data-value="Yellow"         style="background:var(--rux-color-yellow)" title="Hold – Pending Info" aria-label="Yellow"></button>
-                          <button type="button" class="trip-color-swatch" data-value="Orange"         style="background:var(--rux-color-orange)" title="Bid Submitted"       aria-label="Orange"></button>
-                          <button type="button" class="trip-color-swatch" data-value="Pink"           style="background:var(--rux-color-pink)"   title="Date TBD"            aria-label="Pink"></button>
-                          <button type="button" class="trip-color-swatch trip-color-swatch--oos" data-value="Out of Service" title="Out of Service" aria-label="Out of Service"></button>
-                        </div>
-                      </div>
-                      <select id="tripColor" name="tripColor" style="display:none">
-                        <option value="" disabled selected>–</option>
-                        <option value="Round-Trip">Round-Trip</option>
-                        <option value="Cyan">Round-Trip 2</option>
-                        <option value="Green">Round-Trip 3</option>
-                        <option value="Purple">MVM</option>
-                        <option value="Yellow">Hold – Pending Info</option>
-                        <option value="Orange">Bid Submitted</option>
-                        <option value="Pink">Date TBD</option>
-                        <option value="Out of Service">Out of Service</option>
-                      </select>
-                    </div>
-
-                    <div class="form-group trip-details-notes-field">
-                      <label for="notes">Notes</label>
-                      <input
-                        type="text"
-                        id="notes"
-                        name="notes"
-                        placeholder=""
-                        autocomplete="off"
-                      />
-                    </div>
-                    </div>
-
-                    </div>
-
-                    <!-- ── Section 2: Estimate ─────────────────────────── -->
-                    <div
-                      id="tab-estimate"
-                      class="form-section-card form-section-flat"
-                      data-tab-panel="estimate"
-                      role="tabpanel"
-                      aria-labelledby="tripEditorTabEstimate"
+                    <form
+                      id="tripForm"
+                      data-js="trip-form"
+                      class="form-grid"
+                      target="hidden_iframe"
+                      method="POST"
                     >
-                      <div class="form-section-card__label">Estimate</div>
-
-                    <div class="form-group col-6">
-                      <label for="estimatedMileage">Mileage</label>
-                      <div class="fld-affix fld-affix--suffix">
-                        <input type="text" id="estimatedMileage" name="estimatedMileage" placeholder="" autocomplete="off" />
-                        <span class="fld-affix__suffix">mi</span>
-                      </div>
-                    </div>
-
-                    <div class="form-group col-6">
-                      <label for="quotedPrice">Quoted Price</label>
-                      <div class="fld-affix fld-affix--prefix">
-                        <span class="fld-affix__prefix">$</span>
-                        <input type="text" id="quotedPrice" name="quotedPrice" class="text-right" placeholder="" autocomplete="off" />
-                      </div>
-                    </div>
-
-                    <div class="form-group col-6">
-                      <label for="drivingHours">Driving Hrs</label>
-                      <div class="fld-affix fld-affix--suffix">
-                        <input type="text" id="drivingHours" name="drivingHours" autocomplete="off" />
-                        <span class="fld-affix__suffix">hr</span>
-                      </div>
-                    </div>
-
-                    <div class="form-group col-6">
-                      <label for="onDutyHours">On-Duty Hrs</label>
-                      <div class="fld-affix fld-affix--suffix">
-                        <input type="text" id="onDutyHours" name="onDutyHours" autocomplete="off" />
-                        <span class="fld-affix__suffix">hr</span>
-                      </div>
-                    </div>
-
-                    <div class="form-group col-12">
-                      <label id="tripRequirementsLabel">Requirements</label>
+                      <input
+                        type="hidden"
+                        name="action"
+                        id="action"
+                        value="create"
+                      />
+                      <input
+                        type="hidden"
+                        name="tripKey"
+                        id="tripKey"
+                        value=""
+                      />
+                      <input
+                        type="hidden"
+                        name="tripId"
+                        id="tripId"
+                        value=""
+                      />
+                      <input
+                        type="hidden"
+                        name="itineraryPdfUrl"
+                        id="itineraryPdfUrl"
+                        value=""
+                      />
+                      <input
+                        type="hidden"
+                        name="req56Pass"
+                        id="req56PassValue"
+                        value="false"
+                      />
+                      <input
+                        type="hidden"
+                        name="reqSleeper"
+                        id="reqSleeperValue"
+                        value="false"
+                      />
+                      <input
+                        type="hidden"
+                        name="reqLift"
+                        id="reqLiftValue"
+                        value="false"
+                      />
+                      <input
+                        type="hidden"
+                        name="reqRelief"
+                        id="reqReliefValue"
+                        value="false"
+                      />
+                      <input
+                        type="hidden"
+                        name="reqRelief2"
+                        id="reqRelief2Value"
+                        value="false"
+                      />
+                      <input
+                        type="hidden"
+                        name="reqCoDriver"
+                        id="reqCoDriverValue"
+                        value="false"
+                      />
+                      <input
+                        type="hidden"
+                        name="reqHotel"
+                        id="reqHotelValue"
+                        value="false"
+                      />
+                      <input
+                        type="hidden"
+                        name="reqFuelCard"
+                        id="reqFuelCardValue"
+                        value="false"
+                      />
+                      <input
+                        type="hidden"
+                        name="oneWay"
+                        id="oneWayValue"
+                        value="false"
+                      />
+                      <input
+                        type="hidden"
+                        name="driverInfoSent"
+                        id="driverInfoSentValue"
+                        value="false"
+                      />
+                      <input
+                        type="hidden"
+                        name="tripReminderSent"
+                        id="tripReminderSentValue"
+                        value="false"
+                      />
+                      <!-- ── Section 1: Trip Details ─────────────────────── -->
                       <div
-                        class="rux-btn--toggle-grid"
-                        data-js="trip-requirements-section"
-                        role="group"
-                        aria-labelledby="tripRequirementsLabel"
+                        id="tab-details"
+                        class="form-section-card form-section-flat is-active"
+                        data-tab-panel="details"
+                        role="tabpanel"
+                        aria-labelledby="tripEditorTabDetails"
                       >
-                      <!-- Row 1: Sleeper, 56-Seats, One-Way -->
-                      <button type="button" class="rux-btn rux-btn--toggle" id="reqSleeper" aria-pressed="false">
-                        <span class="toggle-pill__icon material-symbols-outlined" aria-hidden="true">airline_seat_flat</span>
-                        Sleeper
-                      </button>
-                      <button type="button" class="rux-btn rux-btn--toggle" id="req56Pass" aria-pressed="false">
-                        <span class="toggle-pill__icon material-symbols-outlined" aria-hidden="true">tatami_seat</span>
-                        56-Seats
-                      </button>
-                      <button type="button" class="rux-btn rux-btn--toggle" id="oneWay" aria-pressed="false">
-                        <span class="toggle-pill__icon material-symbols-outlined" aria-hidden="true">arrow_forward</span>
-                        One-Way
-                      </button>
-                      <!-- Row 2: Fuel Card, Hotel, ADA Lift -->
-                      <button type="button" class="rux-btn rux-btn--toggle" id="reqFuelCard" aria-pressed="false">
-                        <span class="toggle-pill__icon material-symbols-outlined" aria-hidden="true">credit_card</span>
-                        Fuel Card
-                      </button>
-                      <button type="button" class="rux-btn rux-btn--toggle" id="reqHotel" aria-pressed="false">
-                        <span class="toggle-pill__icon material-symbols-outlined" aria-hidden="true">apartment</span>
-                        Hotel
-                      </button>
-                      <button type="button" class="rux-btn rux-btn--toggle" id="reqLift" aria-pressed="false">
-                        <span class="toggle-pill__icon material-symbols-outlined" aria-hidden="true">accessible</span>
-                        ADA Lift
-                      </button>
-                      </div>
-                    </div>
+                        <div class="form-section-card__label">Trip Details</div>
 
-                    <div class="form-group col-12 estimate-itinerary-field">
-                      <label for="itinerary">Itinerary</label>
-                      <textarea
-                        id="itinerary"
-                        name="itinerary"
-                        autocomplete="off"
-                      ></textarea>
-                    </div>
-                    </div>
+                        <div class="form-group col-6">
+                          <label for="tripDate">Departure Date</label>
+                          <input
+                            type="date"
+                            id="tripDate"
+                            name="departureDate"
+                            required
+                          />
+                        </div>
 
-                    <!-- ── Section 3: Billing ──────────────────────────── -->
-                    <div
-                      id="tab-billing"
-                      class="form-section-card form-section-flat"
-                      data-tab-panel="billing"
-                      role="tabpanel"
-                      aria-labelledby="tripEditorTabBilling"
-                    >
-                      <div class="form-section-card__label">Billing</div>
+                        <div class="form-group col-6">
+                          <label for="arrivalDate">Arrival Date</label>
+                          <input
+                            type="date"
+                            id="arrivalDate"
+                            name="arrivalDate"
+                          />
+                        </div>
 
-                    <input type="hidden" id="itineraryStatus" name="itineraryStatus" value="" />
-                    <input type="hidden" id="contactStatus" name="contactStatus" value="" />
+                        <div class="form-group col-6">
+                          <label for="destination">Destination</label>
+                          <input
+                            type="text"
+                            id="destination"
+                            name="destination"
+                            placeholder=""
+                            autocomplete="off"
+                            required
+                          />
+                        </div>
 
-                    <div class="form-group col-12">
-                      <label>Contract Status</label>
-                      <input type="hidden" id="paymentStatus" name="paymentStatus" value="" />
-                      <div class="rux-btn-group status-toggle-group" data-field="paymentStatus" role="group" aria-label="Contract status">
-                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Pending Quote">Pending</button>
-                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Contract Signed">Signed</button>
-                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="PO Received">PO Rec'd</button>
-                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Not Required">N/A</button>
-                      </div>
-                    </div>
+                        <div class="form-group col-6">
+                          <label for="customer">Customer</label>
+                          <input
+                            type="text"
+                            id="customer"
+                            name="customer"
+                            placeholder=""
+                            autocomplete="off"
+                          />
+                        </div>
 
-                    <div class="form-group col-12">
-                      <label>Invoice Status</label>
-                      <input type="hidden" id="invoiceStatus" name="invoiceStatus" value="" />
-                      <div class="rux-btn-group status-toggle-group" data-field="invoiceStatus" role="group" aria-label="Invoice status">
-                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Pending Invoice">Pending</button>
-                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Invoiced">Invoiced</button>
-                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Deposit Received">Deposit</button>
-                        <button type="button" class="rux-btn rux-btn--secondary status-toggle-btn" data-value="Paid in Full">Paid</button>
-                      </div>
-                    </div>
+                        <div class="form-group col-6">
+                          <label for="contactName">Name</label>
+                          <input
+                            type="text"
+                            id="contactName"
+                            name="contactName"
+                            placeholder=""
+                            autocomplete="off"
+                          />
+                        </div>
 
-                    <div class="form-group col-6">
-                      <label for="paymentType">PO Number</label>
-                      <input
-                        type="text"
-                        id="paymentType"
-                        name="paymentType"
-                        placeholder=""
-                        autocomplete="off"
-                      />
-                    </div>
+                        <div class="form-group col-6">
+                          <label for="phone">Phone</label>
+                          <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            autocomplete="off"
+                            inputmode="tel"
+                            placeholder=""
+                          />
+                        </div>
 
-                    <div
-                      class="form-group col-6"
-                      id="invoiceNumberGroup"
-                    >
-                      <label for="invoiceNumber">Invoice Number</label>
-                      <input
-                        type="text"
-                        id="invoiceNumber"
-                        name="invoiceNumber"
-                        placeholder=""
-                        autocomplete="off"
-                      />
-                    </div>
+                        <div class="form-group col-4">
+                          <label for="departureTime">Departure Time</label>
+                          <input
+                            type="time"
+                            id="departureTime"
+                            name="departureTime"
+                          />
+                        </div>
 
-                    <div class="form-group col-6">
-                      <label for="tripMiles">Post Trip Miles</label>
-                      <div class="fld-affix fld-affix--suffix">
-                        <input type="text" id="tripMiles" name="tripMiles" placeholder="" autocomplete="off" />
-                        <span class="fld-affix__suffix">mi</span>
-                      </div>
-                    </div>
+                        <div class="form-group col-4">
+                          <label for="spotTime">Spot Time</label>
+                          <input
+                            type="time"
+                            id="spotTime"
+                            name="spotTime"
+                          />
+                        </div>
 
-                    <div class="form-group col-6">
-                      <label for="datePaid">Date Paid in Full</label>
-                      <input
-                        type="date"
-                        id="datePaid"
-                        name="datePaid"
-                      />
-                    </div>
+                        <div class="form-group col-4">
+                          <label for="arrivalTime">Arrival Time</label>
+                          <input
+                            type="time"
+                            id="arrivalTime"
+                            name="arrivalTime"
+                          />
+                        </div>
 
-                    <div class="form-group col-4">
-                      <label for="ref1">Ref 1</label>
-                      <input type="text" id="ref1" name="ref1" placeholder="" autocomplete="off" />
-                    </div>
-                    <div class="form-group col-4">
-                      <label for="ref2">Ref 2</label>
-                      <input type="text" id="ref2" name="ref2" placeholder="" autocomplete="off" />
-                    </div>
-                    <div class="form-group col-4">
-                      <label for="ref3">Ref 3</label>
-                      <input type="text" id="ref3" name="ref3" placeholder="" autocomplete="off" />
-                    </div>
+                        <div class="form-group col-6">
+                          <label for="envelopeTripContact">Trip Contact</label>
+                          <input
+                            type="text"
+                            id="envelopeTripContact"
+                            name="envelopeTripContact"
+                            autocomplete="off"
+                          />
+                        </div>
 
-                    <div
-                      class="form-group col-6 is-hidden"
-                      id="driverStatusGroup"
-                      aria-hidden="true"
-                    >
-                      <label for="driverStatus">Driver Status</label>
-                      <select
-                        id="driverStatus"
-                        name="driverStatus"
-                        tabindex="-1"
-                      >
-                        <option
-                          value="Pending"
-                          selected
-                        >
-                          Pending
-                        </option>
-                        <option value="Assigned">Assigned</option>
-                        <option value="Confirmed">Confirmed</option>
-                      </select>
-                    </div>
-                    </div>
+                        <div class="form-group col-6">
+                          <label for="envelopeTripPhone">Trip Contact Phone</label>
+                          <input
+                            type="tel"
+                            id="envelopeTripPhone"
+                            name="envelopeTripPhone"
+                            autocomplete="off"
+                            inputmode="tel"
+                          />
+                        </div>
 
-                    <!-- ── Section 5: Dispatch ─────────────────────────── -->
-                    <div
-                      id="tab-dispatch"
-                      class="form-section-card form-section-flat"
-                      data-js="trip-assignments-section"
-                      data-tab-panel="dispatch"
-                      role="tabpanel"
-                      aria-labelledby="tripEditorTabDispatch"
-                    >
-                      <div class="form-section-card__label">Dispatch</div>
+                        <div class="form-group col-12">
+                          <label for="envelopePickup">Pick Up Address</label>
+                          <input
+                            type="text"
+                            id="envelopePickup"
+                            name="envelopePickup"
+                            autocomplete="off"
+                          />
+                        </div>
 
-                      <div class="dispatch-control-row">
-                        <div class="form-group dispatch-buses-field">
-                          <label>Buses</label>
-                          <div id="busesNeededSeg" class="buses-needed-picker">
-                            <button type="button" id="busesNeededTrigger" class="buses-needed-trigger"
-                              aria-haspopup="true" aria-expanded="false" aria-label="Number of buses">
-                              <span id="busesNeededDisplay">–</span>
-                            </button>
-                            <div id="busesNeededDropdown" class="buses-needed-dropdown">
-                              <button type="button" class="buses-needed-option" data-value="1">1</button>
-                              <button type="button" class="buses-needed-option" data-value="2">2</button>
-                              <button type="button" class="buses-needed-option" data-value="3">3</button>
-                              <button type="button" class="buses-needed-option" data-value="4">4</button>
-                              <button type="button" class="buses-needed-option" data-value="5">5</button>
-                              <button type="button" class="buses-needed-option" data-value="6">6</button>
-                              <button type="button" class="buses-needed-option" data-value="7">7</button>
-                              <button type="button" class="buses-needed-option" data-value="8">8</button>
-                              <button type="button" class="buses-needed-option" data-value="9">9</button>
-                              <button type="button" class="buses-needed-option" data-value="10">10</button>
+                        <div class="form-group col-12">
+                          <label for="comments">Driver Instructions</label>
+                          <input
+                            type="text"
+                            id="comments"
+                            name="comments"
+                            placeholder=""
+                            autocomplete="off"
+                          />
+                        </div>
+
+                        <div class="trip-details-color-notes-row">
+                          <div class="form-group trip-details-color-field">
+                            <label>Color</label>
+                            <div
+                              id="tripColorSwatches"
+                              class="trip-color-swatches"
+                              role="group"
+                              aria-label="Trip color"
+                            >
+                              <button
+                                type="button"
+                                id="tripColorTrigger"
+                                class="trip-color-trigger"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                aria-label="Choose trip color"
+                                title="Choose color"
+                              >
+                                <span
+                                  class="trip-color-trigger__preview trip-color-swatch--none"
+                                ></span>
+                              </button>
+                              <div
+                                id="tripColorDropdown"
+                                class="trip-color-dropdown"
+                              >
+                                <button
+                                  type="button"
+                                  class="trip-color-swatch trip-color-swatch--none is-selected"
+                                  data-value=""
+                                  title="None"
+                                  aria-label="No color"
+                                ></button>
+                                <button
+                                  type="button"
+                                  class="trip-color-swatch"
+                                  data-value="Cyan"
+                                  style="background: var(--rux-color-cyan)"
+                                  title="Round-Trip 2"
+                                  aria-label="Cyan"
+                                ></button>
+                                <button
+                                  type="button"
+                                  class="trip-color-swatch"
+                                  data-value="Green"
+                                  style="background: var(--rux-color-green)"
+                                  title="Round-Trip 3"
+                                  aria-label="Green"
+                                ></button>
+                                <button
+                                  type="button"
+                                  class="trip-color-swatch"
+                                  data-value="Purple"
+                                  style="background: var(--rux-color-purple)"
+                                  title="MVM"
+                                  aria-label="Purple"
+                                ></button>
+                                <button
+                                  type="button"
+                                  class="trip-color-swatch"
+                                  data-value="Yellow"
+                                  style="background: var(--rux-color-yellow)"
+                                  title="Hold – Pending Info"
+                                  aria-label="Yellow"
+                                ></button>
+                                <button
+                                  type="button"
+                                  class="trip-color-swatch"
+                                  data-value="Orange"
+                                  style="background: var(--rux-color-orange)"
+                                  title="Bid Submitted"
+                                  aria-label="Orange"
+                                ></button>
+                                <button
+                                  type="button"
+                                  class="trip-color-swatch"
+                                  data-value="Pink"
+                                  style="background: var(--rux-color-pink)"
+                                  title="Date TBD"
+                                  aria-label="Pink"
+                                ></button>
+                                <button
+                                  type="button"
+                                  class="trip-color-swatch trip-color-swatch--oos"
+                                  data-value="Out of Service"
+                                  title="Out of Service"
+                                  aria-label="Out of Service"
+                                ></button>
+                              </div>
                             </div>
+                            <select
+                              id="tripColor"
+                              name="tripColor"
+                              style="display: none"
+                            >
+                              <option
+                                value=""
+                                disabled
+                                selected
+                              >
+                                –
+                              </option>
+                              <option value="Round-Trip">Round-Trip</option>
+                              <option value="Cyan">Round-Trip 2</option>
+                              <option value="Green">Round-Trip 3</option>
+                              <option value="Purple">MVM</option>
+                              <option value="Yellow">Hold – Pending Info</option>
+                              <option value="Orange">Bid Submitted</option>
+                              <option value="Pink">Date TBD</option>
+                              <option value="Out of Service">Out of Service</option>
+                            </select>
                           </div>
-                          <input type="hidden" id="busesNeeded" name="busesNeeded" value="">
+
+                          <div class="form-group trip-details-notes-field">
+                            <label for="notes">Notes</label>
+                            <input
+                              type="text"
+                              id="notes"
+                              name="notes"
+                              placeholder=""
+                              autocomplete="off"
+                            />
+                          </div>
                         </div>
                       </div>
 
-                      <div class="dispatch-requirements-row">
-                        <button type="button" class="rux-btn rux-btn--toggle dispatch-requirement-toggle" id="reqCoDriver" aria-pressed="false">
-                          <span class="toggle-pill__icon material-symbols-outlined" aria-hidden="true">person</span>
-                          Co-Driver
-                        </button>
-                        <button type="button" class="rux-btn rux-btn--toggle dispatch-requirement-toggle" id="reqRelief" aria-pressed="false">
-                          <span class="toggle-pill__icon material-symbols-outlined" aria-hidden="true">emergency_home</span>
-                          Relief 1
-                        </button>
-                        <button type="button" class="rux-btn rux-btn--toggle dispatch-requirement-toggle" id="reqRelief2" aria-pressed="false">
-                          <span class="toggle-pill__icon material-symbols-outlined" aria-hidden="true">emergency_home</span>
-                          Relief 2
-                        </button>
-                      </div>
+                      <!-- ── Section 2: Estimate ─────────────────────────── -->
+                      <div
+                        id="tab-estimate"
+                        class="form-section-card form-section-flat"
+                        data-tab-panel="estimate"
+                        role="tabpanel"
+                        aria-labelledby="tripEditorTabEstimate"
+                      >
+                        <div class="form-section-card__label">Estimate</div>
 
-                      <div class="form-group col-12">
-                        <div class="bus-assign-header">
-                          <span class="field-label">Bus</span>
-                          <span class="field-label">Driver</span>
-                          <span class="field-label">Pay</span>
+                        <div class="form-group col-6">
+                          <label for="estimatedMileage">Mileage</label>
+                          <div class="fld-affix fld-affix--suffix">
+                            <input
+                              type="text"
+                              id="estimatedMileage"
+                              name="estimatedMileage"
+                              placeholder=""
+                              autocomplete="off"
+                            />
+                            <span class="fld-affix__suffix">mi</span>
+                          </div>
                         </div>
-                        <div id="dispatch-container">
+
+                        <div class="form-group col-6">
+                          <label for="quotedPrice">Quoted Price</label>
+                          <div class="fld-affix fld-affix--prefix">
+                            <span class="fld-affix__prefix">$</span>
+                            <input
+                              type="text"
+                              id="quotedPrice"
+                              name="quotedPrice"
+                              class="text-right"
+                              placeholder=""
+                              autocomplete="off"
+                            />
+                          </div>
+                        </div>
+
+                        <div class="form-group col-6">
+                          <label for="drivingHours">Driving Hrs</label>
+                          <div class="fld-affix fld-affix--suffix">
+                            <input
+                              type="text"
+                              id="drivingHours"
+                              name="drivingHours"
+                              autocomplete="off"
+                            />
+                            <span class="fld-affix__suffix">hr</span>
+                          </div>
+                        </div>
+
+                        <div class="form-group col-6">
+                          <label for="onDutyHours">On-Duty Hrs</label>
+                          <div class="fld-affix fld-affix--suffix">
+                            <input
+                              type="text"
+                              id="onDutyHours"
+                              name="onDutyHours"
+                              autocomplete="off"
+                            />
+                            <span class="fld-affix__suffix">hr</span>
+                          </div>
+                        </div>
+
+                        <div class="form-group col-12">
+                          <label id="tripRequirementsLabel">Requirements</label>
                           <div
-                            id="busGrid"
-                            data-js="trip-bus-grid"
-                          ></div>
+                            class="rux-btn--toggle-grid"
+                            data-js="trip-requirements-section"
+                            role="group"
+                            aria-labelledby="tripRequirementsLabel"
+                          >
+                            <!-- Row 1: Sleeper, 56-Seats, One-Way -->
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--toggle"
+                              id="reqSleeper"
+                              aria-pressed="false"
+                            >
+                              <span
+                                class="toggle-pill__icon material-symbols-outlined"
+                                aria-hidden="true"
+                                >airline_seat_flat</span
+                              >
+                              Sleeper
+                            </button>
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--toggle"
+                              id="req56Pass"
+                              aria-pressed="false"
+                            >
+                              <span
+                                class="toggle-pill__icon material-symbols-outlined"
+                                aria-hidden="true"
+                                >tatami_seat</span
+                              >
+                              56-Seats
+                            </button>
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--toggle"
+                              id="oneWay"
+                              aria-pressed="false"
+                            >
+                              <span
+                                class="toggle-pill__icon material-symbols-outlined"
+                                aria-hidden="true"
+                                >arrow_forward</span
+                              >
+                              One-Way
+                            </button>
+                            <!-- Row 2: Fuel Card, Hotel, ADA Lift -->
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--toggle"
+                              id="reqFuelCard"
+                              aria-pressed="false"
+                            >
+                              <span
+                                class="toggle-pill__icon material-symbols-outlined"
+                                aria-hidden="true"
+                                >credit_card</span
+                              >
+                              Fuel Card
+                            </button>
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--toggle"
+                              id="reqHotel"
+                              aria-pressed="false"
+                            >
+                              <span
+                                class="toggle-pill__icon material-symbols-outlined"
+                                aria-hidden="true"
+                                >apartment</span
+                              >
+                              Hotel
+                            </button>
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--toggle"
+                              id="reqLift"
+                              aria-pressed="false"
+                            >
+                              <span
+                                class="toggle-pill__icon material-symbols-outlined"
+                                aria-hidden="true"
+                                >accessible</span
+                              >
+                              ADA Lift
+                            </button>
+                          </div>
+                        </div>
+
+                        <div class="form-group col-12 estimate-itinerary-field">
+                          <label for="itinerary">Itinerary</label>
+                          <textarea
+                            id="itinerary"
+                            name="itinerary"
+                            autocomplete="off"
+                          ></textarea>
                         </div>
                       </div>
 
-                    </div>
+                      <!-- ── Section 3: Billing ──────────────────────────── -->
+                      <div
+                        id="tab-billing"
+                        class="form-section-card form-section-flat"
+                        data-tab-panel="billing"
+                        role="tabpanel"
+                        aria-labelledby="tripEditorTabBilling"
+                      >
+                        <div class="form-section-card__label">Billing</div>
 
+                        <input
+                          type="hidden"
+                          id="itineraryStatus"
+                          name="itineraryStatus"
+                          value=""
+                        />
+                        <input
+                          type="hidden"
+                          id="contactStatus"
+                          name="contactStatus"
+                          value=""
+                        />
 
-                    <input
-                      type="hidden"
-                      id="envelopeTripNotes"
-                      name="envelopeTripNotes"
-                    />
-                  </form>
+                        <div class="form-group col-12">
+                          <label>Contract Status</label>
+                          <input
+                            type="hidden"
+                            id="paymentStatus"
+                            name="paymentStatus"
+                            value=""
+                          />
+                          <div
+                            class="rux-btn-group status-toggle-group"
+                            data-field="paymentStatus"
+                            role="group"
+                            aria-label="Contract status"
+                          >
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--secondary status-toggle-btn"
+                              data-value="Pending Quote"
+                            >
+                              Pending
+                            </button>
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--secondary status-toggle-btn"
+                              data-value="Not Required"
+                            >
+                              N/A
+                            </button>
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--secondary status-toggle-btn"
+                              data-value="Contract Signed"
+                            >
+                              Signed
+                            </button>
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--secondary status-toggle-btn"
+                              data-value="PO Received"
+                            >
+                              PO
+                            </button>
+                          </div>
+                        </div>
+
+                        <div class="form-group col-12">
+                          <label>Invoice Status</label>
+                          <input
+                            type="hidden"
+                            id="invoiceStatus"
+                            name="invoiceStatus"
+                            value=""
+                          />
+                          <div
+                            class="rux-btn-group status-toggle-group"
+                            data-field="invoiceStatus"
+                            role="group"
+                            aria-label="Invoice status"
+                          >
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--secondary status-toggle-btn"
+                              data-value="Pending Invoice"
+                            >
+                              Pending
+                            </button>
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--secondary status-toggle-btn"
+                              data-value="Invoiced"
+                            >
+                              Invoiced
+                            </button>
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--secondary status-toggle-btn"
+                              data-value="Deposit Received"
+                            >
+                              Deposit
+                            </button>
+                            <button
+                              type="button"
+                              class="rux-btn rux-btn--secondary status-toggle-btn"
+                              data-value="Paid in Full"
+                            >
+                              Paid
+                            </button>
+                          </div>
+                        </div>
+
+                        <div class="form-group col-6">
+                          <label for="paymentType">PO Number</label>
+                          <input
+                            type="text"
+                            id="paymentType"
+                            name="paymentType"
+                            placeholder=""
+                            autocomplete="off"
+                          />
+                        </div>
+
+                        <div
+                          class="form-group col-6"
+                          id="invoiceNumberGroup"
+                        >
+                          <label for="invoiceNumber">Invoice Number</label>
+                          <input
+                            type="text"
+                            id="invoiceNumber"
+                            name="invoiceNumber"
+                            placeholder=""
+                            autocomplete="off"
+                          />
+                        </div>
+
+                        <div class="form-group col-6">
+                          <label for="tripMiles">Post Trip Miles</label>
+                          <div class="fld-affix fld-affix--suffix">
+                            <input
+                              type="text"
+                              id="tripMiles"
+                              name="tripMiles"
+                              placeholder=""
+                              autocomplete="off"
+                            />
+                            <span class="fld-affix__suffix">mi</span>
+                          </div>
+                        </div>
+
+                        <div class="form-group col-6">
+                          <label for="datePaid">Date Paid in Full</label>
+                          <input
+                            type="date"
+                            id="datePaid"
+                            name="datePaid"
+                          />
+                        </div>
+
+                        <div class="form-group col-4">
+                          <label for="ref1">Ref 1</label>
+                          <input
+                            type="text"
+                            id="ref1"
+                            name="ref1"
+                            placeholder=""
+                            autocomplete="off"
+                          />
+                        </div>
+                        <div class="form-group col-4">
+                          <label for="ref2">Ref 2</label>
+                          <input
+                            type="text"
+                            id="ref2"
+                            name="ref2"
+                            placeholder=""
+                            autocomplete="off"
+                          />
+                        </div>
+                        <div class="form-group col-4">
+                          <label for="ref3">Ref 3</label>
+                          <input
+                            type="text"
+                            id="ref3"
+                            name="ref3"
+                            placeholder=""
+                            autocomplete="off"
+                          />
+                        </div>
+
+                        <div
+                          class="form-group col-6 is-hidden"
+                          id="driverStatusGroup"
+                          aria-hidden="true"
+                        >
+                          <label for="driverStatus">Driver Status</label>
+                          <select
+                            id="driverStatus"
+                            name="driverStatus"
+                            tabindex="-1"
+                          >
+                            <option
+                              value="Pending"
+                              selected
+                            >
+                              Pending
+                            </option>
+                            <option value="Assigned">Assigned</option>
+                            <option value="Confirmed">Confirmed</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- ── Section 5: Dispatch ─────────────────────────── -->
+                      <div
+                        id="tab-dispatch"
+                        class="form-section-card form-section-flat"
+                        data-js="trip-assignments-section"
+                        data-tab-panel="dispatch"
+                        role="tabpanel"
+                        aria-labelledby="tripEditorTabDispatch"
+                      >
+                        <div class="form-section-card__label">Dispatch</div>
+
+                        <div class="dispatch-control-row">
+                          <div class="form-group dispatch-buses-field">
+                            <label>Buses</label>
+                            <div
+                              id="busesNeededSeg"
+                              class="buses-needed-picker"
+                            >
+                              <button
+                                type="button"
+                                id="busesNeededTrigger"
+                                class="buses-needed-trigger"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                aria-label="Number of buses"
+                              >
+                                <span id="busesNeededDisplay">–</span>
+                              </button>
+                              <div
+                                id="busesNeededDropdown"
+                                class="buses-needed-dropdown"
+                              >
+                                <button
+                                  type="button"
+                                  class="buses-needed-option"
+                                  data-value="1"
+                                >
+                                  1
+                                </button>
+                                <button
+                                  type="button"
+                                  class="buses-needed-option"
+                                  data-value="2"
+                                >
+                                  2
+                                </button>
+                                <button
+                                  type="button"
+                                  class="buses-needed-option"
+                                  data-value="3"
+                                >
+                                  3
+                                </button>
+                                <button
+                                  type="button"
+                                  class="buses-needed-option"
+                                  data-value="4"
+                                >
+                                  4
+                                </button>
+                                <button
+                                  type="button"
+                                  class="buses-needed-option"
+                                  data-value="5"
+                                >
+                                  5
+                                </button>
+                                <button
+                                  type="button"
+                                  class="buses-needed-option"
+                                  data-value="6"
+                                >
+                                  6
+                                </button>
+                                <button
+                                  type="button"
+                                  class="buses-needed-option"
+                                  data-value="7"
+                                >
+                                  7
+                                </button>
+                                <button
+                                  type="button"
+                                  class="buses-needed-option"
+                                  data-value="8"
+                                >
+                                  8
+                                </button>
+                                <button
+                                  type="button"
+                                  class="buses-needed-option"
+                                  data-value="9"
+                                >
+                                  9
+                                </button>
+                                <button
+                                  type="button"
+                                  class="buses-needed-option"
+                                  data-value="10"
+                                >
+                                  10
+                                </button>
+                              </div>
+                            </div>
+                            <input
+                              type="hidden"
+                              id="busesNeeded"
+                              name="busesNeeded"
+                              value=""
+                            />
+                          </div>
+                        </div>
+
+                        <div class="dispatch-requirements-row">
+                          <button
+                            type="button"
+                            class="rux-btn rux-btn--toggle dispatch-requirement-toggle"
+                            id="reqCoDriver"
+                            aria-pressed="false"
+                          >
+                            <span
+                              class="toggle-pill__icon material-symbols-outlined"
+                              aria-hidden="true"
+                              >person</span
+                            >
+                            Co-Driver
+                          </button>
+                          <button
+                            type="button"
+                            class="rux-btn rux-btn--toggle dispatch-requirement-toggle"
+                            id="reqRelief"
+                            aria-pressed="false"
+                          >
+                            <span
+                              class="toggle-pill__icon material-symbols-outlined"
+                              aria-hidden="true"
+                              >emergency_home</span
+                            >
+                            Relief 1
+                          </button>
+                          <button
+                            type="button"
+                            class="rux-btn rux-btn--toggle dispatch-requirement-toggle"
+                            id="reqRelief2"
+                            aria-pressed="false"
+                          >
+                            <span
+                              class="toggle-pill__icon material-symbols-outlined"
+                              aria-hidden="true"
+                              >emergency_home</span
+                            >
+                            Relief 2
+                          </button>
+                        </div>
+
+                        <div class="form-group col-12">
+                          <div class="bus-assign-header">
+                            <span class="field-label">Bus</span>
+                            <span class="field-label">Driver</span>
+                            <span class="field-label">Pay</span>
+                          </div>
+                          <div id="dispatch-container">
+                            <div
+                              id="busGrid"
+                              data-js="trip-bus-grid"
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <input
+                        type="hidden"
+                        id="envelopeTripNotes"
+                        name="envelopeTripNotes"
+                      />
+                    </form>
+                  </div>
+
+                  <div class="rux-panel__footer rux-panel__footer--sticky">
+                    <button
+                      type="button"
+                      class="rux-btn rux-btn--danger"
+                      id="deleteBtn"
+                      disabled
+                    >
+                      <span class="material-symbols-outlined">delete</span>
+                      Delete
+                    </button>
+                    <button
+                      type="button"
+                      class="rux-btn rux-btn--secondary"
+                      id="newBtn"
+                    >
+                      <span class="material-symbols-outlined">restart_alt</span>
+                      Clear
+                    </button>
+                    <button
+                      type="submit"
+                      class="rux-btn rux-btn--primary"
+                      id="saveBtn"
+                      form="tripForm"
+                    >
+                      <span class="material-symbols-outlined">save</span>
+                      Save
+                    </button>
+                  </div>
+
+                  <iframe
+                    id="hidden_iframe"
+                    name="hidden_iframe"
+                    class="is-hidden"
+                    title="Hidden submission iframe"
+                  ></iframe>
                 </div>
-
-                <div class="rux-panel__footer rux-panel__footer--sticky">
-                  <button
-                    type="button"
-                    class="rux-btn rux-btn--danger"
-                    id="deleteBtn"
-                    disabled
-                  >
-                    <span class="material-symbols-outlined">delete</span>
-                    Delete
-                  </button>
-                  <button
-                    type="button"
-                    class="rux-btn rux-btn--secondary"
-                    id="newBtn"
-                  >
-                    <span class="material-symbols-outlined">restart_alt</span>
-                    Clear
-                  </button>
-                  <button
-                    type="submit"
-                    class="rux-btn rux-btn--primary"
-                    id="saveBtn"
-                    form="tripForm"
-                  >
-                    <span class="material-symbols-outlined">save</span>
-                    Save
-                  </button>
-                </div>
-
-                <iframe
-                  id="hidden_iframe"
-                  name="hidden_iframe"
-                  class="is-hidden"
-                  title="Hidden submission iframe"
-                ></iframe>
               </div>
-              </div><!-- /.sidebar__content -->
-            </div><!-- /#panelEnd -->
+              <!-- /.sidebar__content -->
+            </div>
+            <!-- /#panelEnd -->
 
             <!-- MAIN PANEL (Schedule) -->
             <div class="o-app-layout__main">
@@ -1510,6 +2259,32 @@
                     aria-atomic="true"
                   ></span>
                   <div class="rux-header__actions">
+                    <div
+                      id="searchRow"
+                      class="search-row"
+                      hidden
+                    >
+                      <div class="search-row__inner">
+                        <input
+                          id="searchInput"
+                          class="search-row__input"
+                          type="search"
+                          placeholder="Search destination, customer, contact…"
+                          autocomplete="off"
+                          spellcheck="false"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      id="searchToggleBtn"
+                      class="rux-btn rux-btn--secondary rux-btn--icon"
+                      type="button"
+                      aria-label="Search trips"
+                      title="Search trips"
+                      aria-pressed="false"
+                    >
+                      <span class="material-symbols-outlined">search</span>
+                    </button>
                     <div class="rux-btn-group">
                       <button
                         id="prevWeekBtn"
@@ -1570,37 +2345,37 @@
                 </div>
 
                 <div class="schedule-surface">
-                <div
-                  class="schedule-viewport schedule-viewport--fluid"
-                  data-js="schedule-grid-wrap"
-                >
-                  <table
-                    class="schedule-grid"
-                    data-js="schedule-grid-table"
+                  <div
+                    class="schedule-viewport schedule-viewport--fluid"
+                    data-js="schedule-grid-wrap"
                   >
-                    <colgroup>
-                      <col class="schedule-grid__col-bus" />
-                      <!-- Day columns built dynamically by buildScheduleHeader() -->
-                    </colgroup>
+                    <table
+                      class="schedule-grid"
+                      data-js="schedule-grid-table"
+                    >
+                      <colgroup>
+                        <col class="schedule-grid__col-bus" />
+                        <!-- Day columns built dynamically by buildScheduleHeader() -->
+                      </colgroup>
 
-                    <thead>
-                      <tr>
-                        <th class="schedule-grid__header-cell"></th>
-                        <!-- Day header cells built dynamically by buildScheduleHeader() -->
-                      </tr>
-                    </thead>
+                      <thead>
+                        <tr>
+                          <th class="schedule-grid__header-cell"></th>
+                          <!-- Day header cells built dynamically by buildScheduleHeader() -->
+                        </tr>
+                      </thead>
 
-                    <tbody
-                      id="agendaBody"
-                      data-js="schedule-agenda-body"
-                    ></tbody>
-                    <tbody
-                      id="waitingBody"
-                      data-js="schedule-waiting-body"
-                      hidden
-                    ></tbody>
-                  </table>
-                </div>
+                      <tbody
+                        id="agendaBody"
+                        data-js="schedule-agenda-body"
+                      ></tbody>
+                      <tbody
+                        id="waitingBody"
+                        data-js="schedule-waiting-body"
+                        hidden
+                      ></tbody>
+                    </table>
+                  </div>
                 </div>
 
                 <div
@@ -1673,6 +2448,65 @@
           >
             Close
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PDF Viewer Modal -->
+    <div
+      id="pdfViewerModal"
+      class="modal modal--pdf-viewer"
+      hidden
+    >
+      <div
+        class="modal__backdrop"
+        data-close-pdf
+      ></div>
+
+      <div
+        class="modal__card"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Itinerary PDF"
+      >
+        <div class="rux-header rux-header--modal">
+          <h2 class="section-title rux-header__title">Itinerary PDF</h2>
+          <div class="rux-header__actions">
+            <a
+              id="pdfViewerOpenTabBtn"
+              class="rux-btn rux-btn--ghost"
+              target="_blank"
+              rel="noopener"
+              title="Open in new tab"
+            >
+              <span class="material-symbols-outlined">open_in_new</span>
+            </a>
+            <button
+              id="pdfViewerPrintBtn"
+              class="rux-btn rux-btn--ghost"
+              type="button"
+              aria-label="Print"
+              title="Print"
+            >
+              <span class="material-symbols-outlined">print</span>
+            </button>
+            <button
+              id="pdfViewerCloseBtn"
+              class="rux-btn rux-btn--ghost"
+              type="button"
+              aria-label="Close"
+            >
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal__body modal__body--pdf">
+          <iframe
+            id="pdfViewerFrame"
+            title="Itinerary PDF"
+            allowfullscreen
+          ></iframe>
         </div>
       </div>
     </div>
@@ -1843,14 +2677,34 @@
       ></button>
       <div class="modal__card">
         <div class="rux-header rux-header--modal">
-          <h2 class="section-title rux-header__title" id="driverWeekScheduleTitle">Driver Week Schedule</h2>
+          <h2
+            class="section-title rux-header__title"
+            id="driverWeekScheduleTitle"
+          >
+            Driver Week Schedule
+          </h2>
         </div>
         <div class="modal__body modal__body--cards">
-          <div class="drv-msg-preview" id="driverWeekSchedulePreview"></div>
+          <div
+            class="drv-msg-preview"
+            id="driverWeekSchedulePreview"
+          ></div>
         </div>
         <div class="modal__foot rux-panel__footer">
-          <button id="copyDriverWeekScheduleBtn" class="rux-btn rux-btn--secondary" type="button">Copy for SMS</button>
-          <button id="closeDriverWeekScheduleBtn" class="rux-btn rux-btn--secondary" type="button">Close</button>
+          <button
+            id="copyDriverWeekScheduleBtn"
+            class="rux-btn rux-btn--secondary"
+            type="button"
+          >
+            Copy for SMS
+          </button>
+          <button
+            id="closeDriverWeekScheduleBtn"
+            class="rux-btn rux-btn--secondary"
+            type="button"
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>
@@ -1878,20 +2732,62 @@
 
         <div class="modal__body driver-contact__body">
           <!-- Tab buttons -->
-          <div class="driver-contact__tabs rux-btn-group" role="tablist">
-            <button class="rux-btn rux-btn--secondary driver-contact__tab is-active" data-tab="contact" role="tab" type="button">Contact Info</button>
-            <button class="rux-btn rux-btn--secondary driver-contact__tab" data-tab="reminder" role="tab" type="button">Reminder</button>
-            <button class="rux-btn rux-btn--secondary driver-contact__tab" data-tab="trip" role="tab" type="button">Trip Info</button>
+          <div
+            class="driver-contact__tabs rux-btn-group"
+            role="tablist"
+          >
+            <button
+              class="rux-btn rux-btn--secondary driver-contact__tab is-active"
+              data-tab="contact"
+              role="tab"
+              type="button"
+            >
+              Contact Info
+            </button>
+            <button
+              class="rux-btn rux-btn--secondary driver-contact__tab"
+              data-tab="reminder"
+              role="tab"
+              type="button"
+            >
+              Reminder
+            </button>
+            <button
+              class="rux-btn rux-btn--secondary driver-contact__tab"
+              data-tab="trip"
+              role="tab"
+              type="button"
+            >
+              Trip Info
+            </button>
           </div>
 
           <!-- Single textarea — content swaps on tab change -->
-          <textarea id="driverContactBody"   class="driver-contact__textarea" readonly></textarea>
-          <textarea id="driverReminderBody"  class="driver-contact__textarea is-hidden" readonly></textarea>
-          <textarea id="tripInfoBody"        class="driver-contact__textarea is-hidden" readonly></textarea>
+          <textarea
+            id="driverContactBody"
+            class="driver-contact__textarea"
+            readonly
+          ></textarea>
+          <textarea
+            id="driverReminderBody"
+            class="driver-contact__textarea is-hidden"
+            readonly
+          ></textarea>
+          <textarea
+            id="tripInfoBody"
+            class="driver-contact__textarea is-hidden"
+            readonly
+          ></textarea>
         </div>
 
         <div class="modal__foot">
-          <button id="copyDriverContactBtn" class="rux-btn rux-btn--primary" type="button">Copy</button>
+          <button
+            id="copyDriverContactBtn"
+            class="rux-btn rux-btn--primary"
+            type="button"
+          >
+            Copy
+          </button>
           <button
             id="closeDriverContactBtnFooter"
             class="rux-btn rux-btn--secondary"
@@ -2002,18 +2898,39 @@
     </div>
 
     <!-- Quick Edit Popover -->
-    <div id="tripQuickEdit" class="trip-quick-edit is-hidden" role="dialog" aria-label="Quick edit trip">
+    <div
+      id="tripQuickEdit"
+      class="trip-quick-edit is-hidden"
+      role="dialog"
+      aria-label="Quick edit trip"
+    >
       <div class="trip-quick-edit__arrow"></div>
       <div class="trip-quick-edit__header">
         <span class="trip-quick-edit__title"></span>
-        <button type="button" class="rux-btn rux-btn--square trip-quick-edit__close" id="quickEditCloseBtn">
+        <button
+          type="button"
+          class="rux-btn rux-btn--square trip-quick-edit__close"
+          id="quickEditCloseBtn"
+        >
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
-      <nav class="trip-quick-edit__tabs" id="quickEditTabs"></nav>
-      <div class="trip-quick-edit__body" id="quickEditBody"></div>
+      <nav
+        class="trip-quick-edit__tabs"
+        id="quickEditTabs"
+      ></nav>
+      <div
+        class="trip-quick-edit__body"
+        id="quickEditBody"
+      ></div>
       <div class="trip-quick-edit__footer">
-        <button type="button" class="rux-btn rux-btn--primary" id="quickEditSaveBtn">Save</button>
+        <button
+          type="button"
+          class="rux-btn rux-btn--primary"
+          id="quickEditSaveBtn"
+        >
+          Save
+        </button>
       </div>
     </div>
 
@@ -2175,35 +3092,124 @@
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-    <script src="js/quoteCalculator.js?v=1" defer></script>
-    <script src="js/config.js?v=1" defer></script>
-    <script src="js/dom.js?v=1" defer></script>
-    <script src="js/state.js?v=1" defer></script>
-    <script src="js/utils.js?v=1" defer></script>
-    <script src="js/api.js?v=1" defer></script>
-    <script src="js/status.js?v=1" defer></script>
-    <script src="js/panels.js?v=1" defer></script>
-    <script src="js/schedule.js?v=1" defer></script>
-    <script src="js/drivers.js?v=1" defer></script>
-    <script src="js/trip-form.js?v=1" defer></script>
-    <script src="js/modals.js?v=1" defer></script>
-    <script src="js/envelope.js?v=1" defer></script>
-    <script src="js/print.js?v=1" defer></script>
-    <script src="js/log.js?v=1" defer></script>
-    <script src="js/reports.js?v=1" defer></script>
-    <script src="js/context-menu.js?v=1" defer></script>
-    <script src="js/glass-select.js?v=1" defer></script>
-    <script src="js/profile.js?v=1" defer></script>
-    <script src="js/events.js?v=1" defer></script>
-    <script src="js/week.js?v=1" defer></script>
-    <script src="js/auth.js?v=1" defer></script>
-    <script src="js/app.js?v=58" defer></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+      defer
+    ></script>
+    <script
+      src="js/quoteCalculator.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/config.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/dom.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/state.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/utils.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/api.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/status.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/panels.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/schedule.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/drivers.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/trip-form.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/modals.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/envelope.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/print.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/log.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/reports.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/search.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/context-menu.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/glass-select.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/profile.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/reference-manager.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/events.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/week.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/auth.js?v=1"
+      defer
+    ></script>
+    <script
+      src="js/app.js?v=58"
+      defer
+    ></script>
 
     <!-- Bus picker popover — shown by showBusPicker() -->
-    <div id="busPicker" class="bus-picker" hidden>
+    <div
+      id="busPicker"
+      class="bus-picker"
+      hidden
+    >
       <div class="bus-picker__title">Move to bus</div>
-      <div id="busPickerList" class="bus-picker__list"></div>
+      <div
+        id="busPickerList"
+        class="bus-picker__list"
+      ></div>
     </div>
+    <!-- Search dropdown — at body level to escape overflow:hidden on agenda-header -->
+    <div id="searchDropdown" class="search-dropdown" hidden></div>
   </body>
 </html>
