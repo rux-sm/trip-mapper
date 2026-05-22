@@ -10,6 +10,9 @@
 @import "profile.css";
 @import "primitives.css";
 
+/* Side rails and side panels */
+@import "sidebar.css";
+
 /* Schedule view (grid, nav, panels, agenda) */
 @import "schedule.css";
 @import "trip-bar.css";

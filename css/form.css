@@ -5,7 +5,7 @@
   --rux-trpedit-padding-x: var(--rux-space-5);
   --rux-trpedit-padding-y: var(--rux-space-5);
   --rux-trpedit-section-gap: var(--rux-space-6);
-  --rux-trpedit-radius: var(--rux-radius-9);
+  --rux-trpedit-radius: var(--rux-radius-container);
   --rux-trpedit-header-height: 92px;
   --rux-trpedit-inner-radius: max(
     0px,
@@ -499,34 +499,6 @@ select.is-empty:not(:focus),
 
 /* ── 12. Form Grid Layout ────────────────────────────────────────────────── */
 
-#tripInfoCard {
-  border-radius: var(--rux-trpedit-radius);
-  overflow: clip;
-  position: relative;
-}
-
-#tripInfoCard .rux-panel__header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  gap: 0;
-  height: var(--rux-trpedit-header-height);
-  padding: var(--rux-space-3) var(--rux-space-3) 0;
-  box-sizing: border-box;
-  background: var(--rux-bg-2);
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-#tripInfoCard .rux-card__body {
-  padding-top: var(--rux-trpedit-header-height);
-}
-
 .trip-editor__header-row {
   display: flex;
   align-items: center;
@@ -772,10 +744,6 @@ hr.form-divider {
 }
 .form-section-card.form-section-flat:first-of-type { padding-top: 0; }
 
-#tripInfoCard .form-section-card__label {
-  display: none;
-}
-
 .form-section-card__label {
   grid-column: 1 / -1;
   font-family: var(--rux-font-sans);
@@ -787,10 +755,6 @@ hr.form-divider {
   padding-bottom: var(--rux-space-2);
   border-bottom: 1px solid var(--rux-border-2);
   margin-bottom: var(--rux-space-1);
-}
-
-#tripInfoCard .form-group > .rux-btn--toggle-grid {
-  margin-top: 0;
 }
 
 #tab-estimate.is-active {
@@ -806,27 +770,10 @@ hr.form-divider {
 
 .estimate-itinerary-field textarea {
   flex: 1 1 auto;
+  font-family: var(--rux-font-mono);
   min-height: 160px;
   resize: none;
-}
-
-/* Sticky action footer */
-.rux-panel__footer--sticky {
-  position: sticky;
-  bottom: 0;
-  z-index: 10;
-  background: var(--rux-bg-2);
-  padding-top: var(--rux-space-3);
-}
-
-#tripInfoCard .rux-panel__footer {
-  gap: var(--rux-space-3);
-  flex-wrap: nowrap;
-}
-
-#tripInfoCard .rux-panel__footer > .rux-btn {
-  flex: 1 1 0;
-  min-width: 0;
+  font-size: 12px;
 }
 
 /* ── Bus Segmented Selector ─────────────────────────────── */
@@ -1092,31 +1039,4 @@ hr.form-divider {
     var(--rux-bg-5) 0px, var(--rux-bg-5) 4px,
     var(--rux-bg-4) 4px, var(--rux-bg-4) 8px
   );
-}
-
-/* ── Trip editor load shimmer ────────────────────────────────────────────── */
-
-@keyframes trip-load-shimmer {
-  0%   { transform: translateX(-100%); opacity: 0; }
-  15%  { opacity: 1; }
-  85%  { opacity: 1; }
-  100% { transform: translateX(200%); opacity: 0; }
-}
-
-#tripInfoCard.is-loading::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 50%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    oklch(from var(--rux-color-accent) l c h / 12%) 50%,
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: 10;
-  animation: trip-load-shimmer 0.45s ease-in-out forwards;
 }

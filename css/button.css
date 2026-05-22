@@ -4,31 +4,32 @@
    #1  Element reset
    #2  .rux-btn — base + states + icons
    #3  Color variants — --accent  --normal  --danger  --success  --border
-   #4  .rux-btn--square — icon-only 28×28 (extends .rux-btn)
-   #5  .rux-btn--toggle — full-width toggles (extends .rux-btn)
-   #6  Toggle grid + requirement label
-   #7  Form action containers
+   #4  .rux-btn--square — compact icon-only buttons (extends .rux-btn)
+   #5  .rux-btn--icon — toolbar icon-only buttons (extends .rux-btn)
+   #6  .rux-icon-toolbar — loose icon button cluster
+   #7  .rux-btn--toggle — full-width toggles (extends .rux-btn)
+   #8  Toggle grid + requirement label
+   #9  Form action containers
    ========================================================================== */
 
 /* ── Tier 3 tokens ───────────────────────────────────────────────────────── */
 
 :root {
-  --rux-btn-bg-primary:   oklch(from var(--rux-color-accent) 60% c h);
+  --rux-btn-bg-primary: oklch(from var(--rux-color-accent) 60% c h);
   --rux-btn-bg-secondary: oklch(from var(--rux-color-gray) 30% c h);
-  --rux-btn-bg-danger:    oklch(from var(--rux-color-gray) 30% c h);
-  --rux-btn-text:         var(--rux-color-white);
-  --rux-btn-text-danger: oklch(from var(--rux-color-red) 80% .3 h);
-  --rux-btn-hover-lift:   0.1;
+  --rux-btn-bg-danger: oklch(from var(--rux-color-gray) 30% c h);
+  --rux-btn-text: var(--rux-color-white);
+  --rux-btn-text-danger: oklch(from var(--rux-color-red) 80% 0.3 h);
+  --rux-btn-hover-lift: 0.1;
 
-  --rux-btn-height:      32px;
-  --rux-btn-radius:      var(--rux-radius-3);
-  --rux-btn-padding:     0 12px;
-  --rux-btn-gap:         4px;
+  --rux-btn-height: 32px;
+  --rux-btn-radius: var(--rux-radius-button);
+  --rux-btn-padding: 0 12px;
+  --rux-btn-gap: 4px;
 
   --rux-btn-font-family: var(--rux-font-sans);
-  --rux-btn-font-size:   var(--rux-size-4);
+  --rux-btn-font-size: var(--rux-size-4);
   --rux-btn-font-weight: var(--rux-weight-regular);
-
 
   /*--rux-btn-shadow-inset: var(--rux-surface-shadow-inset);
 
@@ -40,13 +41,16 @@
   --rux-btn-icon-fill: 1;
   --rux-btn-icon-wght: 400;
   --rux-btn-icon-grad: 0;
-  --rux-btn-icon-opsz: 20;  
+  --rux-btn-icon-opsz: 20;
 
   --rux-btn-square-icon-size: 22px;
   --rux-btn-square-icon-fill: 0;
   --rux-btn-square-icon-wght: 400;
   --rux-btn-square-icon-grad: 0;
   --rux-btn-square-icon-opsz: 24;
+
+  --rux-btn-icon-only-size: var(--size-toolbar-action);
+  --rux-btn-icon-toolbar-gap: var(--rux-space-2);
 }
 
 /* ── 1. Element Reset ───────────────────────────────────────────────────── */
@@ -60,47 +64,53 @@ button {
 /* ── 2. Base ─────────────────────────────────────────────────────────────── */
 
 .rux-btn {
-  --btn-background:        var(--rux-btn-bg-secondary);
-  --btn-text:              var(--rux-btn-text);
-  --btn-border:            transparent;
-  --btn-hover-background:  oklch(from var(--btn-background) calc(l + var(--rux-btn-hover-lift)) c h);
+  --btn-background: var(--rux-btn-bg-secondary);
+  --btn-text: var(--rux-btn-text);
+  --btn-border: transparent;
+  --btn-hover-background: oklch(from var(--btn-background) calc(l + var(--rux-btn-hover-lift)) c h);
   --btn-active-background: oklch(from var(--btn-background) calc(l - 0.05) c h);
-  --btn-shadow:            none;
+  --btn-shadow: none;
 
-  box-sizing:          border-box;
-  display:             inline-flex;
-  align-items:         center;
-  justify-content:     center;
-  gap:                 var(--rux-btn-gap);
-  height:              var(--rux-btn-height);
-  padding:             var(--rux-btn-padding);
-  min-width:           80px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rux-btn-gap);
+  height: var(--rux-btn-height);
+  padding: var(--rux-btn-padding);
+  min-width: 80px;
 
-  font-family:         var(--rux-btn-font-family);
-  font-size:           var(--rux-btn-font-size);
-  font-weight:         var(--rux-btn-font-weight);
-  line-height:         1;
-  white-space:         nowrap;
-  text-decoration:     none;
-  user-select:         none;
+  font-family: var(--rux-btn-font-family);
+  font-size: var(--rux-btn-font-size);
+  font-weight: var(--rux-btn-font-weight);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  user-select: none;
   -webkit-user-select: none;
 
-  cursor:           pointer;
-  border-radius:    var(--rux-btn-radius);
-  border:           none;
+  cursor: pointer;
+  border-radius: var(--rux-btn-radius);
+  border: none;
   background-color: var(--btn-background);
-  color:            var(--btn-text);
-  box-shadow:       var(--btn-shadow);
+  color: var(--btn-text);
+  box-shadow: var(--btn-shadow);
 
   transition:
     background-color var(--transition-fast),
-    border-color     var(--transition-fast),
-    color            var(--transition-fast),
-    transform        0.1s ease;
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform 0.1s ease;
 }
 
-.rux-btn:hover  { background-color: var(--btn-hover-background); }
-.rux-btn:active { background-color: var(--btn-active-background); transform: scale(0.97); --btn-shadow: var(--rux-btn-shadow-active); }
+.rux-btn:hover {
+  background-color: var(--btn-hover-background);
+}
+.rux-btn:active {
+  background-color: var(--btn-active-background);
+  transform: scale(0.97);
+  --btn-shadow: var(--rux-btn-shadow-active);
+}
 
 .rux-btn:focus-visible {
   outline: none;
@@ -110,9 +120,9 @@ button {
 .rux-btn:disabled,
 .rux-btn[aria-disabled="true"] {
   background-color: var(--rux-bg-5) !important;
-  color:            var(--rux-text-3) !important;
-  cursor:           not-allowed;
-  pointer-events:   none;
+  color: var(--rux-text-3) !important;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .rux-btn .material-symbols-outlined {
@@ -124,27 +134,37 @@ button {
     "opsz" var(--rux-btn-icon-opsz);
 }
 
-.rux-btn--primary   { --btn-background: var(--rux-btn-bg-primary);   --btn-shadow: var(--rux-btn-shadow-inset);  }
-.rux-btn--secondary { --btn-background: var(--rux-btn-bg-secondary); --btn-shadow: var(--rux-btn-shadow-inset); }
-.rux-btn--danger    { --btn-background: var(--rux-btn-bg-danger); --btn-shadow: var(--rux-btn-shadow-inset);--rux-btn-text: var(--rux-btn-text-danger); }
+.rux-btn--primary {
+  --btn-background: var(--rux-btn-bg-primary);
+  --btn-shadow: var(--rux-btn-shadow-inset);
+}
+.rux-btn--secondary {
+  --btn-background: var(--rux-btn-bg-secondary);
+  --btn-shadow: var(--rux-btn-shadow-inset);
+}
+.rux-btn--danger {
+  --btn-background: var(--rux-btn-bg-danger);
+  --btn-shadow: var(--rux-btn-shadow-inset);
+  --rux-btn-text: var(--rux-btn-text-danger);
+}
 
 .rux-btn--tertiary {
-  --btn-background:        transparent;
-  --btn-border:            var(--rux-border-3);
-  --btn-hover-background:  var(--overlay-hover-up);
+  --btn-background: transparent;
+  --btn-border: var(--rux-border-3);
+  --btn-hover-background: var(--overlay-hover-up);
   --btn-active-background: var(--overlay-active-up);
 }
 
-/* ── 4. Square — icon-only 28×28 ────────────────────────────────────────── */
+/* ── 4. Square — compact icon-only buttons ──────────────────────────────── */
 
 .rux-btn--square {
-  --btn-background:        transparent;
-  --btn-hover-background:  oklch(from var(--rux-bg-2) calc(l + var(--rux-btn-hover-lift)) c h);
+  --btn-background: transparent;
+  --btn-hover-background: oklch(from var(--rux-bg-2) calc(l + var(--rux-btn-hover-lift)) c h);
   --btn-active-background: var(--rux-btn-bg-primary);
 
-  width:     32px;
+  width: 32px;
   min-width: 32px;
-  padding:   0;
+  padding: 0;
 }
 
 .rux-btn--square:active {
@@ -166,22 +186,55 @@ button {
   transition: font-variation-settings var(--transition-fast);
 }
 
-/* ── 5. Toggle — chip-style requirement toggles ─────────────────────────── */
+/* ── 5. Icon — standalone toolbar buttons ───────────────────────────────── */
 
-.rux-btn--toggle {
-  --btn-background:        var(--rux-bg-4);
-  --btn-active-background: var(--rux-bg-4);
-  --btn-shadow:            var(--rux-btn-shadow-inset);
-  --btn-text:              var(--rux-text-2);
-  --btn-border:            none;
-  --rux-btn-icon-fill:     0;
-
-  width:     100%;
-  min-width: 0;
-  padding:   0 8px;
+.rux-btn--icon {
+  width: var(--rux-btn-icon-only-size);
+  min-width: var(--rux-btn-icon-only-size);
+  height: var(--rux-btn-icon-only-size);
+  padding: 0;
 }
 
-.rux-btn--toggle:active { transform: none; }
+.rux-btn--icon:active {
+  transform: none;
+}
+
+.rux-btn--icon[aria-pressed="true"] {
+  background-color: var(--rux-btn-bg-primary);
+  color: var(--rux-color-black);
+}
+
+/* Loose toolbar clusters keep each icon button's own radius and border.
+   Use .rux-btn-group only when the controls should visually segment together. */
+.rux-icon-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rux-btn-icon-toolbar-gap);
+}
+
+.rux-icon-toolbar > .rux-btn--icon,
+.rux-icon-toolbar > * > .rux-btn--icon {
+  flex: 0 0 var(--rux-btn-icon-only-size);
+}
+
+/* ── 7. Toggle — chip-style requirement toggles ─────────────────────────── */
+
+.rux-btn--toggle {
+  --btn-background: var(--rux-bg-4);
+  --btn-active-background: var(--rux-bg-4);
+  --btn-shadow: var(--rux-btn-shadow-inset);
+  --btn-text: var(--rux-text-2);
+  --btn-border: none;
+  --rux-btn-icon-fill: 0;
+
+  width: 100%;
+  min-width: 0;
+  padding: 0 8px;
+}
+
+.rux-btn--toggle:active {
+  transform: none;
+}
 
 .rux-btn--toggle .material-symbols-outlined {
   transition: font-variation-settings var(--transition-fast);
@@ -189,18 +242,18 @@ button {
 
 .rux-btn--toggle[aria-pressed="true"],
 .rux-btn--toggle.is-active {
-  --btn-background:    var(--rux-btn-bg-primary);
-  --btn-border:        none;
-  --btn-text:          var(--rux-color-black);
+  --btn-background: var(--rux-btn-bg-primary);
+  --btn-border: none;
+  --btn-text: var(--rux-color-black);
   --rux-btn-icon-fill: 1;
 }
 
 .rux-btn--toggle-reviewed[aria-pressed="true"] {
   --btn-background: oklch(from var(--rux-color-green) 22% c h);
-  --btn-border:     none;
+  --btn-border: none;
 }
 
-/* ── 6. Toggle Grid & Requirement Label ─────────────────────────────────── */
+/* ── 8. Toggle Grid & Requirement Label ─────────────────────────────────── */
 
 .rux-btn--toggle-grid {
   display: grid;
@@ -220,11 +273,11 @@ button {
   margin: 12px 0 0;
 }
 
-/* ── 7. Form Action Containers ──────────────────────────────────────────── */
+/* ── 9. Form Action Containers ──────────────────────────────────────────── */
 
 .form-actions {
-  display:     flex;
-  gap:         8px;
+  display: flex;
+  gap: 8px;
   align-items: center;
 }
 
@@ -240,7 +293,9 @@ button {
   border-radius: var(--rux-btn-radius);
   overflow: hidden;
   background: var(--rux-border-2);
-  box-shadow: 0 1px 2px oklch(0% 0 0 / 40%), 0 2px 8px oklch(0% 0 0 / 20%);
+  box-shadow:
+    0 1px 2px oklch(0% 0 0 / 40%),
+    0 2px 8px oklch(0% 0 0 / 20%);
 }
 
 /* Reset radius, min-width, and external shadow on all buttons */
@@ -267,14 +322,15 @@ button {
 /* Dividers: parent gap creates the visible seam; shadow adds inset depth. */
 .rux-btn-group > * + .rux-btn,
 .rux-btn-group > .rux-btn + * > .rux-btn {
-  --btn-shadow: var(--rux-btn-shadow-inset),
-               inset 1px 0 0 oklch(0% 0 0 / 100%),
-               inset 2px 0 0 oklch(100% 0 0 / 20%);
+  --btn-shadow:
+    var(--rux-btn-shadow-inset), inset 1px 0 0 oklch(0% 0 0 / 100%),
+    inset 2px 0 0 oklch(100% 0 0 / 20%);
 }
 
-/* Icon-only buttons in the group are square */
+/* Icon-only buttons in a segmented group stay square but share group radius. */
 .rux-btn-group > .rux-btn--icon,
 .rux-btn-group > * > .rux-btn--icon {
   width: var(--rux-btn-height);
+  min-width: var(--rux-btn-height);
   padding: 0;
 }

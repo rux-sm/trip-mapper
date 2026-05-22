@@ -1,0 +1,774 @@
+/* ── Tier 3 tokens ───────────────────────────────────────────────────────── */
+
+:root {
+  /* Sidebar geometry */
+  --rux-sidebar-panel-width: 360px;
+  --rux-sidebar-rail-width: 48px;
+  --rux-sidebar-rail-gap: 8px;
+  --rux-sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Sidebar spacing/insets.
+     These feed optical radius calculations below. */
+  --rux-sidebar-rail-padding: var(--rux-space-3);
+  --rux-sidebar-card-padding-x: var(--rux-space-3);
+  --rux-sidebar-panel-content-inset: var(--rux-space-3);
+  --rux-sidebar-trip-header-padding-x: var(--rux-space-3);
+  --rux-sidebar-trip-header-padding-y: var(--rux-space-3);
+  --rux-sidebar-notes-inset-x: var(--rux-space-3);
+  --rux-sidebar-notes-padding: 1rem;
+  --rux-sidebar-control-padding-x: var(--rux-space-2);
+
+  /* Debug border colors for classes that own a visible frame or divider.
+     Swap transparent for the debug tokens below when tracing sidebar layers. */
+  --rux-sidebar-border-shell: transparent;
+  --rux-sidebar-border-rail: transparent;
+  --rux-sidebar-border-card: transparent;
+  --rux-sidebar-border-divider: transparent;
+  --rux-sidebar-border-control: transparent;
+  /* --rux-sidebar-border-shell: var(--rux-debug-border-container); */
+  /* --rux-sidebar-border-rail: var(--rux-debug-border-container); */
+  /* --rux-sidebar-border-card: var(--rux-debug-border-card); */
+  /* --rux-sidebar-border-divider: var(--rux-debug-border-content); */
+  /* --rux-sidebar-border-control: var(--rux-debug-border-content); */
+
+  /* Optical radius tokens for classes that own visible corners.
+     Inner radii are derived from their parent radius minus the inset/padding
+     between the two rounded boxes. Set any token to 0 when that layer should
+     be square. */
+  --rux-sidebar-radius-shell: var(--rux-radius-container);
+  --rux-sidebar-radius-rail: max(
+    16px,
+    calc(var(--rux-sidebar-radius-shell) - var(--rux-sidebar-rail-padding))
+  );
+  --rux-sidebar-radius-card: max(
+    0px,
+    calc(var(--rux-sidebar-radius-shell) - var(--rux-sidebar-panel-content-inset))
+  );
+  --rux-sidebar-radius-slot: 0;
+  --rux-sidebar-radius-icon-button: max(
+    0px,
+    calc(var(--rux-sidebar-radius-rail) - var(--rux-sidebar-rail-padding))
+  );
+  --rux-sidebar-radius-control: max(
+    0px,
+    calc(var(--rux-sidebar-radius-card) - var(--rux-sidebar-card-padding-x))
+  );
+  --rux-sidebar-radius-trip-editor: var(--rux-trpedit-radius);
+  --rux-sidebar-radius-trip-editor-inner: max(
+    0px,
+    calc(var(--rux-sidebar-radius-trip-editor) - var(--rux-sidebar-card-padding-x))
+  );
+}
+
+/* ==========================================================================
+   SIDEBARS
+   Side rails, side panels, sidebar cards, and sidebar-only debug overlays.
+
+   Ownership rule:
+   - Sidebars own placement, rail/panel width, order, and shell visibility.
+   - Cards inside sidebars own their own surface/radius/border.
+   - Header/body/footer are slots; do not make the body span behind them.
+   - Panel-specific content rules live here only when they are caused by
+     being hosted in a sidebar. Pure form/control styling stays in its
+     component file.
+   ========================================================================== */
+
+/* ── Shells ──────────────────────────────────────────────────────────────── */
+
+.o-app-layout__sidebar--left,
+.o-app-layout__sidebar--right {
+  min-width: 0;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1001;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  overflow: visible;
+  background: var(--rux-bg-3);
+  border: 1px solid var(--rux-sidebar-border-shell);
+  transition: width var(--rux-sidebar-transition);
+}
+
+.o-app-layout__sidebar--left {
+  order: 0;
+  border-radius: 0 var(--rux-sidebar-radius-shell) var(--rux-sidebar-radius-shell) 0;
+}
+
+.o-app-layout__sidebar--right {
+  order: 2;
+  border-radius: var(--rux-sidebar-radius-shell) 0 0 var(--rux-sidebar-radius-shell);
+}
+
+.o-app-layout__sidebar--left.is-collapsed,
+.o-app-layout__sidebar--right.is-collapsed {
+  width: var(--rux-sidebar-rail-width);
+  pointer-events: auto;
+}
+
+.o-app-layout__sidebar--left:not(.is-collapsed),
+.o-app-layout__sidebar--right:not(.is-collapsed) {
+  padding: 0;
+  margin: 0;
+  width: calc(var(--rux-sidebar-rail-width) + var(--rux-sidebar-panel-width));
+  background: var(--rux-bg-2);
+}
+
+.o-app-layout__sidebar--right:not(.is-collapsed) {
+  box-shadow: var(--card-shadow-left);
+}
+
+.o-app-layout__sidebar--left:not(.is-collapsed) {
+  box-shadow: var(--card-shadow-right);
+}
+
+.o-app-layout__sidebar--right.is-hidden,
+body.right-rail-hidden #panelEnd {
+  display: none;
+}
+
+body.right-rail-hidden .o-app-layout {
+  padding-right: var(--rux-sidebar-panel-content-inset);
+}
+
+/* ── Icon Rail ───────────────────────────────────────────────────────────── */
+
+.sidebar__rail {
+  position: relative;
+  z-index: 10;
+  width: var(--rux-sidebar-rail-width);
+  flex: 0 0 var(--rux-sidebar-rail-width);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-sidebar-rail-gap);
+  border: 1px solid var(--rux-sidebar-border-rail);
+  padding: var(--rux-sidebar-rail-padding);
+  background: var(--rux-bg-3);
+  transition:
+    width var(--rux-sidebar-transition),
+    flex var(--rux-sidebar-transition),
+    padding var(--rux-sidebar-transition);
+}
+
+.o-app-layout__sidebar.is-collapsed .sidebar__rail {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.o-app-layout__sidebar--left .sidebar__rail {
+  order: 0;
+  align-items: center;
+  border-radius: 0 var(--rux-sidebar-radius-rail) var(--rux-sidebar-radius-rail) 0;
+}
+
+.o-app-layout__sidebar--right .sidebar__rail {
+  order: 1;
+  align-items: center;
+  border-radius: var(--rux-sidebar-radius-rail) 0 0 var(--rux-sidebar-radius-rail);
+}
+
+.o-app-layout__sidebar--left:not(.is-collapsed) .sidebar__rail {
+  padding-right: var(--rux-sidebar-rail-padding);
+}
+
+.o-app-layout__sidebar--right:not(.is-collapsed) .sidebar__rail {
+  padding-left: var(--rux-sidebar-rail-padding);
+}
+
+.o-app-layout__sidebar--left:not(.is-collapsed) .sidebar__rail,
+.o-app-layout__sidebar--right:not(.is-collapsed) .sidebar__rail {
+  width: var(--rux-sidebar-rail-width);
+  flex: 0 0 var(--rux-sidebar-rail-width);
+}
+
+.sidebar__icon-btn {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  border-radius: var(--rux-sidebar-radius-icon-button);
+  background: transparent;
+  border: 1px solid var(--rux-sidebar-border-control);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--rux-text-2);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.sidebar__icon-btn:hover {
+  background: var(--rux-bg-3);
+  color: var(--rux-text-1);
+}
+
+.sidebar__icon-btn.is-active {
+  background: var(--rux-color-accent);
+  color: var(--rux-color-black);
+}
+
+.sidebar__icon-btn--bottom-start {
+  margin-top: auto;
+}
+
+.sidebar__profile-btn {
+  margin-top: 0;
+}
+
+.sidebar__icon-btn .material-symbols-outlined {
+  display: inline-block;
+  font-size: 22px;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  transition: font-variation-settings var(--transition-fast);
+}
+
+.sidebar__icon-btn.is-active .material-symbols-outlined,
+.sidebar__icon-btn.is-deactivating .material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.sidebar__icon-btn.is-active .material-symbols-outlined {
+  animation: railIconActivateSpin 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar__icon-btn.is-deactivating .material-symbols-outlined {
+  animation: railIconDeactivateSpin 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes railIconActivateSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes railIconDeactivateSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar__icon-btn.is-active .material-symbols-outlined,
+  .sidebar__icon-btn.is-deactivating .material-symbols-outlined {
+    animation: none;
+  }
+}
+
+/* ── Content Panel ──────────────────────────────────────────────────────── */
+
+.sidebar__panel {
+  position: relative;
+  z-index: 1;
+  width: var(--rux-sidebar-panel-width);
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.o-app-layout__sidebar.is-collapsed .sidebar__panel {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar__content {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+}
+
+.o-app-layout__sidebar--left .sidebar__content {
+  order: 1;
+}
+
+.o-app-layout__sidebar--right .sidebar__content {
+  order: 0;
+}
+
+.o-app-layout__sidebar.is-collapsed .sidebar__content {
+  flex: 0 0 0;
+  width: 0;
+  min-width: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ── Sidebar Cards ──────────────────────────────────────────────────────── */
+
+.sidebar__content > .rux-card {
+  flex: 1;
+  min-height: 0;
+  width: var(--rux-sidebar-panel-width);
+  margin-bottom: 0;
+  background: var(--rux-bg-2);
+  border: 1px solid var(--rux-sidebar-border-card);
+  box-shadow: none;
+  border-radius: var(--rux-sidebar-radius-card);
+  transition: none;
+}
+
+.sidebar__content > .rux-card:not(.is-hidden) {
+  flex: 1 1 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr;
+  overflow: clip;
+}
+
+.sidebar__content > .rux-card:not(.is-hidden)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--rux-btn-shadow-inset);
+  pointer-events: none;
+  z-index: 99999;
+}
+
+.sidebar__content > .rux-card:not(.is-hidden) .rux-panel__header {
+  grid-row: 1;
+  grid-column: 1;
+  z-index: 2;
+  position: relative;
+  top: auto;
+  background: var(--rux-bg-2);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  overflow: visible;
+  border-radius: var(--rux-sidebar-radius-slot);
+  /* Correct place for the header/body divider.
+     Do not put the panel's outer border or corner radius here; the card shell owns those. */
+  border-bottom: 1px solid var(--rux-sidebar-border-divider);
+}
+
+.sidebar__content > .rux-card:not(.is-hidden) .rux-card__body {
+  grid-row: 2;
+  grid-column: 1;
+  overflow-y: auto;
+  min-height: 0;
+  z-index: 1;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--rux-text-2);
+  padding-inline: var(--rux-sidebar-card-padding-x);
+  background-color: var(--rux-bg-2);
+}
+
+.sidebar__content > .rux-card:not(.is-hidden) .rux-panel__footer {
+  grid-row: 3;
+  grid-column: 1;
+  align-self: end;
+  position: relative;
+  bottom: auto;
+  background: var(--rux-bg-2);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  overflow: visible;
+  border-radius: var(--rux-sidebar-radius-slot);
+  /* Correct place for the body/footer divider.
+     Do not put the panel's outer border or corner radius here; the card shell owns those. */
+  border-top: 1px solid var(--rux-sidebar-border-divider);
+}
+
+/* ── Sidebar-Hosted Panel Content ───────────────────────────────────────── */
+
+/* Trip Editor panel */
+
+#tripInfoCard {
+  /* Trip Editor only customizes the sidebar card radius.
+     The generic sidebar card rule owns surface, border, and clipping. */
+  border-radius: var(--rux-sidebar-radius-trip-editor);
+}
+
+#tripInfoCard .rux-panel__header {
+  position: relative;
+  top: auto;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0;
+  height: var(--rux-trpedit-header-height);
+  padding: var(--rux-sidebar-trip-header-padding-y) var(--rux-sidebar-trip-header-padding-x) 0;
+  box-sizing: border-box;
+  background: var(--rux-bg-2);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: var(--rux-sidebar-radius-trip-editor-inner);
+  overflow: visible;
+}
+
+#tripInfoCard .rux-card__body {
+  border: 1px solid var(--rux-sidebar-border-divider);
+  border-radius: var(--rux-sidebar-radius-slot);
+  padding-top: 0;
+}
+
+#tripInfoCard .form-section-card__label {
+  display: none;
+}
+
+#tripInfoCard .form-group > .rux-btn--toggle-grid {
+  margin-top: 0;
+}
+
+#tripInfoCard .rux-panel__footer,
+#tripInfoCard .rux-panel__footer--sticky {
+  position: relative;
+  bottom: auto;
+  gap: var(--rux-sidebar-card-padding-x);
+  flex-wrap: nowrap;
+  background: var(--rux-bg-2);
+  border-radius: var(--rux-sidebar-radius-slot);
+}
+
+#tripInfoCard .rux-panel__footer > .rux-btn {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+@keyframes trip-load-shimmer {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(200%);
+    opacity: 0;
+  }
+}
+
+#tripInfoCard.is-loading::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 50%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(from var(--rux-color-accent) l c h / 12%) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 10;
+  animation: trip-load-shimmer 0.45s ease-in-out forwards;
+}
+
+/* Notes panel */
+
+#notesWeekTitle.text-muted {
+  color: var(--rux-text-2);
+}
+
+.notes-textarea,
+.notes__textarea {
+  font-family: "Indie Flower", cursive;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.55;
+  padding: var(--rux-sidebar-notes-padding);
+  background: #fdf3c8;
+  color: #181818;
+  border: 1px solid var(--rux-sidebar-border-control);
+  border-radius: var(--rux-sidebar-radius-control);
+  resize: none;
+  flex: 1;
+  width: auto;
+  box-sizing: border-box;
+  min-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  outline: none;
+  margin: 0 var(--rux-sidebar-notes-inset-x);
+  transition: box-shadow 0.12s ease;
+}
+
+.notes__textarea::-webkit-scrollbar {
+  display: none;
+}
+
+.notes-textarea:focus-visible,
+.notes__textarea:focus-visible {
+  outline: none;
+  border-color: transparent;
+  box-shadow: var(--focus-ring) !important;
+}
+
+#notesCard .rux-card__body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.notes__footer {
+  display: flex;
+  gap: var(--rux-sidebar-card-padding-x);
+  flex-wrap: nowrap;
+}
+
+.notes__footer > .rux-btn {
+  flex: 1;
+}
+
+.notes__wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: visible;
+}
+
+/* Quote calculator panel */
+
+.quote-calculator__layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.quote-calculator__col-static,
+.quote-calculator__col-dynamic {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quote-calculator .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.quote-calculator label {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--rux-text-2);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 8px;
+  margin-top: 0px;
+}
+
+.quote-calculator__input,
+.quote-calculator__select {
+  box-sizing: border-box;
+  border: 1px solid var(--rux-sidebar-border-control);
+  border-radius: var(--rux-sidebar-radius-control);
+}
+
+.quote-calculator__input:focus,
+.quote-calculator__select:focus {
+  outline: none;
+  border-color: var(--rux-color-accent);
+  box-shadow: var(--focus-ring), var(--rux-fld-shadow);
+}
+
+.quote-calculator__days {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quote-calculator__day-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.quote-calculator__day-label {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--rux-text-2);
+  width: 40px;
+}
+
+.quote-calculator__day-input {
+  flex: 1;
+}
+
+.quote-calculator .toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 18px;
+}
+
+.quote-calculator__toolbar-half {
+  width: 100%;
+}
+
+.quote-calculator__input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.quote-calculator__select-mini {
+  background-color: var(--rux-fld-bg);
+  border: 1px solid var(--rux-sidebar-border-control);
+  border-radius: var(--rux-sidebar-radius-control);
+  color: var(--rux-text-1);
+  font-size: inherit;
+  padding: 0 var(--rux-sidebar-control-padding-x);
+  outline: none;
+  cursor: pointer;
+  height: var(--rux-fld-height);
+  box-sizing: border-box;
+}
+
+.quote-calculator__select-mini:focus {
+  outline: none;
+  border-color: var(--rux-color-accent);
+  box-shadow: var(--focus-ring), var(--rux-fld-shadow);
+}
+
+.quote-calculator__summary {
+  padding: 0 !important;
+  background: var(--rux-bg-2);
+  border-top: 1px solid var(--rux-sidebar-border-divider);
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.quote-summary__row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 32px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--rux-sidebar-border-divider);
+}
+
+.quote-summary__label {
+  font-size: 14px;
+  text-transform: none !important;
+  color: var(--rux-text-2);
+}
+
+.quote-summary__value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--rux-text-1);
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.quote-summary__value-main {
+  font-weight: 600;
+}
+
+.quote-summary__value-sub {
+  color: var(--rux-text-2);
+  font-size: 0.85em;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.quote-summary__row--discount .quote-summary__label,
+.quote-summary__row--discount .quote-summary__value {
+  color: var(--rux-status-yellow);
+}
+
+.quote-summary__row--primary {
+  height: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  background: var(--rux-bg-2);
+  border-top: 1px solid var(--rux-sidebar-border-divider);
+  border-bottom: 1px solid var(--rux-sidebar-border-divider) !important;
+}
+
+.quote-summary__row--primary .quote-summary__label {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}
+
+.quote-summary__row--primary .quote-summary__value {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+}
+
+/* ── Sidebar Scrollbars ─────────────────────────────────────────────────── */
+
+.o-app-layout__sidebar--left .rux-card__body,
+.o-app-layout__sidebar--right .rux-card__body,
+.o-app-layout__sidebar--right {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.o-app-layout__sidebar--left .rux-card__body::-webkit-scrollbar,
+.o-app-layout__sidebar--right .rux-card__body::-webkit-scrollbar,
+.o-app-layout__sidebar--right::-webkit-scrollbar,
+.o-app-layout__sidebar--left > .rux-card:not(.is-hidden) .rux-card__body::-webkit-scrollbar,
+.o-app-layout__sidebar--right > .rux-card:not(.is-hidden) .rux-card__body::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Debug Overlays ─────────────────────────────────────────────────────── */
+
+body.debug-surfaces .o-app-layout__sidebar--left:not(.is-collapsed),
+body.debug-surfaces .o-app-layout__sidebar--right:not(.is-collapsed) {
+  background: var(--rux-debug-red);
+  outline: 1px solid var(--rux-debug-border-container);
+  outline-offset: -1px;
+}
+
+body.debug-surfaces .sidebar__content > .rux-card {
+  background: var(--rux-debug-blue);
+  outline: 1px solid var(--rux-debug-border-card);
+  outline-offset: -1px;
+}
+
+body.debug-surfaces .sidebar__content > .rux-card:not(.is-hidden) {
+  outline: 1px solid var(--rux-debug-border-card);
+  outline-offset: -1px;
+}
+
+body.debug-surfaces .sidebar__content > .rux-card:not(.is-hidden) .rux-card__body {
+  /* Debug only: body outlines reveal scroll/slot bounds.
+     Body elements should not own production borders or shell radii. */
+  outline: 1px solid var(--rux-debug-border-content);
+  outline-offset: -1px;
+  border-radius: var(--rux-sidebar-radius-card);
+}

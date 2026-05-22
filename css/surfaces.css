@@ -183,24 +183,18 @@
 /* ── 4. Panel header & footer ────────────────────────────────────────────── */
 
 .rux-panel__header {
+  /* Generic panel slot only.
+     Sidepanel chrome such as sticky positioning, blur, dividers, borders,
+     and radius belongs in css/sidebar.css. */
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 52px;
   width: auto;
   flex-shrink: 0;
-  padding-inline:var(--rux-space-3);
+  padding-inline: var(--rux-space-3);
   padding-block: var(--rux-space-3);
   z-index: 10;
-
-  position: sticky;
-  top: 0;
-  background: color-mix(in srgb, var(--rux-bg-2) 25%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  overflow: hidden;
-  border-radius: var(--rux-radius-9) var(--rux-radius-9) 0 0;
-  box-shadow: none;
 }
 
 .rux-panel__header .rux-header__title {
@@ -223,31 +217,15 @@
 }
 
 .rux-panel__footer {
-  --footer-bg:        var(--rux-bg-2);
-  --footer-padding-x: var(--rux-layout-spacing);
-  --footer-padding-y: var(--rux-layout-spacing);
-  --footer-gap:       var(--rux-space-3);
-
+  /* Generic panel slot only.
+     Sidepanel sticky/footer chrome belongs in css/sidebar.css. */
   flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: var(--rux-space-3);
   flex-wrap: wrap;
   padding: var(--rux-footer-padding-y) var(--rux-footer-padding-x);
-
-
   z-index: 10;
-  position: sticky;
-  bottom: 0;
-
- background: color-mix(in srgb, var(--rux-bg-2) 25%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  overflow: hidden;
-
-  border-top: 1px solid color-mix(in srgb, var(--rux-bg-2) 25%, transparent);
-  border-radius:  0 0 var(--rux-radius-9) var(--rux-radius-9);
-  box-shadow: none;
 }
 
 /* Direct buttons fill the footer row equally */

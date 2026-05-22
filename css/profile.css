@@ -6,7 +6,7 @@
   --profile-avatar-button-size: 32px;
   --profile-avatar-ring-gap:    2px;
   --profile-avatar-ring-width:  2px;
-  --profile-avatar-radius:     var(--rux-btn-radius);
+  --profile-avatar-radius:     var(--rux-radius-button);
   --profile-popover-width:     300px;
   --profile-color-swatch-size: 22px;
 
@@ -30,7 +30,7 @@
    ========================================================================== */
 
 .profile-avatar {
-  border-radius: 4px;
+  border-radius: var(--rux-radius-button-avatar);
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -64,7 +64,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--rux-bg-1);
+  background: transparent;
   box-shadow: none;
   outline: none;
 }
@@ -72,10 +72,6 @@
 #avatarBtn .profile-avatar {
   width:  100%;
   height: 100%;
-}
-
-.sidebar__profile-btn {
-  margin-top: 0;
 }
 
 .profile-settings-card .profile-settings__body {

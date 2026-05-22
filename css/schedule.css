@@ -3,7 +3,9 @@
 :root {
   /* Schedule grid dimensions */
   --day-col-min-w: 200px;
-  --schedule-row-height: calc(var(--tripbar-height-expanded) + var(--tripbar-inset-top) + var(--tripbar-inset-bottom));
+  --schedule-row-height: calc(
+    var(--tripbar-height-expanded) + var(--tripbar-inset-top) + var(--tripbar-inset-bottom)
+  );
   --bus-col-w: 32px;
   --week-picker-height: 32px;
   --day-row-h: 32px;
@@ -40,7 +42,7 @@
   --card-border-01: var(--rux-color-red);
   --card-border-02: var(--rux-color-orange);
 
-   --card-border-01: transparent;
+  --card-border-01: transparent;
   --card-border-02: transparent;
 }
 
@@ -57,19 +59,16 @@
 .agenda-header {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  align-items: bottom;
+  align-items: end;
   column-gap: var(--rux-space-3);
   height: auto;
   flex-shrink: 0;
   padding-bottom: var(--rux-space-3);
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: visible;
 
   position: sticky;
   top: 0;
   z-index: 10000;
-
-
 
   background: transparent;
 
@@ -137,6 +136,10 @@
   gap: var(--rux-space-2);
   height: auto;
   min-width: 0;
+}
+
+.agenda-header .rux-icon-toolbar {
+  flex: 0 0 auto;
 }
 
 .schedule-sync-status {
@@ -351,13 +354,6 @@
    1. APP LAYOUT SHELL & BACKGROUNDS
    ========================================================================== */
 
-/* Base sidebars layer */
-.o-app-layout__sidebar--left:not(.is-collapsed),
-.o-app-layout__sidebar--right:not(.is-collapsed) {
-  background: var(--rux-bg-2);
-  /* Removed the invisible layout wrapper borders here to prevent clipping */
-}
-
 /* Main schedule area layer */
 .o-app-layout__main > .rux-card {
   position: relative;
@@ -366,30 +362,8 @@
   background: var(--rux-bg-2);
 }
 
-/* ==========================================================================
-   2. SIDEBAR CARDS (ELEVATION & BORDERS)
-   ========================================================================== */
-
-/* Sidebar containers — shadow on the unified surface */
-.o-app-layout__sidebar--right:not(.is-collapsed) {
-  box-shadow: var(--card-shadow-left);
-}
-.o-app-layout__sidebar--left:not(.is-collapsed) {
-  box-shadow: var(--card-shadow-right);
-}
-
-body.right-rail-hidden #panelEnd {
-  display: none;
-}
-
-body.right-rail-hidden .o-app-layout {
-  padding-right: var(--rux-space-3);
-}
-
-/* Inset shadow overlay — paints above all card content including sticky headers */
-.o-app-layout__main > .rux-card::after,
-.o-app-layout__sidebar--left > .rux-card:not(.is-hidden)::after,
-.o-app-layout__sidebar--right > .rux-card:not(.is-hidden)::after {
+/* Inset shadow overlay for the main schedule card. */
+.o-app-layout__main > .rux-card::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -397,286 +371,6 @@ body.right-rail-hidden .o-app-layout {
   box-shadow: var(--rux-btn-shadow-inset);
   pointer-events: none;
   z-index: 99999;
-}
-
-/* ==========================================================================
-   3. CARD INTERNALS (TYPOGRAPHY & PADDING)
-   ========================================================================== */
-
-/* Shared Sidebar Typography & Body Padding */
-.o-app-layout__sidebar--left > .rux-card:not(.is-hidden) .rux-card__body,
-.o-app-layout__sidebar--right > .rux-card:not(.is-hidden) .rux-card__body {
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: var(--rux-text-2);
-  padding-inline: var(--rux-space-3);
-  background-color: var(--rux-bg-2);
-}
-
-/* Debug surface overlays: add .debug-surfaces to <body> to trace layout layers. */
-body.debug-surfaces .o-app-layout__sidebar--left:not(.is-collapsed),
-body.debug-surfaces .o-app-layout__sidebar--right:not(.is-collapsed) {
-  background: var(--rux-debug-red);
-}
-
-body.debug-surfaces .o-app-layout__sidebar--left > .rux-card,
-body.debug-surfaces .o-app-layout__sidebar--right > .rux-card {
-  background: var(--rux-debug-blue);
-}
-
-body.debug-surfaces .o-app-layout__sidebar--left > .rux-card:not(.is-hidden),
-body.debug-surfaces .o-app-layout__sidebar--right > .rux-card:not(.is-hidden) {
-  border-color: var(--rux-debug-blue);
-}
-
-body.debug-surfaces .o-app-layout__sidebar--left > .rux-card:not(.is-hidden) .rux-card__body,
-body.debug-surfaces .o-app-layout__sidebar--right > .rux-card:not(.is-hidden) .rux-card__body {
-  background-color: var(--rux-debug-yellow);
-  border-radius: var(--rux-radius-container);
-}
-
-/* ==========================================================================
-   RIGHT SIDEBAR CARDS: NOTES + QUOTE CALCULATOR
-   Owner: schedule/sidebar context (non-modal components)
-   ========================================================================== */
-
-/* Notes panel */
-#notesWeekTitle.text-muted {
-  color: var(--rux-text-2);
-}
-
-.notes-textarea,
-.notes__textarea {
-  font-family: "Indie Flower", cursive;
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.55;
-  padding: 1rem;
-  background: #FDF3C8;
-  color: #181818;
-  border-radius: var(--rux-fld-radius);
-  resize: none;
-  flex: 1;
-  width: auto;
-  box-sizing: border-box;
-  min-height: 200px;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  outline: none;
-  margin: 0 var(--rux-space-3);
-  transition: box-shadow 0.12s ease;
-}
-.notes__textarea::-webkit-scrollbar { display: none; }
-
-.notes-textarea:focus-visible,
-.notes__textarea:focus-visible {
-  outline: none;
-  border-color: transparent;
-  box-shadow: var(--focus-ring) !important;
-}
-
-#notesCard .rux-card__body {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-#notesCard .rux-panel__header,
-#notesCard .rux-panel__footer {
-  background: var(--rux-bg-2);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.notes__footer {
-  display: flex;
-  gap: var(--rux-space-3);
-  flex-wrap: nowrap;
-}
-
-.notes__footer > .rux-btn {
-  flex: 1;
-}
-
-.notes__wrap {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-  overflow: visible;
-}
-
-.quote-calculator__layout-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.quote-calculator__col-static,
-.quote-calculator__col-dynamic {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.quote-calculator .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-}
-
-.quote-calculator label {
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: var(--rux-text-2);
-  letter-spacing: 0.05em;
-  line-height: 1;
-  margin-bottom: 8px;
-  margin-top: 0px;
-}
-
-.quote-calculator__input:focus,
-.quote-calculator__select:focus {
-  outline: none;
-  border-color: var(--rux-color-accent);
-  box-shadow: var(--focus-ring), var(--rux-fld-shadow);
-}
-
-.quote-calculator__days {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.quote-calculator__day-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 0;
-}
-
-.quote-calculator__day-label {
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: var(--rux-text-2);
-  width: 40px;
-}
-
-.quote-calculator__day-input {
-  flex: 1;
-}
-
-.quote-calculator .toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 32px;
-  height: 18px;
-}
-
-.quote-calculator__toolbar-half {
-  width: 100%;
-}
-
-.quote-calculator__input-group {
-  display: flex;
-  gap: 8px;
-}
-
-.quote-calculator__select-mini {
-  background-color: var(--rux-fld-bg);
-  border: none;
-  border-radius: var(--rux-radius-control);
-  color: var(--rux-text-1);
-  font-size: inherit;
-  padding: 0 var(--rux-space-2);
-  outline: none;
-  cursor: pointer;
-  height: var(--rux-fld-height);
-  box-sizing: border-box;
-}
-
-.quote-calculator__select-mini:focus {
-  outline: none;
-  border-color: var(--rux-color-accent);
-  box-shadow: var(--focus-ring), var(--rux-fld-shadow);
-}
-
-.quote-calculator__summary {
-  padding: 0 !important;
-  background: var(--rux-bg-2);
-  border-top: none;
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.quote-summary__row {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 32px;
-  padding: 0 16px;
-  border-bottom: none;
-}
-
-.quote-summary__label {
-  font-size: 14px;
-  text-transform: none !important;
-  color: var(--rux-text-2);
-}
-
-.quote-summary__value {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--rux-text-1);
-  text-align: right;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.quote-summary__value-main {
-  font-weight: 600;
-}
-
-.quote-summary__value-sub {
-  color: var(--rux-text-2);
-  font-size: 0.85em;
-  font-weight: 400;
-  margin-left: 4px;
-}
-
-.quote-summary__row--discount .quote-summary__label,
-.quote-summary__row--discount .quote-summary__value {
-  color: var(--rux-status-yellow);
-}
-
-.quote-summary__row--primary {
-  height: 48px;
-  /* Tighter total row height */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 16px;
-  background: var(--rux-bg-2);
-  border-top: none;
-  border-bottom: none !important;
-}
-
-.quote-summary__row--primary .quote-summary__label {
-  font-size: 16px;
-  font-weight: 600;
-  color: white;
-}
-
-.quote-summary__row--primary .quote-summary__value {
-  font-size: 20px;
-  font-weight: 700;
-  color: white;
 }
 
 /* ==========================================================================
@@ -773,8 +467,8 @@ body.debug-surfaces .o-app-layout__sidebar--right > .rux-card:not(.is-hidden) .r
      The border (from the gridlines rule) handles the visible line;
      these shadows handle the rendering gap. */
   box-shadow:
-    1px 0 0 var(--rux-bg-schedule-headers-b),   /* right: inter-cell gap */
-    0 -2px 0 var(--rux-bg-schedule-headers-b);  /* top: sticky seam */
+    1px 0 0 var(--rux-bg-schedule-headers-b),
+    /* right: inter-cell gap */ 0 -2px 0 var(--rux-bg-schedule-headers-b); /* top: sticky seam */
 }
 
 /* Day columns */
@@ -1485,7 +1179,9 @@ body.driver-filter-active .schedule-grid__trip-bar.selected {
 /* ── Compact bars mode: shrink schedule row height to match ── */
 body.bars-compact {
   /* td uses content-box (no global reset), so border-bottom: 2px is outside this height — no +2px needed */
-  --schedule-row-height: calc(var(--tripbar-height-collapsed) + var(--tripbar-inset-top) + var(--tripbar-inset-bottom));
+  --schedule-row-height: calc(
+    var(--tripbar-height-collapsed) + var(--tripbar-inset-top) + var(--tripbar-inset-bottom)
+  );
 }
 
 /* ==========================================================================
@@ -1783,7 +1479,9 @@ body.bars-compact {
   border-radius: var(--rux-fld-radius);
   height: var(--rux-fld-height);
   padding-inline: var(--rux-space-2);
-  transition: box-shadow 0.11s, border-color 0.11s;
+  transition:
+    box-shadow 0.11s,
+    border-color 0.11s;
 }
 
 .search-row__inner:focus-within {

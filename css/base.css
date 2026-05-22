@@ -4,17 +4,17 @@
   --font-sans: var(--rux-font-sans);
   --font-mono: var(--rux-font-mono);
 
-  --heading-1-size:           var(--rux-size-5);
-  --heading-1-weight:         var(--rux-weight-regular);
-  --heading-1-line-height:    var(--rux-line-height-3);
+  --heading-1-size: var(--rux-size-5);
+  --heading-1-weight: var(--rux-weight-regular);
+  --heading-1-line-height: var(--rux-line-height-3);
   --heading-1-letter-spacing: 0.5px;
-  --heading-1-color:          var(--rux-text-1);
+  --heading-1-color: var(--rux-text-1);
 
-  --heading-2-size:           var(--rux-size-7);
-  --heading-2-weight:         var(--rux-weight-regular);
-  --heading-2-line-height:    var(--rux-line-height-2);
+  --heading-2-size: var(--rux-size-7);
+  --heading-2-weight: var(--rux-weight-regular);
+  --heading-2-line-height: var(--rux-line-height-2);
   --heading-2-letter-spacing: 0.05px;
-  --heading-2-color:          var(--rux-text-1);
+  --heading-2-color: var(--rux-text-1);
 
   --card-border-thumb: var(--rux-color-red);
 }
@@ -22,7 +22,6 @@
 /* ==========================================================================
    GLOBAL SELECT/OPTION & FOCUS STYLES FOR DARK THEME
    ========================================================================== */
-
 
 /* Global focus-visible state for select and input */
 /* ==========================================================================
@@ -35,7 +34,6 @@
 .schedule-viewport::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  
 }
 
 .schedule-viewport::-webkit-scrollbar:vertical {
@@ -45,7 +43,6 @@
 .schedule-viewport::-webkit-scrollbar:horizontal {
   height: 8px;
   padding: 0;
-  
 }
 
 .schedule-viewport::-webkit-scrollbar-track {
@@ -70,14 +67,8 @@
 }
 
 /* Hide vertical scrollbars while preserving wheel/trackpad scrolling */
-.o-app-layout__sidebar--left .rux-card__body,
-.o-app-layout__sidebar--right .rux-card__body,
-.o-app-layout__sidebar--right,
-.agenda-header,
 .modal__body,
 .schedule-grid__conflict-panel .rux-card__body,
-.notes-textarea,
-.notes__textarea,
 .detail-text.detail-itinerary-scroll,
 .trip-details__itinerary-scroll,
 #busGrid .select-dropdown .dropdown__menu,
@@ -86,16 +77,8 @@
   scrollbar-width: none;
 }
 
-.o-app-layout__sidebar--left .rux-card__body::-webkit-scrollbar,
-.o-app-layout__sidebar--right .rux-card__body::-webkit-scrollbar,
-.o-app-layout__sidebar--right::-webkit-scrollbar,
-.o-app-layout__sidebar--left>.rux-card:not(.is-hidden) .rux-card__body::-webkit-scrollbar,
-.o-app-layout__sidebar--right>.rux-card:not(.is-hidden) .rux-card__body::-webkit-scrollbar,
-.agenda-header::-webkit-scrollbar,
 .modal__body::-webkit-scrollbar,
 .schedule-grid__conflict-panel .rux-card__body::-webkit-scrollbar,
-.notes-textarea::-webkit-scrollbar,
-.notes__textarea::-webkit-scrollbar,
 .detail-text.detail-itinerary-scroll::-webkit-scrollbar,
 .trip-details__itinerary-scroll::-webkit-scrollbar,
 #busGrid .select-dropdown .dropdown__menu::-webkit-scrollbar,
@@ -373,14 +356,16 @@ samp {
     box-shadow:
       0 0 8px color-mix(in srgb, var(--tripbar-color) 20%, transparent),
       0 2px 8px rgba(0, 0, 0, 0.2);
-    filter: brightness(var(--tripbar-hover-brightness-from)) saturate(var(--tripbar-hover-saturate-from));
+    filter: brightness(var(--tripbar-hover-brightness-from))
+      saturate(var(--tripbar-hover-saturate-from));
   }
 
   to {
     box-shadow:
       0 0 24px color-mix(in srgb, var(--tripbar-color) 60%, transparent),
       0 6px 16px rgba(0, 0, 0, 0.5);
-    filter: brightness(var(--tripbar-hover-brightness-to)) saturate(var(--tripbar-hover-saturate-to));
+    filter: brightness(var(--tripbar-hover-brightness-to))
+      saturate(var(--tripbar-hover-saturate-to));
   }
 }
 
@@ -421,7 +406,6 @@ samp {
 }
 
 @keyframes jello {
-
   0%,
   11.1%,
   100% {
@@ -482,7 +466,6 @@ samp {
 }
 
 @keyframes arrow-left-bounce {
-
   0%,
   100% {
     transform: translate(0, -50%);
@@ -494,7 +477,6 @@ samp {
 }
 
 @keyframes arrow-right-bounce {
-
   0%,
   100% {
     transform: translate(0, -50%);
@@ -685,7 +667,9 @@ samp {
   overflow: hidden;
 }
 
-.trip-quick-edit.is-hidden { display: none; }
+.trip-quick-edit.is-hidden {
+  display: none;
+}
 
 .trip-quick-edit__arrow {
   position: absolute;
@@ -745,10 +729,14 @@ samp {
   cursor: pointer;
   color: var(--rux-text-2);
   white-space: nowrap;
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
-.trip-quick-edit__tab:hover { color: var(--rux-text-1); }
+.trip-quick-edit__tab:hover {
+  color: var(--rux-text-1);
+}
 
 .trip-quick-edit__tab.is-active {
   background: var(--rux-bg-3);
@@ -821,7 +809,10 @@ samp {
   border-top: 1px solid var(--rux-border-1);
 }
 
-.trip-quick-edit__bus-header:first-child { border-top: none; margin-top: 0; }
+.trip-quick-edit__bus-header:first-child {
+  border-top: none;
+  margin-top: 0;
+}
 
 .trip-quick-edit__driver-row {
   display: grid;
@@ -861,7 +852,9 @@ samp {
   z-index: 10200;
 }
 
-.trip-action-row.is-hidden { display: none; }
+.trip-action-row.is-hidden {
+  display: none;
+}
 
 .trip-action-row__btn {
   display: flex;
@@ -878,7 +871,9 @@ samp {
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  transition: background 120ms, color 120ms;
+  transition:
+    background 120ms,
+    color 120ms;
   white-space: nowrap;
 }
 
@@ -916,7 +911,7 @@ samp {
   border: none;
   height: 1px;
   margin: 4px 0;
-  background-color: none ;
+  background-color: none;
 }
 
 /* --- Menu Items --- */

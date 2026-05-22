@@ -7,8 +7,10 @@
      from component CSS — use Tier 2 tokens instead.
      ============================================================ */
 
-     --rux-radius-container: 4px;
-     --rux-radius-card: 2px
+  /* Do not put component border/radius decisions here.
+     This tier is for raw scales only; shell/card ownership belongs in
+     Tier 2 aliases or component-local Tier 3 tokens. Debug borders belong
+     in the debug token block and should be applied only behind a debug class. */
 
   /* 1A. Color Seeds
   ──────────────────────────────────────────────────────────────── */
@@ -192,6 +194,9 @@
   --rux-debug-blue: var(--rux-color-blue);
   --rux-debug-green: var(--rux-color-green);
   --rux-debug-pink: var(--rux-color-pink);
+  --rux-debug-border-container: oklch(100% 0.4 24 / 75%);
+  --rux-debug-border-card: oklch(100% 0.4 150 / 75%);
+  --rux-debug-border-content: oklch(100% 0.4 100 / 75%);
 
   /* 2D. Text Roles
   ──────────────────────────────────────────────────────────────── */
@@ -219,6 +224,10 @@
   --rux-radius-surface: var(--rux-radius-3); /* cards, panels — 8px */
   --rux-radius-overlay: var(--rux-radius-4); /* modals, popovers — 10px */
   --rux-radius-badge: var(--rux-radius-0); /* chips, mini-badges — 0px */
+  --rux-radius-container: var(--rux-radius-7); /* app/sidebar shells — 16px */
+  --rux-radius-card: var(--rux-radius-1); /* compact internal cards — 4px */
+  --rux-radius-button: var(--rux-radius-3); /* standard buttons — 8px */
+  --rux-radius-button-avatar: var(--rux-radius-1); /* profile/avatar buttons — 4px */
 
   /* 2G. Effects */
 
