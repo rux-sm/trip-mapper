@@ -40,12 +40,6 @@
     opacity 150ms cubic-bezier(0.2, 0, 0, 1),
     transform 150ms cubic-bezier(0.2, 0, 0, 1),
     visibility 0ms 150ms;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.dropdown__menu::-webkit-scrollbar {
-  display: none;
 }
 
 .dropdown__menu.is-open,
@@ -130,13 +124,17 @@
   border: 1px solid var(--rux-border-default);
   border-radius: var(--rux-radius-sm); /* radius */
   cursor: pointer;
-  opacity: 0;
-  transform: translateY(-8px) scale(0.95);
   transition:
     background-color 0.11s ease,
     color var(--transition-fast),
     opacity 100ms ease,
     transform 100ms ease;
+}
+
+/* Entrance animation start state — only when inside a dropdown menu */
+.dropdown__menu .dropdown__item {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.95);
 }
 
 /* Entrance — items fade + slide in when the menu opens */

@@ -15,7 +15,7 @@
 /* ── Tier 3 tokens ───────────────────────────────────────────────────────── */
 
 :root {
-  --rux-btn-bg-primary: oklch(from var(--rux-color-accent) 60% c h);
+  --rux-btn-bg-primary: oklch(from var(--rux-color-accent) 70% 0.18 h);
   --rux-btn-bg-secondary: oklch(from var(--rux-color-gray) 30% c h);
   --rux-btn-bg-danger: oklch(from var(--rux-color-gray) 30% c h);
   --rux-btn-text: var(--rux-color-white);
@@ -50,7 +50,7 @@
   --rux-btn-square-icon-opsz: 24;
 
   --rux-btn-icon-only-size: var(--size-toolbar-action);
-  --rux-btn-icon-toolbar-gap: var(--rux-space-1);
+  --rux-btn-icon-toolbar-gap: var(--rux-space-3);
 }
 
 /* ── 1. Element Reset ───────────────────────────────────────────────────── */
@@ -168,12 +168,12 @@ button {
 }
 
 .rux-btn--square:active {
-  color: var(--rux-color-black);
+  color: var(--rux-color-white);
   transform: none;
 }
 .rux-btn--square[aria-pressed="true"] {
   background-color: var(--rux-btn-bg-primary);
-  color: var(--rux-color-black);
+  color: var(--rux-color-white);
 }
 
 .rux-btn--square .material-symbols-outlined {
@@ -244,8 +244,9 @@ button {
 .rux-btn--toggle.is-active {
   --btn-background: var(--rux-btn-bg-primary);
   --btn-border: none;
-  --btn-text: var(--rux-color-black);
+  --btn-text: var(--rux-color-white);
   --rux-btn-icon-fill: 1;
+  --rux-btn-font-weight: var(--rux-weight-semibold);
 }
 
 .rux-btn--toggle-reviewed[aria-pressed="true"] {

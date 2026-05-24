@@ -66,12 +66,31 @@ function syncStatusToggle(fieldId, value) {
 
   const pill = group.querySelector(".seg-ctrl__pill");
   if (!pill) return;
-  if (activeBtn) {
-    pill.style.width = activeBtn.offsetWidth + "px";
-    pill.style.transform = `translateX(${activeBtn.offsetLeft - 3}px)`;
+
+  function positionPill() {
+    if (activeBtn) {
+      pill.style.width = activeBtn.offsetWidth + "px";
+      pill.style.transform = `translateX(${activeBtn.offsetLeft - 4}px)`;
+    } else {
+      pill.style.width = "0";
+      pill.style.transform = "translateX(0)";
+    }
+  }
+
+  if (activeBtn && activeBtn.offsetWidth === 0) {
+    let prev = 0;
+    function poll() {
+      const w = activeBtn.offsetWidth;
+      if (w > 0 && w === prev) {
+        positionPill();
+      } else {
+        prev = w;
+        requestAnimationFrame(poll);
+      }
+    }
+    requestAnimationFrame(poll);
   } else {
-    pill.style.width = "0";
-    pill.style.transform = "translateX(0)";
+    positionPill();
   }
 }
 
@@ -841,6 +860,9 @@ function setModeEdit(tripKey, tripId) {
 }
 
 function clearTripInfoCardForNextTrip() {
+  dom.tripInfoCard?.classList.add("is-loading");
+  setTimeout(() => dom.tripInfoCard?.classList.remove("is-loading"), 500);
+
   const conflictBanner = document.getElementById("tripConflictBanner");
   if (conflictBanner) conflictBanner.classList.add("is-hidden");
 
@@ -893,6 +915,7 @@ function clearTripInfoCardForNextTrip() {
   // Form has been cleared intentionally; mark as not dirty.
   state.tripFormDirty = false;
   refreshShortcutRow();
+  if (typeof resetTripEditorTabs === "function") resetTripEditorTabs();
 }
 
 function setTripFormFromState(tripKey) {

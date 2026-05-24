@@ -1272,12 +1272,6 @@
 .reference-manager__items {
   overflow-y: auto;
   padding: var(--rux-space-2);
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.reference-manager__items::-webkit-scrollbar {
-  display: none;
 }
 
 .reference-manager__item {

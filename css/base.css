@@ -29,8 +29,35 @@
    Browser resets, box-sizing, custom scrollbars
    ========================================================================== */
 
-/* ── SCROLLBARS — Hide vertical, keep horizontal where intended ───────── */
-/* Main schedule horizontal scrollbar remains visible */
+/* ── SCROLLBARS ─────────────────────────────────────────────────────────── */
+/* Global thin scrollbar — scrollbar-width is inherited so :root cascades everywhere.
+   Webkit pseudo-elements without a prefix apply to all elements globally. */
+:root {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rux-bg-scrollbar-thumb) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border: 4px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--rux-bg-scrollbar-thumb);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--rux-bg-scrollbar-thumb-hover);
+}
+
+/* ── Schedule viewport scrollbar — overrides global ─────────────────────── */
 .schedule-viewport::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -66,25 +93,6 @@
   background-color: var(--rux-bg-scrollbar-thumb-active);
 }
 
-/* Hide vertical scrollbars while preserving wheel/trackpad scrolling */
-.modal__body,
-.schedule-grid__conflict-panel .rux-card__body,
-.detail-text.detail-itinerary-scroll,
-.trip-details__itinerary-scroll,
-.bus-grid .select-dropdown .dropdown__menu,
-.modal--itinerary .modal__body textarea {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.modal__body::-webkit-scrollbar,
-.schedule-grid__conflict-panel .rux-card__body::-webkit-scrollbar,
-.detail-text.detail-itinerary-scroll::-webkit-scrollbar,
-.trip-details__itinerary-scroll::-webkit-scrollbar,
-.bus-grid .select-dropdown .dropdown__menu::-webkit-scrollbar,
-.modal--itinerary .modal__body textarea::-webkit-scrollbar {
-  display: none;
-}
 
 /* ── BASE & RESET ──────────────────────────────────────────────────────── */
 /* Antialiasing & legibility: smooth fonts, better kerning/ligatures */
@@ -612,18 +620,10 @@ samp {
   border-radius: var(--rux-radius-lg);
   box-shadow: var(--rux-dropdown-shadow);
   overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
   display: flex;
   flex-direction: column;
   transform-origin: var(--rux-dropdown-origin-x) var(--rux-dropdown-origin-y);
   animation: menuPopIn 150ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.dropdown-menu::-webkit-scrollbar,
-.dropdown__menu::-webkit-scrollbar,
-.context-menu::-webkit-scrollbar {
-  display: none;
 }
 
 .dropdown-menu,

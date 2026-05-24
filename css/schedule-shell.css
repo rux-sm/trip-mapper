@@ -2,11 +2,11 @@
 
 :root {
   /* Main schedule shell */
-  --rux-schedule-card-padding: var(--rux-space-3);
-  --rux-schedule-outer-radius: var(--rux-radius-9);
-  --rux-schedule-surface-radius: var(--rux-radius-card);
+  --rux-schedule-card-padding: var(--rux-space-4);
+  --rux-schedule-outer-radius: var(--rux-radius-lg);
+  --rux-schedule-surface-radius: var(--rux-radius-md);
   --rux-schedule-card-border-color: var(--rux-border-default);
-  --rux-schedule-surface-border-color: transparent;
+  --rux-schedule-surface-border-color: var(--schedule-outer-border);
 }
 
 /* ==========================================================================
@@ -62,7 +62,7 @@
   column-gap: var(--rux-space-3);
   height: auto;
   flex-shrink: 0;
-  padding-bottom: var(--rux-space-3);
+  padding-bottom: var(--rux-space-4);
   overflow: visible;
   position: sticky;
   top: 0;

@@ -325,17 +325,6 @@
               </button>
             </div>
             <div class="profile-pref-row">
-              <span>Compact bars</span>
-              <button
-                type="button"
-                id="profileCompactToggle"
-                class="rux-btn rux-btn--square"
-                aria-pressed="false"
-              >
-                <span class="material-symbols-outlined">unfold_less</span>
-              </button>
-            </div>
-            <div class="profile-pref-row">
               <span>14-day view</span>
               <button
                 type="button"
@@ -384,14 +373,6 @@
             </button>
             <button
               type="button"
-              id="waitingListBtn"
-              class="dropdown__item"
-            >
-              <span class="dropdown__icon material-symbols-outlined">low_priority</span>
-              <span>Waiting List</span>
-            </button>
-            <button
-              type="button"
               id="logBtn"
               class="dropdown__item"
             >
@@ -400,23 +381,6 @@
             </button>
           </div>
           <hr class="dropdown__divider" />
-          <!-- Data -->
-          <button
-            type="button"
-            id="driverManagerBtn"
-            class="dropdown__item"
-          >
-            <span class="dropdown__icon material-symbols-outlined">id_card</span>
-            <span>Manage Drivers</span>
-          </button>
-          <button
-            type="button"
-            id="fleetManagerBtn"
-            class="dropdown__item"
-          >
-            <span class="dropdown__icon material-symbols-outlined">directions_bus</span>
-            <span>Manage Vehicles</span>
-          </button>
           <button
             type="button"
             id="refreshBtn2"
@@ -571,6 +535,14 @@
                 >
                   <span class="material-symbols-outlined">directions_bus</span>
                 </button>
+                <button
+                  id="waitingListBtn"
+                  class="sidebar__icon-btn"
+                  title="Waiting List"
+                  aria-pressed="false"
+                >
+                  <span class="material-symbols-outlined">low_priority</span>
+                </button>
               </div>
               <div class="sidebar__content"></div>
             </div>
@@ -637,6 +609,14 @@
                   aria-pressed="false"
                 >
                   <span class="material-symbols-outlined">directions_bus</span>
+                </button>
+                <button
+                  class="sidebar__icon-btn"
+                  title="Waiting List"
+                  aria-pressed="false"
+                  data-waiting-list-mirror
+                >
+                  <span class="material-symbols-outlined">low_priority</span>
                 </button>
               </div>
               <div class="sidebar__content">
@@ -1216,12 +1196,13 @@
                     <div class="trip-editor__header-row">
                       <div class="log-header__title-wrap">
                         <h2 class="rux-header__title">Trip Editor</h2>
+                      </div>
+                      <div class="rux-header__actions">
                         <span
                           id="tripIdBadge"
                           class="log-filter-badge is-hidden"
                         ></span>
                       </div>
-                      <div class="rux-header__actions"></div>
                     </div>
                   </div>
                   <div class="trip-editor__tab-bar">
@@ -2351,16 +2332,6 @@
                         />
                       </div>
                       <button
-                        id="compactBarsBtn"
-                        class="rux-btn rux-btn--secondary rux-btn--icon"
-                        type="button"
-                        aria-label="Toggle compact bars"
-                        title="Toggle compact bars"
-                        aria-pressed="false"
-                      >
-                        <span class="material-symbols-outlined">unfold_less</span>
-                      </button>
-                      <button
                         id="nextWeekBtn"
                         class="rux-btn rux-btn--secondary rux-btn--icon"
                         type="button"
@@ -2389,7 +2360,18 @@
 
                       <thead>
                         <tr>
-                          <th class="schedule-grid__header-cell"></th>
+                          <th class="schedule-grid__header-cell">
+                            <button
+                              id="compactBarsBtn"
+                              class="schedule-grid__compact-btn"
+                              type="button"
+                              aria-label="Toggle compact bars"
+                              title="Toggle compact bars"
+                              aria-pressed="false"
+                            >
+                              <span class="material-symbols-outlined">unfold_less</span>
+                            </button>
+                          </th>
                           <!-- Day header cells built dynamically by buildScheduleHeader() -->
                         </tr>
                       </thead>

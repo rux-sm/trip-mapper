@@ -937,9 +937,12 @@ function wireEvents() {
     }
     if (dom.waitingListBtn) {
       dom.waitingListBtn.setAttribute("aria-pressed", String(visible));
-      // Optional: change icon style/color if active
-      dom.waitingListBtn.classList.toggle("active", visible);
+      dom.waitingListBtn.classList.toggle("is-active", visible);
     }
+    document.querySelectorAll("[data-waiting-list-mirror]").forEach((btn) => {
+      btn.setAttribute("aria-pressed", String(visible));
+      btn.classList.toggle("is-active", visible);
+    });
     // Toggle bottom-radius seam fix — surface container handles corners when
     // waiting list is visible; cell-level radii are suppressed via this class.
     getScheduleGridWrapEl()?.classList.toggle("has-waiting-list", visible);
@@ -954,6 +957,13 @@ function wireEvents() {
   dom.waitingListBtn?.addEventListener("click", () => {
     const isVisible = !dom.waitingBody.classList.contains("is-hidden");
     setWaitingListVisible(!isVisible);
+  });
+
+  document.querySelectorAll("[data-waiting-list-mirror]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const isVisible = !dom.waitingBody.classList.contains("is-hidden");
+      setWaitingListVisible(!isVisible);
+    });
   });
 
   // Today Highlight Toggle

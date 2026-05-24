@@ -38,13 +38,15 @@
   --bus-grid-row-gap: 8px;
   --bus-driver-block-gap: 4px;
   --bus-header-margin: 4px;
-  --rux-schedule-grid-header-radius: var(--rux-radius-5);
+  --rux-schedule-grid-header-radius: var(--rux-radius-md);
 
   --card-border-01: var(--rux-color-red);
   --card-border-02: var(--rux-color-orange);
 
   --card-border-01: transparent;
   --card-border-02: transparent;
+  --schedule-outer-border: var(--rux-border-default);
+  --schedule-inner-border: var(--rux-border-default);
 }
 
 /* Print styles moved to css/print.css */
@@ -59,24 +61,21 @@
 /* Inner Gridlines */
 .schedule-grid__header-cell,
 .schedule-grid__cell {
-  border-inline-end: 2px solid var(--rux-border-s);
-  /* Vertical tracking lines */
-  border-bottom: 2px solid var(--rux-border-s);
-  /* Horizontal tracking lines */
+  border-inline-end: 1px solid var(--schedule-inner-border);
+  border-bottom: 1px solid var(--schedule-inner-border);
 }
 
-/* Edge clearing — container border handles the outer frame */
+/* Suppress cell borders on outer edges — ::after overlay owns the outer frame */
 .schedule-grid__header-cell:last-child,
 .schedule-grid__cell:last-child {
   border-inline-end: none;
 }
 
-/* Main schedule tbody last row: suppress bottom border — corners are handled
-   by .schedule-surface { overflow: hidden; border-radius } at the container level. */
-.schedule-grid tbody:not(#waitingBody) tr:last-child > .schedule-grid__cell,
-.schedule-grid tbody:not(#waitingBody) tr:last-child > .schedule-grid__bus-cell {
+.schedule-grid tbody tr:last-child > .schedule-grid__cell,
+.schedule-grid tbody tr:last-child > .schedule-grid__bus-cell {
   border-bottom: none;
 }
+
 
 /* ==========================================================================
    NOTES ROWS (PRINT ONLY)
@@ -167,11 +166,29 @@
   max-width: var(--bus-col-w);
   width: var(--bus-col-w);
   border-top-left-radius: var(--rux-schedule-grid-header-radius);
-  border: 1px solid var(--rux-debug-yellow);
 }
 
 .schedule-grid__header-cell:last-child {
-  border-top-right-radius: var(--rux-radius-section);
+  border-top-right-radius: var(--rux-radius-md);
+}
+
+.schedule-grid__compact-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--rux-text-3);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.schedule-grid__compact-btn:hover,
+.schedule-grid__compact-btn.is-active {
+  color: var(--rux-text-1);
 }
 
 /* Header cells: center day labels in the cell */
@@ -218,8 +235,8 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  background: oklch(from var(--rux-color-accent) 60% c h);
-  color: var(--rux-color-black);
+  background: var(--rux-btn-bg-primary);
+  color: var(--rux-color-white);
   border-radius: 4px;
   text-shadow: none;
   font-weight: 600;
@@ -258,7 +275,7 @@
 .waiting-list-row td {
   background-color: var(--rux-bg-schedule-headers-a) !important;
   vertical-align: top;
-  border-top: 2px solid var(--rux-border-s) !important;
+  border-top: 1px solid var(--schedule-inner-border) !important;
   height: var(--waiting-list-dynamic-height, var(--schedule-row-height)) !important;
   min-height: var(--waiting-list-dynamic-height, var(--schedule-row-height)) !important;
   max-height: var(--waiting-list-dynamic-height, var(--schedule-row-height)) !important;
@@ -522,16 +539,7 @@
   overflow-y: auto;
   margin: 0;
   background: var(--rux-bg-4);
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
   border: none;
-}
-
-.driver-week__wrap::-webkit-scrollbar {
-  display: none;
-  /* Chrome, Safari, Opera */
 }
 
 .driver-week__table {
@@ -561,8 +569,8 @@
   text-align: center;
   white-space: nowrap;
   cursor: pointer;
-  border-inline-end: 1px solid var(--rux-border-2);
-  border-bottom: 1px solid var(--rux-border-2);
+  border-inline-end: 1px solid var(--schedule-inner-border);
+  border-bottom: 1px solid var(--schedule-inner-border);
 }
 
 .driver-week__table tbody tr:nth-child(even) td {
@@ -732,9 +740,9 @@ body.driver-filter-active .schedule-grid__trip-bar.selected {
 #driver-col-hl {
   position: absolute;
   pointer-events: none;
-  border-inline: 1px solid var(--rux-color-white);
-  border-block: 2px solid var(--rux-color-white);
-  border-radius: var(--rux-radius-0);
+  border-inline: 3px solid var(--rux-color-accent);
+  border-block: 3px solid var(--rux-color-accent);
+  border-radius: var(--rux-radius-sm);
   z-index: 100;
 }
 
@@ -1079,16 +1087,17 @@ body.bars-compact {
 }
 
 .log-filter-badge {
-  font-size: var(--rux-size-3);
-  font-family: var(--font-mono);
+  font-size: var(--rux-size-5);
+  font-family: var(--font-sans);
   font-weight: var(--rux-weight-medium);
   color: var(--rux-color-accent);
   background: oklch(from var(--rux-color-accent) l c h / 0%);
-  padding: 0 var(--rux-space-4);
+  padding: 0;
   border-radius: var(--rux-radius-md);
   height: 32px;
   white-space: nowrap;
   align-items: center;
+  text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 140px;

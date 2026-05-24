@@ -343,8 +343,7 @@ select.is-empty:not(:focus) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 32px;
-  min-width: 0;
+  min-width: 100%;
   gap: var(--rux-space-3);
 }
 
@@ -357,12 +356,7 @@ select.is-empty:not(:focus) {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   width: 100%;
   gap: 8px;
-  scrollbar-width: none;
   min-width: 0;
-}
-
-.trip-editor__tabs::-webkit-scrollbar {
-  display: none;
 }
 
 .trip-editor__tab {
@@ -578,7 +572,7 @@ hr.form-divider {
   background: transparent;
   box-shadow: none;
   border-radius: 0;
-  padding-bottom: var(--rux-fld-row-gap);
+  padding-bottom: var(--rux-space-4);
   overflow: visible;
 }
 .form-section-card.form-section-flat:first-of-type {
