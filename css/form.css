@@ -13,7 +13,7 @@
   --rux-fld-shadow: inset 0 2px 4px oklch(0% 0 0 / 0%);
   --rux-fld-disabled-opacity: 0.5;
   --rux-fld-font-size: var(--rux-size-4);
-  --rux-fld-font-weight: var(--rux-weight-regular);
+  --rux-fld-font-weight: var(--rux-weight-semibold);
 
   /* Labels */
   --rux-fld-label-color: var(--rux-text-2);

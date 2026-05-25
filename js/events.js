@@ -528,10 +528,10 @@ function wireEvents() {
     openTripForEdit(el.dataset.tripkey);
   });
 
-  initGlassSelects();
+  initSelectWrappers();
   wireTripEditorTabs();
 
-  // Re-apply bus row visibility after wrapping (initGlassSelects wraps selects;
+  // Re-apply bus row visibility after wrapping (initSelectWrappers wraps selects;
   // updateBusRowVisibility ran in buildBusRowsOnce before wrapping, so wrappers never got is-hidden)
   updateBusRowVisibility();
   syncBusPanelState();
@@ -2159,10 +2159,10 @@ if (dom.envelopeWhiteBtn) {
     dom.envelopeYellowBtn?.classList.remove("active");
   });
 }
-// Wrap envelope Bus / Driver select in the same glass dropdown treatment
+// Wrap envelope Bus / Driver select with custom dropdown
 const envSel = document.getElementById("envelopeAssignmentSelect");
 if (envSel && envSel.tagName === "SELECT") {
-  wrapSelectInGlassDropdown(envSel, { rebuildMenuOnOpen: true });
+  wrapSelectDropdown(envSel, { rebuildMenuOnOpen: true });
 }
 
 if (dom.printDailyMaintenancePlanBtn) {

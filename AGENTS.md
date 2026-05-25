@@ -67,7 +67,7 @@ Scripts must be loaded in this exact order in `index.html` (each depends on glob
 | 14 | `js/log.js` | Activity log, `loadDriversAndBuses` |
 | 15 | `js/reports.js` | Next-day report, daily maintenance plan |
 | 16 | `js/context-menu.js` | Context menus, quick-edit popover |
-| 17 | `js/glass-select.js` | Custom glass dropdown wrapper for `<select>` elements |
+| 17 | `js/select-wrapper.js` | Wraps native `<select>` elements with custom styled dropdowns (`wrapSelectDropdown`, `initSelectWrappers`) |
 | 18 | `js/events.js` | All event wiring (`wireEvents`, `wireDelegatedBarEvents`, `wireSettingsMenu`) |
 | 19 | `js/week.js` | Week navigation, week data caching, `loadPrefs`, `updateWeekDates` |
 | 20 | `js/app.js` | Boot IIFE — initializes everything, `fitDateTitle` |

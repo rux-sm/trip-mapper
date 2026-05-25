@@ -13,6 +13,10 @@
   --rux-dropdown-closed-transform: translateY(-8px) scale(0.96);
   --rux-dropdown-open-transform: translateY(0) scale(1);
 
+  /* Positioning tokens — JS reads these via getComputedStyle(menu) */
+  --dropdown-gap: 4px;                     /* space between trigger edge and menu edge */
+  --dropdown-edge-pad: var(--rux-space-3); /* min clearance from viewport edge */
+
   position: absolute;
   z-index: var(--z-dropdown);
   min-width: 200px;
@@ -28,7 +32,7 @@
   border: 1px solid var(--rux-border-default); /* border */
   border-radius: var(--rux-radius-md); /* radius */
   box-shadow: 0 6px 20px oklch(0% 0 0 / 45%); /* elevation */
-  max-height: 300px;
+  max-height: 80vh;
   overflow-y: auto;
   opacity: 0;
   visibility: hidden;
@@ -63,12 +67,21 @@
   --rux-dropdown-closed-transform: translateY(8px) scale(0.96);
 }
 
-/* Bus number select menus created by glass-select (useBusesNeededTray: true) */
+/* Bus number select menus created by select-wrapper (useBusesNeededTray: true) */
 .dropdown__menu.buses-needed-dropdown {
-  left: auto;
-  top: auto;
-  width: max-content;
-  margin-top: 0;
+  --rux-dropdown-closed-transform: translateX(-50%) translateY(-8px) scale(0.96);
+  --rux-dropdown-open-transform: translateX(-50%) translateY(0) scale(1);
+
+  transform-origin: top center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  width: 68px;
+  flex: 1;
+  overflow-y: auto;
+  max-height: none;
+  z-index: var(--z-dropdown);
 }
 
 .dropdown__menu.buses-needed-dropdown.dropdown__menu--up {
@@ -96,13 +109,16 @@
   top: 100%;
   left: 50%;
   transform-origin: top center;
-  margin-top: 8px;
+  margin-top: var(--dropdown-gap);
   display: flex;
   flex-direction: column;
   gap: 8px;
   min-width: 0;
-  width: 48px;
-  max-height: none;
+  width: 68px;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 80vh;
+  z-index: var(--z-dropdown);
 }
 
 /* ── 3. Items (.dropdown__item) ─────────────────────────────────────────── */
@@ -111,10 +127,10 @@
 .dropdown__item {
   display: flex;
   align-items: center;
-  width: 100%;
-  height: auto;
+  width: 48px;
+  height: 32px;
   flex-shrink: 0;
-  padding: 0 16px;
+  padding: 0px;
   background: var(--rux-bg-5); /* surface */
   color: var(--rux-text-1); /* font color */
   font-family: var(--font-sans); /* font */
@@ -122,7 +138,7 @@
   text-align: center;
   box-sizing: border-box;
   border: 1px solid var(--rux-border-default);
-  border-radius: var(--rux-radius-sm); /* radius */
+  border-radius: var(--rux-radius-md); /* radius */
   cursor: pointer;
   transition:
     background-color 0.11s ease,
@@ -327,9 +343,8 @@
   min-width: 100%;
 }
 
-/* Bus grid cells: uncap height, always scroll */
+/* Bus grid cells: always scroll */
 .bus-grid .select-dropdown .dropdown__menu {
-  max-height: auto;
   overflow-y: auto;
 }
 
@@ -342,6 +357,18 @@
 /* Hide the trigger chevron in bus grid cells */
 .bus-grid .select-trigger::after {
   display: none;
+}
+
+/* ── Bus assign cell variants ────────────────────────────────────────────── */
+
+/* Bus number cell — center the numeric value */
+.bus-assign__bus-select .select-trigger__label {
+  text-align: center;
+}
+
+/* Driver name cell — left-align for readability */
+.bus-assign__driver-select .select-trigger__label {
+  text-align: left;
 }
 
 /* Hidden native <select> kept for a11y / form submission fallback */
@@ -365,9 +392,6 @@
 /*       height (--rux-fld-height), font family + size + weight              */
 
 .select-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: var(--icon-text-gap);
   width: 100%;
   min-width: 0;
@@ -375,12 +399,14 @@
   height: var(--rux-fld-height); /* height */
   padding: 0 var(--rux-space-2);
   background-color: var(--rux-fld-bg); /* surface */
-  border: none;
+  border: 1px solid var(--rux-border-default);
   border-radius: var(--rux-fld-radius); /* radius */
   font-size: var(--rux-fld-font-size); /* font */
   font-weight: var(--rux-fld-font-weight);
   color: var(--rux-text-1);
-  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   outline: none;
   box-shadow: none;
   cursor: pointer;
@@ -412,6 +438,16 @@
 .select-trigger.is-open {
   outline: none;
   box-shadow: var(--focus-ring), var(--rux-fld-shadow);
+}
+
+/* Label span — CSS-controlled; override text-align per context instead of using inline styles */
+.select-trigger__label {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Empty / placeholder state */

@@ -773,19 +773,19 @@ function _buildOneBusRow(i) {
 }
 
 function _wrapBusAssignmentSelects(row) {
-  if (typeof wrapSelectInGlassDropdown !== "function") return;
+  if (typeof wrapSelectDropdown !== "function") return;
 
-  wrapSelectInGlassDropdown(row.busSel, {
+  wrapSelectDropdown(row.busSel, {
     rebuildMenuOnOpen: true,
-    cellClass: "bus-assign__cell",
+    cellClass: "bus-assign__cell bus-assign__bus-select",
     searchable: false,
     useBusesNeededTray: true,
   });
 
   [row.d1Sel, row.d2Sel, row.d3Sel, row.d4Sel].forEach((sel) => {
-    wrapSelectInGlassDropdown(sel, {
+    wrapSelectDropdown(sel, {
       rebuildMenuOnOpen: true,
-      cellClass: "bus-assign__cell",
+      cellClass: "bus-assign__cell bus-assign__driver-select",
       searchable: true,
       useBusesNeededTray: true,
     });

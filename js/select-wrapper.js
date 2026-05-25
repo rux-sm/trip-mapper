@@ -1,5 +1,5 @@
 // ======================================================
-function wrapSelectInGlassDropdown(sel, opts) {
+function wrapSelectDropdown(sel, opts) {
   const { statusId, rebuildMenuOnOpen, cellClass, searchable, useBusesNeededTray } = opts || {};
   const statusIds = new Set([
     "itineraryStatus",
@@ -84,8 +84,7 @@ function wrapSelectInGlassDropdown(sel, opts) {
     const v = (sel.value ?? "").trim();
 
     const textSpan = document.createElement("span");
-    textSpan.style.flex = "1";
-    textSpan.style.textAlign = "left";
+    textSpan.className = "select-trigger__label";
     textSpan.textContent = getSelectedText();
     trigger.appendChild(textSpan);
 
@@ -204,6 +203,8 @@ function wrapSelectInGlassDropdown(sel, opts) {
     trigger.classList.remove("is-open");
     document.removeEventListener("click", outsideClick);
     document.removeEventListener("keydown", handleEscape);
+    window.removeEventListener("scroll", positionMenu, true);
+    window.removeEventListener("resize", positionMenu);
     closeTimer = setTimeout(() => {
       menu.hidden = true;
       closeTimer = null;
@@ -230,23 +231,35 @@ function wrapSelectInGlassDropdown(sel, opts) {
 
   function positionMenu() {
     const triggerRect = trigger.getBoundingClientRect();
-    const gap = 4;
-    const cssMaxH = 300; // must match dropdown.css max-height
-    const spaceBelow = window.innerHeight - triggerRect.bottom - gap;
-    const spaceAbove = triggerRect.top - gap;
+    const cs = getComputedStyle(menu);
+    const rootFs = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    function toPx(raw) {
+      raw = (raw || "").trim();
+      return raw.endsWith("rem") ? parseFloat(raw) * rootFs : parseFloat(raw) || 0;
+    }
+    const gap = toPx(cs.getPropertyValue("--dropdown-gap")) || 4;
+    const edgePad = toPx(cs.getPropertyValue("--dropdown-edge-pad")) || 8;
+    const spaceBelow = window.innerHeight - triggerRect.bottom - gap - edgePad;
+    const spaceAbove = triggerRect.top - gap - edgePad;
     // Open upward when there's meaningfully more room above than below
     const openUpward = spaceAbove > spaceBelow && spaceAbove > 80;
     menu.classList.toggle("dropdown__menu--up", openUpward);
-    menu.style.left = triggerRect.left + "px";
-    menu.style.minWidth = triggerRect.width + "px";
+    if (menu.classList.contains("buses-needed-dropdown")) {
+      // Set left to trigger center — CSS transform handles the -50% offset
+      menu.style.left = triggerRect.left + triggerRect.width / 2 + "px";
+      menu.style.minWidth = "";
+    } else {
+      menu.style.left = triggerRect.left + "px";
+      menu.style.minWidth = triggerRect.width + "px";
+    }
     if (openUpward) {
       menu.style.top = "auto";
       menu.style.bottom = window.innerHeight - triggerRect.top + gap + "px";
-      menu.style.maxHeight = Math.min(cssMaxH, spaceAbove) + "px";
+      menu.style.maxHeight = spaceAbove + "px";
     } else {
       menu.style.top = triggerRect.bottom + gap + "px";
       menu.style.bottom = "auto";
-      menu.style.maxHeight = Math.min(cssMaxH, spaceBelow) + "px";
+      menu.style.maxHeight = spaceBelow + "px";
     }
   }
 
@@ -269,6 +282,8 @@ function wrapSelectInGlassDropdown(sel, opts) {
       trigger.classList.add("is-open");
       document.addEventListener("click", outsideClick);
       document.addEventListener("keydown", handleEscape);
+      window.addEventListener("scroll", positionMenu, true);
+      window.addEventListener("resize", positionMenu);
       if (searchable) {
         const searchInput = menu.querySelector(".dropdown__search");
         if (searchInput) {
@@ -288,7 +303,7 @@ function wrapSelectInGlassDropdown(sel, opts) {
   updateTrigger();
 }
 
-function initGlassSelects() {
+function initSelectWrappers() {
   const statusIds = new Set([
     "itineraryStatus",
     "contactStatus",
@@ -313,16 +328,22 @@ function initGlassSelects() {
   ids.forEach((id) => {
     const sel = $(id);
     if (!sel || sel.tagName !== "SELECT") return;
-    wrapSelectInGlassDropdown(sel, { statusId: id });
+    wrapSelectDropdown(sel, { statusId: id });
   });
 
   // Bus assignment and driver selects (dynamic options, rebuild menu on open)
   dom.busGrid?.querySelectorAll("select").forEach((sel) => {
     if (sel.closest(".select-dropdown")) return;
     const isStatus = sel.name && sel.name.endsWith("Status");
-    wrapSelectInGlassDropdown(sel, {
+    const isBus = !!sel.closest(".bus-assign__bus-cell");
+    const cellClass = isStatus
+      ? "bus-assign__status-cell"
+      : isBus
+        ? "bus-assign__cell bus-assign__bus-select"
+        : "bus-assign__cell bus-assign__driver-select";
+    wrapSelectDropdown(sel, {
       rebuildMenuOnOpen: true,
-      cellClass: isStatus ? "bus-assign__status-cell" : "bus-assign__cell",
+      cellClass,
       statusId: isStatus ? "driverStatus" : null,
       searchable: !isStatus,
       useBusesNeededTray: true,
