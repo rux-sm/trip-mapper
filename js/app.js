@@ -23,6 +23,7 @@
 
   buildBusRowsOnce();
   syncBusPanelState();
+  syncBusSegButtons();
 
   buildAgendaRows();
   setHeaderOrder();

@@ -37,6 +37,7 @@ const dom = {
   itineraryPdfUrlInput: $("itineraryPdfUrl"),
 
   busesNeeded: $("busesNeeded"),
+  busesNeededSeg: $("busesNeededSeg"),
   busGrid: document.querySelector('[data-js="trip-bus-grid"]') || $("busGrid"),
   assignmentsOverridesSection:
     document.querySelector('[data-js="trip-assignments-section"]') ||

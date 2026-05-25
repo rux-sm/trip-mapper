@@ -1,6 +1,15 @@
 // ======================================================
 function wrapSelectDropdown(sel, opts) {
-  const { statusId, rebuildMenuOnOpen, cellClass, searchable, useBusesNeededTray } = opts || {};
+  const {
+    statusId,
+    rebuildMenuOnOpen,
+    cellClass,
+    centeredMenu,
+    centerMenuPosition = centeredMenu,
+    centerToggle = centeredMenu,
+    centerItems = centeredMenu,
+    placeholderText,
+  } = opts || {};
   const statusIds = new Set([
     "itineraryStatus",
     "contactStatus",
@@ -10,17 +19,19 @@ function wrapSelectDropdown(sel, opts) {
   ]);
 
   const wrapper = document.createElement("div");
-  wrapper.className = "select-dropdown" + (cellClass ? " " + cellClass : "");
+  wrapper.className = "rux-dropdown" + (cellClass ? " " + cellClass : "");
   wrapper.dataset.selectName = sel.name || "";
 
   const trigger = document.createElement("button");
   trigger.type = "button";
-  trigger.className = "select-trigger";
+  trigger.className = "rux-dropdown__toggle";
+  if (centerToggle) trigger.classList.add("rux-dropdown__toggle--centered");
   trigger.setAttribute("aria-haspopup", "listbox");
   trigger.setAttribute("aria-expanded", "false");
 
   const menu = document.createElement("div");
-  menu.className = "dropdown__menu" + (useBusesNeededTray ? " buses-needed-dropdown" : "");
+  menu.className = "rux-dropdown__menu";
+  if (centerMenuPosition) menu.classList.add("rux-dropdown__menu--centered");
   menu.setAttribute("role", "listbox");
   menu.hidden = true;
   let closeTimer = null;
@@ -84,19 +95,20 @@ function wrapSelectDropdown(sel, opts) {
     const v = (sel.value ?? "").trim();
 
     const textSpan = document.createElement("span");
-    textSpan.className = "select-trigger__label";
-    textSpan.textContent = getSelectedText();
+    textSpan.className = "rux-dropdown__label";
+    const isEmpty = !v || v === "None";
+    textSpan.textContent = isEmpty && placeholderText ? placeholderText : getSelectedText();
     trigger.appendChild(textSpan);
 
     if (statusId && statusIds.has(statusId)) updateStatusSelect(sel);
-    trigger.classList.toggle("is-empty", !v || v === "None");
+    trigger.classList.toggle("is-empty", isEmpty);
     syncMenuSelection();
   }
 
   function syncMenuSelection() {
-    menu.querySelectorAll(".dropdown__item").forEach((btn) => {
+    menu.querySelectorAll(".rux-dropdown__item").forEach((btn) => {
       const isSelected = btn.dataset.value === sel.value;
-      btn.classList.toggle("is-selected", isSelected);
+      btn.classList.toggle("rux-dropdown__item--active", isSelected);
       btn.setAttribute("aria-selected", isSelected ? "true" : "false");
     });
   }
@@ -104,47 +116,18 @@ function wrapSelectDropdown(sel, opts) {
   function populateMenu() {
     menu.innerHTML = "";
 
-    if (searchable) {
-      const searchInput = document.createElement("input");
-      searchInput.type = "text";
-      searchInput.className = "dropdown__search";
-      searchInput.placeholder = "Search…";
-      searchInput.setAttribute("aria-label", "Search options");
-      // Prevent clicks inside input from closing the menu
-      searchInput.addEventListener("click", (e) => e.stopPropagation());
-      searchInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          const first = menu.querySelector(".dropdown__item:not([hidden])");
-          if (first) first.click();
-        } else if (e.key === "ArrowDown") {
-          e.preventDefault();
-          const first = menu.querySelector(".dropdown__item:not([hidden])");
-          if (first) first.focus();
-        } else if (e.key === "Escape") {
-          closeMenu();
-        }
-      });
-      searchInput.addEventListener("input", () => {
-        const q = searchInput.value.trim().toLowerCase();
-        menu.querySelectorAll(".dropdown__item").forEach((btn) => {
-          btn.hidden = q !== "" && !btn.textContent.trim().toLowerCase().includes(q);
-        });
-      });
-      menu.appendChild(searchInput);
-    }
-
     Array.from(sel.options).forEach((opt) => {
       if (opt.disabled && !String(opt.value).trim()) return;
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "dropdown__item";
+      btn.className = "rux-dropdown__item";
+      if (centerItems) btn.classList.add("rux-dropdown__item--centered");
       btn.setAttribute("role", "option");
       btn.dataset.value = opt.value;
 
       const v = String(opt.value).trim();
       const isSelected = opt.value === sel.value;
-      btn.classList.toggle("is-selected", isSelected);
+      btn.classList.toggle("rux-dropdown__item--active", isSelected);
       btn.setAttribute("aria-selected", isSelected ? "true" : "false");
       const lcValue = v.toLowerCase();
       // Add icon if applicable to the dropdown options
@@ -167,9 +150,9 @@ function wrapSelectDropdown(sel, opts) {
       const isPrimaryConflict = v && v !== "None" && state.driverConflicts?.has(v);
       const isReliefConflict = v && v !== "None" && state.driverReliefConflicts?.has(v);
       if (isPrimaryConflict || isReliefConflict) {
-        btn.classList.add("driver-conflict-item");
+        btn.classList.add("rux-dropdown__item--conflict");
         const warnIcon = document.createElement("span");
-        warnIcon.className = "material-symbols-outlined dropdown__conflict-icon";
+        warnIcon.className = "material-symbols-outlined rux-dropdown__conflict-icon";
         warnIcon.textContent = isPrimaryConflict ? "person" : "emergency_home";
         warnIcon.title = isPrimaryConflict
           ? `${v} is already assigned as a driver on these dates`
@@ -197,10 +180,10 @@ function wrapSelectDropdown(sel, opts) {
       clearTimeout(closeTimer);
       closeTimer = null;
     }
+    wrapper.classList.remove("is-open");
     menu.classList.remove("is-open");
-    menu.classList.remove("dropdown__menu--up");
+    menu.classList.remove("rux-dropdown__menu--up");
     trigger.setAttribute("aria-expanded", "false");
-    trigger.classList.remove("is-open");
     document.removeEventListener("click", outsideClick);
     document.removeEventListener("keydown", handleEscape);
     window.removeEventListener("scroll", positionMenu, true);
@@ -221,7 +204,7 @@ function wrapSelectDropdown(sel, opts) {
 
   sel.parentNode.insertBefore(wrapper, sel);
   wrapper.appendChild(sel);
-  sel.classList.add("select-native");
+  sel.classList.add("rux-dropdown__native");
 
   // Portal: attach menu to body so overflow:hidden on ancestor cards can't clip it
   menu.style.position = "fixed";
@@ -243,15 +226,13 @@ function wrapSelectDropdown(sel, opts) {
     const spaceAbove = triggerRect.top - gap - edgePad;
     // Open upward when there's meaningfully more room above than below
     const openUpward = spaceAbove > spaceBelow && spaceAbove > 80;
-    menu.classList.toggle("dropdown__menu--up", openUpward);
-    if (menu.classList.contains("buses-needed-dropdown")) {
-      // Set left to trigger center — CSS transform handles the -50% offset
+    menu.classList.toggle("rux-dropdown__menu--up", openUpward);
+    if (menu.classList.contains("rux-dropdown__menu--centered")) {
       menu.style.left = triggerRect.left + triggerRect.width / 2 + "px";
-      menu.style.minWidth = "";
     } else {
       menu.style.left = triggerRect.left + "px";
-      menu.style.minWidth = triggerRect.width + "px";
     }
+    menu.style.minWidth = triggerRect.width + "px";
     if (openUpward) {
       menu.style.top = "auto";
       menu.style.bottom = window.innerHeight - triggerRect.top + gap + "px";
@@ -277,21 +258,15 @@ function wrapSelectDropdown(sel, opts) {
       syncMenuSelection();
       positionMenu();
       menu.hidden = false;
-      requestAnimationFrame(() => menu.classList.add("is-open"));
+      requestAnimationFrame(() => {
+        wrapper.classList.add("is-open");
+        menu.classList.add("is-open");
+      });
       trigger.setAttribute("aria-expanded", "true");
-      trigger.classList.add("is-open");
       document.addEventListener("click", outsideClick);
       document.addEventListener("keydown", handleEscape);
       window.addEventListener("scroll", positionMenu, true);
       window.addEventListener("resize", positionMenu);
-      if (searchable) {
-        const searchInput = menu.querySelector(".dropdown__search");
-        if (searchInput) {
-          searchInput.value = "";
-          menu.querySelectorAll(".dropdown__item").forEach((btn) => (btn.hidden = false));
-          requestAnimationFrame(() => searchInput.focus());
-        }
-      }
     } else {
       closeMenu();
     }
@@ -333,7 +308,7 @@ function initSelectWrappers() {
 
   // Bus assignment and driver selects (dynamic options, rebuild menu on open)
   dom.busGrid?.querySelectorAll("select").forEach((sel) => {
-    if (sel.closest(".select-dropdown")) return;
+    if (sel.closest(".rux-dropdown")) return;
     const isStatus = sel.name && sel.name.endsWith("Status");
     const isBus = !!sel.closest(".bus-assign__bus-cell");
     const cellClass = isStatus
@@ -345,8 +320,9 @@ function initSelectWrappers() {
       rebuildMenuOnOpen: true,
       cellClass,
       statusId: isStatus ? "driverStatus" : null,
-      searchable: !isStatus,
-      useBusesNeededTray: true,
+      centeredMenu: isBus,
+      centerMenuPosition: !isStatus,
+      placeholderText: isBus ? "Bus #" : isStatus ? "" : "Assign driver",
     });
   });
 }

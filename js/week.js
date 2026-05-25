@@ -11,7 +11,7 @@ function syncWeekStartUI() {
 
   // Update toggle button icon and text
   if (dom.weekStartToggle) {
-    const icon = dom.weekStartToggle.querySelector(".dropdown__icon");
+    const icon = dom.weekStartToggle.querySelector(".rux-dropdown__icon");
     if (icon) {
       icon.textContent = isMon ? "toggle_on" : "toggle_off";
       icon.classList.toggle("is-active", isMon);

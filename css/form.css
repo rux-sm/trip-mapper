@@ -13,7 +13,7 @@
   --rux-fld-shadow: inset 0 2px 4px oklch(0% 0 0 / 0%);
   --rux-fld-disabled-opacity: 0.5;
   --rux-fld-font-size: var(--rux-size-4);
-  --rux-fld-font-weight: var(--rux-weight-semibold);
+  --rux-fld-font-weight: var(--rux-weight-bold);
 
   /* Labels */
   --rux-fld-label-color: var(--rux-text-2);
@@ -520,6 +520,59 @@ hr.form-divider {
   .form-actions {
     justify-content: flex-start;
   }
+}
+
+/* ── Trip color picker swatches ───────────────────────────────────────────── */
+
+.trip-color-trigger__preview {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--rux-border-default);
+  pointer-events: none;
+}
+
+.trip-color-dropdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: unset;
+  width: max-content;
+}
+
+.trip-color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: border-color 0.1s ease, transform 0.1s ease;
+}
+
+.trip-color-swatch:hover {
+  transform: scale(1.15);
+}
+
+.trip-color-swatch--none {
+  background: var(--rux-border-default);
+}
+
+.trip-color-swatch--oos {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--rux-status-red) 0,
+    var(--rux-status-red) 3px,
+    transparent 3px,
+    transparent 8px
+  );
+}
+
+.trip-color-swatch.is-selected {
+  border-color: var(--rux-btn-bg-primary);
+  outline: none;
 }
 
 /* ── Section Dividers ────────────────────────────────────────── */

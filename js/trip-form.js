@@ -110,7 +110,7 @@ function updateStatusSelect(el) {
     "status-blue",
   ];
   el.classList.remove(...classes);
-  const trigger = el.closest?.(".select-dropdown")?.querySelector(".select-trigger");
+  const trigger = el.closest?.(".rux-dropdown")?.querySelector(".rux-dropdown__toggle");
   if (trigger) trigger.classList.remove(...classes);
   if (!v) return;
 
@@ -488,8 +488,8 @@ function setSelectOptions(sel, options, selectedValue) {
 
 function getBusOptions() {
   const base = [
-    { value: "None", label: "" },
-    { value: "WAITING_LIST", label: "W/L" },
+    { value: "None", label: "Unassigned" },
+    { value: "WAITING_LIST", label: "Outsource" },
   ];
   const mapped = state.busesList.map((b) => ({
     value: String(b.busId),
@@ -499,7 +499,7 @@ function getBusOptions() {
 }
 
 function getDriverOptions() {
-  const base = [{ value: "None", label: "" }];
+  const base = [{ value: "None", label: "Unassigned" }];
   const mapped = state.driversList.map((d) => ({
     value: d.driverName ? String(d.driverName) : String(d.driverId),
     label: getDriverFullName(d) || (d.driverName ? String(d.driverName) : String(d.driverId)),
@@ -595,7 +595,7 @@ function makeDriverStatusSelect(name) {
 function syncBusSelectEmptyState() {
   dom.busGrid?.querySelectorAll("select").forEach((el) => {
     const v = (el.value ?? "").trim();
-    const cell = el.closest(".select-dropdown") || el;
+    const cell = el.closest(".rux-dropdown") || el;
     cell.classList.toggle("is-empty", !v || v === "None");
   });
   checkDriverDoubleBookings();
@@ -683,10 +683,14 @@ function setBusesNeededAndSync(value) {
 
 function syncBusSegButtons() {
   const n = parseInt(dom.busesNeeded.value) || 0;
-  const display = document.getElementById("busesNeededDisplay");
+  const display = dom.busesNeededSeg?.querySelector(".rux-dropdown__label");
+  const trigger = dom.busesNeededSeg?.querySelector(".rux-dropdown__toggle");
   if (display) display.textContent = n > 0 ? String(n) : "–";
-  document.querySelectorAll("#busesNeededDropdown .dropdown__item").forEach((btn) => {
-    btn.classList.toggle("is-selected", Number(btn.dataset.value) === n);
+  trigger?.classList.toggle("is-empty", n <= 0);
+  dom.busesNeededSeg?.querySelectorAll(".rux-dropdown__menu .rux-dropdown__item").forEach((btn) => {
+    const isSelected = Number(btn.dataset.value) === n;
+    btn.classList.toggle("rux-dropdown__item--active", isSelected);
+    btn.setAttribute("aria-selected", isSelected ? "true" : "false");
   });
 }
 
@@ -778,16 +782,18 @@ function _wrapBusAssignmentSelects(row) {
   wrapSelectDropdown(row.busSel, {
     rebuildMenuOnOpen: true,
     cellClass: "bus-assign__cell bus-assign__bus-select",
+    centeredMenu: true,
+    placeholderText: "Bus",
     searchable: false,
-    useBusesNeededTray: true,
   });
 
   [row.d1Sel, row.d2Sel, row.d3Sel, row.d4Sel].forEach((sel) => {
     wrapSelectDropdown(sel, {
       rebuildMenuOnOpen: true,
       cellClass: "bus-assign__cell bus-assign__driver-select",
+      centerMenuPosition: true,
+      placeholderText: "Assign driver",
       searchable: true,
-      useBusesNeededTray: true,
     });
   });
 }

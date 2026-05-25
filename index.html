@@ -271,7 +271,7 @@
               ></div>
             </div>
           </div>
-          <hr class="dropdown__divider" />
+          <hr class="rux-dropdown__divider" />
           <div class="profile-popover__section">
             <div class="profile-popover__section-title">Color</div>
             <div
@@ -281,7 +281,7 @@
               aria-label="Avatar color"
             ></div>
           </div>
-          <hr class="dropdown__divider" />
+          <hr class="rux-dropdown__divider" />
           <div class="profile-popover__section">
             <div class="profile-popover__section-title">Photo</div>
             <button
@@ -299,7 +299,7 @@
               class="sr-file-input"
             />
           </div>
-          <hr class="dropdown__divider" />
+          <hr class="rux-dropdown__divider" />
           <div class="profile-popover__section">
             <div class="profile-popover__section-title">Preferences</div>
             <div class="profile-pref-row">
@@ -358,99 +358,99 @@
               </button>
             </div>
           </div>
-          <hr class="dropdown__divider" />
+          <hr class="rux-dropdown__divider" />
           <!-- Views -->
           <div class="profile-popover__section profile-popover__section--actions">
             <div class="profile-popover__section-title">Views</div>
             <button
               type="button"
               id="todayHighlightBtn"
-              class="dropdown__item"
+              class="rux-dropdown__item"
               aria-pressed="false"
             >
-              <span class="dropdown__icon material-symbols-outlined">visibility</span>
+              <span class="rux-dropdown__icon material-symbols-outlined">visibility</span>
               <span>Highlight Today's Trips</span>
             </button>
             <button
               type="button"
               id="logBtn"
-              class="dropdown__item"
+              class="rux-dropdown__item"
             >
-              <span class="dropdown__icon material-symbols-outlined">history</span>
+              <span class="rux-dropdown__icon material-symbols-outlined">history</span>
               <span>Activity Log</span>
             </button>
           </div>
-          <hr class="dropdown__divider" />
+          <hr class="rux-dropdown__divider" />
           <button
             type="button"
             id="refreshBtn2"
-            class="dropdown__item"
+            class="rux-dropdown__item"
           >
-            <span class="dropdown__icon material-symbols-outlined">refresh</span>
+            <span class="rux-dropdown__icon material-symbols-outlined">refresh</span>
             <span>Refresh Data</span>
           </button>
           <button
             type="button"
             id="todayBtn2"
-            class="dropdown__item"
+            class="rux-dropdown__item"
           >
-            <span class="dropdown__icon material-symbols-outlined">today</span>
+            <span class="rux-dropdown__icon material-symbols-outlined">today</span>
             <span>Jump to Today</span>
           </button>
-          <hr class="dropdown__divider" />
+          <hr class="rux-dropdown__divider" />
           <!-- Print -->
           <div class="profile-popover__section profile-popover__section--actions">
             <div class="profile-popover__section-title">Print</div>
             <button
               type="button"
               id="printBtn2"
-              class="dropdown__item"
+              class="rux-dropdown__item"
             >
-              <span class="dropdown__icon material-symbols-outlined">print</span>
+              <span class="rux-dropdown__icon material-symbols-outlined">print</span>
               <span>Print Schedule (Legal)</span>
             </button>
             <button
               type="button"
               id="printBtn2Full"
-              class="dropdown__item"
+              class="rux-dropdown__item"
             >
-              <span class="dropdown__icon material-symbols-outlined">print</span>
+              <span class="rux-dropdown__icon material-symbols-outlined">print</span>
               <span>Print Full Schedule (Letter)</span>
             </button>
           </div>
-          <hr class="dropdown__divider" />
+          <hr class="rux-dropdown__divider" />
           <!-- Reports -->
           <div class="profile-popover__section profile-popover__section--actions">
             <div class="profile-popover__section-title">Reports</div>
             <button
               type="button"
               id="nextDayReportBtn"
-              class="dropdown__item"
+              class="rux-dropdown__item"
             >
-              <span class="dropdown__icon material-symbols-outlined">event_upcoming</span>
+              <span class="rux-dropdown__icon material-symbols-outlined">event_upcoming</span>
               <span>Weekly Maintenance</span>
             </button>
             <button
               type="button"
               id="dailyMaintenancePlanBtn"
-              class="dropdown__item"
+              class="rux-dropdown__item"
             >
-              <span class="dropdown__icon material-symbols-outlined">handyman</span>
+              <span class="rux-dropdown__icon material-symbols-outlined">handyman</span>
               <span>Daily Maintenance Plan</span>
             </button>
           </div>
-          <hr class="dropdown__divider" />
+          <hr class="rux-dropdown__divider" />
           <button
             type="button"
             id="profileSignOutBtn"
-            class="dropdown__item"
+            class="rux-dropdown__item"
           >
-            <span class="dropdown__icon material-symbols-outlined">logout</span>
+            <span class="rux-dropdown__icon material-symbols-outlined">logout</span>
             Sign out
           </button>
           <div
             id="appVersionMenuItem"
-            class="dropdown__item dropdown__item--meta"
+            class="rux-dropdown__item rux-dropdown__item--meta"
             role="note"
           ></div>
         </div>
@@ -1517,14 +1517,14 @@
                             <label>Color</label>
                             <div
                               id="tripColorSwatches"
-                              class="trip-color-swatches"
+                              class="rux-dropdown trip-color-swatches"
                               role="group"
                               aria-label="Trip color"
                             >
                               <button
                                 type="button"
                                 id="tripColorTrigger"
-                                class="trip-color-trigger"
+                                class="rux-dropdown__toggle rux-dropdown__toggle--centered trip-color-trigger"
                                 aria-haspopup="true"
                                 aria-expanded="false"
                                 aria-label="Choose trip color"
@@ -1536,7 +1536,7 @@
                               </button>
                               <div
                                 id="tripColorDropdown"
-                                class="trip-color-dropdown"
+                                class="rux-dropdown__menu trip-color-dropdown"
                               >
                                 <button
                                   type="button"
@@ -2037,88 +2037,86 @@
                             <label>Buses</label>
                             <div
                               id="busesNeededSeg"
-                              class="buses-needed-picker"
+                              class="rux-dropdown rux-dropdown--compact"
                             >
                               <button
                                 type="button"
-                                id="busesNeededTrigger"
-                                class="buses-needed-trigger"
+                                class="rux-dropdown__toggle rux-dropdown__toggle--centered"
                                 aria-haspopup="true"
                                 aria-expanded="false"
                                 aria-label="Number of buses"
                               >
-                                <span id="busesNeededDisplay">–</span>
+                                <span class="rux-dropdown__label">–</span>
                               </button>
                               <div
-                                id="busesNeededDropdown"
-                                class="dropdown__menu bus-count-tray"
+                                class="rux-dropdown__menu rux-dropdown__menu--centered"
                               >
                                 <button
                                   type="button"
-                                  class="dropdown__item"
+                                  class="rux-dropdown__item rux-dropdown__item--centered"
                                   data-value="1"
                                 >
                                   1
                                 </button>
                                 <button
                                   type="button"
-                                  class="dropdown__item"
+                                  class="rux-dropdown__item rux-dropdown__item--centered"
                                   data-value="2"
                                 >
                                   2
                                 </button>
                                 <button
                                   type="button"
-                                  class="dropdown__item"
+                                  class="rux-dropdown__item rux-dropdown__item--centered"
                                   data-value="3"
                                 >
                                   3
                                 </button>
                                 <button
                                   type="button"
-                                  class="dropdown__item"
+                                  class="rux-dropdown__item rux-dropdown__item--centered"
                                   data-value="4"
                                 >
                                   4
                                 </button>
                                 <button
                                   type="button"
-                                  class="dropdown__item"
+                                  class="rux-dropdown__item rux-dropdown__item--centered"
                                   data-value="5"
                                 >
                                   5
                                 </button>
                                 <button
                                   type="button"
-                                  class="dropdown__item"
+                                  class="rux-dropdown__item rux-dropdown__item--centered"
                                   data-value="6"
                                 >
                                   6
                                 </button>
                                 <button
                                   type="button"
-                                  class="dropdown__item"
+                                  class="rux-dropdown__item rux-dropdown__item--centered"
                                   data-value="7"
                                 >
                                   7
                                 </button>
                                 <button
                                   type="button"
-                                  class="dropdown__item"
+                                  class="rux-dropdown__item rux-dropdown__item--centered"
                                   data-value="8"
                                 >
                                   8
                                 </button>
                                 <button
                                   type="button"
-                                  class="dropdown__item"
+                                  class="rux-dropdown__item rux-dropdown__item--centered"
                                   data-value="9"
                                 >
                                   9
                                 </button>
                                 <button
                                   type="button"
-                                  class="dropdown__item"
+                                  class="rux-dropdown__item rux-dropdown__item--centered"
                                   data-value="10"
                                 >
                                   10

@@ -1073,27 +1073,31 @@ function wireEvents() {
   });
 
   (() => {
-    const bnTrigger = document.getElementById("busesNeededTrigger");
-    const bnDropdown = document.getElementById("busesNeededDropdown");
+    const bnWrapper = dom.busesNeededSeg;
+    const bnTrigger = bnWrapper?.querySelector(".rux-dropdown__toggle");
+    const bnMenu = bnWrapper?.querySelector(".rux-dropdown__menu");
 
     function closeBusesDropdown() {
-      if (!bnDropdown) return;
-      bnDropdown.classList.remove("is-open");
+      if (!bnWrapper) return;
+      bnWrapper.classList.remove("is-open");
+      bnMenu?.classList.remove("is-open");
       bnTrigger?.setAttribute("aria-expanded", "false");
     }
 
     function openBusesDropdown() {
-      bnDropdown.classList.add("is-open");
+      syncBusSegButtons();
+      bnWrapper.classList.add("is-open");
+      bnMenu?.classList.add("is-open");
       bnTrigger.setAttribute("aria-expanded", "true");
     }
 
     bnTrigger?.addEventListener("click", (e) => {
       e.stopPropagation();
-      bnDropdown.classList.contains("is-open") ? closeBusesDropdown() : openBusesDropdown();
+      bnWrapper.classList.contains("is-open") ? closeBusesDropdown() : openBusesDropdown();
     });
 
-    bnDropdown?.addEventListener("click", (e) => {
-      const opt = e.target.closest(".dropdown__item");
+    bnMenu?.addEventListener("click", (e) => {
+      const opt = e.target.closest(".rux-dropdown__item");
       if (!opt) return;
       setBusesNeededAndSync(opt.dataset.value);
       dom.busesNeeded.dispatchEvent(new Event("change", { bubbles: true }));
@@ -1103,9 +1107,8 @@ function wireEvents() {
 
     document.addEventListener("click", (e) => {
       if (
-        bnDropdown?.classList.contains("is-open") &&
-        !bnDropdown.contains(e.target) &&
-        e.target !== bnTrigger
+        bnWrapper?.classList.contains("is-open") &&
+        !bnWrapper.contains(e.target)
       ) {
         closeBusesDropdown();
       }
@@ -1332,8 +1335,8 @@ function wireEvents() {
       // Focus first bus dropdown trigger (visible control; native select is hidden)
       const firstRow = state.busRows[0];
       const busTrigger = firstRow?.busSel
-        ?.closest?.(".select-dropdown")
-        ?.querySelector?.(".select-trigger");
+        ?.closest?.(".rux-dropdown")
+        ?.querySelector?.(".rux-dropdown__toggle");
       if (busTrigger && !firstRow?.busSel?.disabled) busTrigger.focus();
       return;
     }
@@ -1719,10 +1722,10 @@ function wireProfilePopover() {
     });
   }
 
-  // Auto-close on any dropdown__item click inside the popover
-  // (excludes preference toggles which are rux-btn, not dropdown__item)
+  // Auto-close on any rux-dropdown__item click inside the popover
+  // (excludes preference toggles which are rux-btn, not rux-dropdown__item)
   popover.addEventListener("click", (e) => {
-    if (!isPanelCard && e.target.closest(".dropdown__item")) {
+    if (!isPanelCard && e.target.closest(".rux-dropdown__item")) {
       closeProfilePopover();
       document.removeEventListener("click", profileOutsideClick);
     }
@@ -1761,19 +1764,20 @@ function wireProfilePopover() {
 
     function closeTripColorDropdown() {
       if (!dropdown) return;
-      dropdown
-        .querySelectorAll(".trip-color-swatch")
-        .forEach((s) => s.classList.remove("is-visible"));
+      document.getElementById("tripColorSwatches")?.classList.remove("is-open");
       dropdown.classList.remove("is-open");
+      dropdown.classList.remove("rux-dropdown__menu--up");
       trigger?.setAttribute("aria-expanded", "false");
     }
 
     function openTripColorDropdown() {
+      const rect = trigger.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      dropdown.classList.toggle("rux-dropdown__menu--up", spaceAbove > spaceBelow && spaceAbove > 80);
+      document.getElementById("tripColorSwatches")?.classList.add("is-open");
       dropdown.classList.add("is-open");
       trigger.setAttribute("aria-expanded", "true");
-      dropdown.querySelectorAll(".trip-color-swatch").forEach((s, i) => {
-        setTimeout(() => s.classList.add("is-visible"), i * 30);
-      });
     }
 
     trigger?.addEventListener("click", (e) => {
@@ -1792,7 +1796,7 @@ function wireProfilePopover() {
 
     document.addEventListener("click", (e) => {
       if (
-        dropdown?.classList.contains("is-open") &&
+        document.getElementById("tripColorSwatches")?.classList.contains("is-open") &&
         !dropdown.contains(e.target) &&
         e.target !== trigger
       ) {

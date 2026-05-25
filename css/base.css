@@ -600,7 +600,6 @@ samp {
 
 /* --- Floating Menus (Always Layer 03 in Carbon) --- */
 .dropdown-menu,
-.dropdown__menu,
 .context-menu {
   --rux-dropdown-bg: var(--rux-bg-4);
   --rux-dropdown-border: var(--rux-border-2);
@@ -626,18 +625,9 @@ samp {
   animation: menuPopIn 150ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-.dropdown-menu,
-.dropdown__menu {
+.dropdown-menu {
   top: calc(100% + 4px);
   inset-inline-end: 0;
-}
-
-.dropdown__menu.dropdown__menu--up {
-  --rux-dropdown-origin-y: bottom;
-  --rux-dropdown-closed-transform: translateY(8px) scale(0.96);
-
-  top: auto;
-  bottom: calc(100% + 4px);
 }
 
 .context-menu {
@@ -911,8 +901,7 @@ samp {
   font-size: 18px;
 }
 
-.dropdown-menu[hidden],
-.dropdown__menu[hidden] {
+.dropdown-menu[hidden] {
   display: none;
 }
 
@@ -932,7 +921,7 @@ samp {
 }
 
 .dropdown-divider,
-.dropdown__divider {
+.rux-dropdown__divider {
   border: none;
   height: 1px;
   margin: 4px 0;
@@ -941,7 +930,6 @@ samp {
 
 /* --- Menu Items --- */
 .dropdown-item,
-.dropdown__item,
 .context-item,
 .context-menu__item {
   display: flex;
@@ -975,7 +963,6 @@ samp {
 }
 
 .dropdown-icon,
-.dropdown__icon,
 .context-item .material-symbols-outlined,
 .context-menu__item .material-symbols-outlined {
   display: inline-flex;
@@ -994,7 +981,6 @@ samp {
 
 /* Carbon Hover: 10% brighter background mix */
 .dropdown-item:hover,
-.dropdown__item:hover,
 .context-item:hover,
 .context-menu__item:hover {
   background-color: var(--rux-bg-overlay);
@@ -1003,27 +989,13 @@ samp {
 
 /* Carbon Active/Pressed state */
 .dropdown-item:active,
-.dropdown__item:active,
 .context-item:active,
 .context-menu__item:active {
   background-color: var(--rux-bg-2);
 }
 
-.dropdown__item--meta {
-  cursor: default;
-  font-size: 0.75rem;
-  color: var(--rux-text-2);
-}
-
-.dropdown__item--meta:hover,
-.dropdown__item--meta:active {
-  background-color: var(--rux-bg-overlay);
-  color: var(--rux-text-2);
-}
-
 /* Active Selection overrides */
 .dropdown-icon.is-active,
-.dropdown__icon.is-active,
 .dropdown-item.is-active {
   color: var(--rux-color-accent);
   /* Carbon uses primary blue to indicate current selection */

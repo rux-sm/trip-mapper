@@ -46,7 +46,7 @@
   --card-border-01: transparent;
   --card-border-02: transparent;
   --schedule-outer-border: var(--rux-border-default);
-  --schedule-inner-border: var(--rux-border-default);
+  --schedule-inner-border: var(--rux-border-schedule);
 }
 
 /* Print styles moved to css/print.css */
@@ -791,11 +791,11 @@ body.driver-filter-active .schedule-grid__trip-bar.selected {
   min-width: 0;
 }
 
-.bus-assign__driver-field > .select-dropdown {
+.bus-assign__driver-field > .rux-dropdown {
   width: 100%;
 }
 
-.bus-assign__driver-field .select-trigger,
+.bus-assign__driver-field .rux-dropdown__toggle,
 .bus-assign__driver-field > select {
   padding-right: 34px;
   border-radius: var(--rux-fld-radius);

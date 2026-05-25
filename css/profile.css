@@ -135,7 +135,7 @@
 }
 
 /* Full-width dropdown items inside the popover */
-#profilePopover .dropdown__item {
+#profilePopover .rux-dropdown__item {
   width: 100%;
   border-radius: var(--rux-radius-md);
 }

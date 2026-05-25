@@ -613,9 +613,9 @@ function checkDriverDoubleBookings() {
       const isPrimary = v && v !== "None" && conflicts.has(v);
       const isRelief = v && v !== "None" && reliefConflicts.has(v);
       const isConflict = isPrimary || isRelief;
-      const wrapper = sel.closest(".select-dropdown");
-      const trigger = wrapper?.querySelector(".select-trigger");
-      if (wrapper) wrapper.classList.toggle("driver-conflict", !!isConflict);
+      const wrapper = sel.closest(".rux-dropdown");
+      const trigger = wrapper?.querySelector(".rux-dropdown__toggle");
+      if (trigger) trigger.classList.toggle("rux-dropdown__toggle--conflict", !!isConflict);
       if (trigger) {
         trigger.title = isPrimary
           ? `${v} is already assigned as a driver on these dates`

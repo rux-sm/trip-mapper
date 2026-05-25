@@ -4530,7 +4530,7 @@ function setSelectOptions(sel, options, selectedValue) {
 function getBusOptions() {
   const base = [
     { value: "None", label: "" },
-    { value: "WAITING_LIST", label: "W/L" },
+    { value: "WAITING_LIST", label: "Waiting List" },
   ];
   const mapped = state.busesList.map((b) => ({
     value: String(b.busId),
