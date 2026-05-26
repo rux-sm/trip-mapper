@@ -141,28 +141,30 @@ body.right-rail-hidden .o-app-layout {
 
 .o-app-layout__sidebar--left.is-collapsed .sidebar__rail {
   border-radius: 0 var(--rux-sidebar-outer-radius) var(--rux-sidebar-outer-radius) 0;
-  border: 1px solid var(--rux-sidebar-rail-border-color);
+  border-right: 1px solid transparent; 
+  /*border: 1px solid var(--rux-sidebar-rail-border-color);*/
 }
 
 .o-app-layout__sidebar--right.is-collapsed .sidebar__rail {
   border-radius: var(--rux-sidebar-outer-radius) 0 0 var(--rux-sidebar-outer-radius);
-  border: 1px solid var(--rux-sidebar-rail-border-color);
+  border-left: 1px solid transparent; 
+  /*border: 1px solid var(--rux-sidebar-rail-border-color);*/
 }
 
 .o-app-layout__sidebar--left:not(.is-collapsed) .sidebar__rail {
   width: var(--rux-sidebar-rail-width);
   flex: 0 0 var(--rux-sidebar-rail-width);
   border-radius: 0;
-  border-inline: 1px solid var(--rux-sidebar-rail-border-color);
-  border-block: 1px solid var(--rux-sidebar-rail-border-color);
+  border-right: 1px solid var(--rux-border-divider); 
+  /*border-block: 1px solid var(--rux-sidebar-rail-border-color);*/
 }
 
 .o-app-layout__sidebar--right:not(.is-collapsed) .sidebar__rail {
   width: var(--rux-sidebar-rail-width);
   flex: 0 0 var(--rux-sidebar-rail-width);
   border-radius: 0;
-  border-inline: 1px solid var(--rux-sidebar-rail-border-color);
-  border-block: 1px solid var(--rux-sidebar-rail-border-color);
+  border-left: 1px solid var(--rux-border-divider);
+  /*border-block: 1px solid var(--rux-sidebar-rail-border-color);*/
 }
 
 .sidebar__icon-btn {

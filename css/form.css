@@ -275,6 +275,7 @@ select.is-empty:not(:focus) {
   line-height: 1.5;
   letter-spacing: normal;
   font-variant-numeric: normal;
+  font-weight: var(--rux-weight-light);
   white-space: pre-wrap;
   color: var(--rux-text-2);
   background: var(--rux-bg-2);

@@ -156,12 +156,12 @@
   /* ── COLOR SYSTEM ───────────────────────────────────────────────────── */
 
   /* Per-variant accent seeds — change a color here */
-  --tripbar-default-accent:     oklch(40% 0.18 260 / 100%);
-  --tripbar-unconfirmed-accent: oklch(40% 0.18 24 / 100%);
+  --tripbar-default-accent:     oklch(55% 0.2 260 / 100%);
+  --tripbar-unconfirmed-accent: oklch(55% 0.2 24 / 100%);
   --tripbar-blue-accent:        oklch(40% 0.18 250 / 100%);
   --tripbar-red-accent:         oklch(40% 0.18 24 / 100%);
   --tripbar-green-accent:       oklch(40% 0.18 150 / 100%);
-  --tripbar-yellow-accent:      oklch(40% 0.18 90 / 100%);
+  --tripbar-yellow-accent:      oklch(55% 0.20 90 / 100%);
   --tripbar-orange-accent:      oklch(40% 0.18 65 / 100%);
   --tripbar-purple-accent:      oklch(40% 0.18 285 / 100%);
   --tripbar-violet-accent:      oklch(40% 0.18 300 / 100%);
