@@ -156,8 +156,8 @@
   --rux-bg-5: oklch(from var(--rux-color-gray) 32% c h); /* Modals — highest elevation */
   --rux-bg-notes: oklch(from var(--rux-color-yellow) 80% 0.15 h); /* Form fields, dropdowns, popovers */
   --rux-bg-overlay: oklch(from var(--rux-color-gray) 70% c h); /* Scrim / backdrop */
-  --rux-bg-schedule-headers: oklch(from var(--rux-color-gray) 28% c h);
-  --rux-bg-schedule-headers-a: color-mix(in srgb, var(--rux-bg-schedule-headers) 100%);
+  --rux-bg-schedule-headers: oklch(from var(--rux-color-red) 28% c h);
+  --rux-bg-schedule-headers-a: color-mix(in srgb, var(--rux-bg-schedule-headers) 50%);
   --rux-bg-schedule-headers-b: oklch(from var(--rux-color-gray) 28% c h);
   --rux-bg-schedule: oklch(from var(--rux-color-gray) 28% c h); /* App canvas — pure black */
   --rux-bg-trip-bar: oklch(from var(--rux-color-gray) 32% c h); /* App canvas — pure black */
@@ -166,6 +166,12 @@
   --rux-bg-scrollbar-thumb-hover: oklch(from var(--rux-color-gray) 70% c h);
   --rux-bg-scrollbar-thumb-active: oklch(from var(--rux-color-gray) 80% c h);
 
+  /* The core background token */
+  --rux-bg--glass: rgba(255, 255, 255, 0);
+
+  /* Optional: Supporting tokens for a complete effect */
+  --rux-border--glass: var(--rux-border-schedule);
+  --rux-blur--glass: blur(12px);
 
   /* 2B. Accent & Status Colors
   ──────────────────────────────────────────────────────────────── */

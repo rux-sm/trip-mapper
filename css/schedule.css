@@ -3,6 +3,7 @@
 :root {
   /* Schedule grid dimensions */
   --day-col-min-w: 200px;
+  --schedule-grid-min-width: calc(var(--bus-col-w) + (7 * var(--day-col-min-w)));
   --schedule-row-height: calc(
     var(--tripbar-height-expanded) + var(--tripbar-inset-top) + var(--tripbar-inset-bottom)
   );
@@ -13,6 +14,7 @@
   --print-scale: 1; /* runtime — JS overrides */
   --sync-progress: 0%; /* runtime — JS overrides */
   --waiting-list-dynamic-height: var(--schedule-row-height); /* runtime — JS overrides */
+  --waiting-list-gap-height: var(--rux-space-2);
 
   /* Day header */
   --day-header-date-color: var(--rux-text-1);
@@ -39,11 +41,8 @@
   --bus-driver-block-gap: 4px;
   --bus-header-margin: 4px;
   --rux-schedule-grid-header-radius: var(--rux-radius-md);
+  --rux-schedule-sticky-bg: var(--rux-bg-schedule-headers);
 
-  --card-border-01: var(--rux-color-red);
-  --card-border-02: var(--rux-color-orange);
-
-  --card-border-01: transparent;
   --card-border-02: transparent;
   --schedule-outer-border: var(--rux-border-default);
   --schedule-inner-border: var(--rux-border-schedule);
@@ -76,7 +75,6 @@
   border-bottom: none;
 }
 
-
 /* ==========================================================================
    NOTES ROWS (PRINT ONLY)
    Injected via JS when printing a 2-page landscape layout
@@ -93,7 +91,7 @@
 }
 
 .schedule-grid__row--notes .schedule-grid__bus-cell {
-  background-color: none;
+  background-color: transparent;
 }
 
 /* ==========================================================================
@@ -102,7 +100,7 @@
 
 .schedule-grid {
   width: 100%;
-  min-width: 1376px;
+  min-width: var(--schedule-grid-min-width);
   height: auto;
   background: var(--rux-bg-schedule);
   table-layout: fixed;
@@ -128,9 +126,6 @@
 }
 
 .schedule-grid__header-cell {
-  background: var(--rux-bg-schedule-headers-a);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   overflow: hidden;
   padding: 0;
   height: var(--day-row-h);
@@ -139,29 +134,30 @@
   z-index: 2000;
   text-align: center;
   vertical-align: middle;
-  /* Seal sub-pixel gaps between sticky cells — border alone can't cover these
-     because it renders inside the cell box; box-shadow bleeds outside it.
-     The border (from the gridlines rule) handles the visible line;
-     these shadows handle the rendering gap. */
-  box-shadow:
-    1px 0 0 var(--rux-bg-schedule-headers-b),
-    /* right: inter-cell gap */ 0 -2px 0 var(--rux-bg-schedule-headers-b); /* top: sticky seam */
+
+  /* 1. Apply your background token */
+  background: var(--rux-bg--glass);
+
+  /* 2. Apply the blur effect (critical for glassmorphism) */
+  backdrop-filter: var(--rux-blur--glass);
+  -webkit-backdrop-filter: var(--rux-blur--glass); /* Required for Safari */
+
+  /* 3. Add depth (Optional but recommended) */
+  border-inline-end: 1px solid var(--rux-border--glass);
+  border-bottom: 1px solid var(--rux-border--glass);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
 }
 
 /* Day columns */
 .schedule-grid__header-cell:not(:first-child),
 .schedule-grid__cell:not(:first-child) {
-  min-width: 200px;
+  min-width: var(--day-col-min-w);
 }
 
 .schedule-grid__header-cell:first-child {
   position: sticky;
   inset-inline-start: 0;
   z-index: 3000 !important;
-  background: var(--rux-bg-schedule-headers-a);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  overflow: hidden;
   min-width: var(--bus-col-w);
   max-width: var(--bus-col-w);
   width: var(--bus-col-w);
@@ -222,13 +218,6 @@
   text-shadow: var(--text-shadow);
 }
 
-.schedule-grid__header-cell--today {
-  background: var(--rux-bg-schedule-headers-a);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  overflow: hidden;
-}
-
 .schedule-grid__header-cell--today .schedule-grid__day-date {
   display: inline-flex;
   align-items: center;
@@ -263,58 +252,30 @@
 }
 
 /* ==========================================================================
-   WAITING LIST ROW (ELEVATED PRIORITY)
+   WAITING LIST ROW
+   Inherits all visual styling from shared grid rules (.schedule-grid__row,
+   .schedule-grid__cell, .schedule-grid__bus-cell, .schedule-grid__day-cell).
+   Only height and entrance animation are overridden here.
    ========================================================================== */
+
+/* Spacer: thin visual gap using the same inner-border color as gridlines */
+.schedule-grid__wl-spacer td {
+  border-bottom: 1px solid var(--schedule-inner-border);
+  padding: 0;
+}
+
 .waiting-list-row {
-  height: var(--waiting-list-dynamic-height, var(--schedule-row-height)) !important;
-  min-height: var(--waiting-list-dynamic-height, var(--schedule-row-height)) !important;
-  max-height: var(--waiting-list-dynamic-height, var(--schedule-row-height)) !important;
+  --waiting-list-row-height: var(--waiting-list-dynamic-height, var(--schedule-row-height));
+  height: var(--waiting-list-row-height) !important;
+  min-height: var(--waiting-list-row-height) !important;
+  max-height: var(--waiting-list-row-height) !important;
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) backwards;
 }
 
-#waitingBody tr.waiting-list-row td,
-.waiting-list-row td {
-  background-color: var(--rux-bg-schedule-headers-a) !important;
-  vertical-align: top;
-  border-top: 1px solid var(--schedule-inner-border) !important;
-  height: var(--waiting-list-dynamic-height, var(--schedule-row-height)) !important;
-  min-height: var(--waiting-list-dynamic-height, var(--schedule-row-height)) !important;
-  max-height: var(--waiting-list-dynamic-height, var(--schedule-row-height)) !important;
-}
-
-.waiting-list-row .schedule-grid__bus-cell {
-  background: var(--rux-bg-schedule-headers-a);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  overflow: hidden;
-  color: var(--rux-text-2);
-  font-size: 0.6875rem;
-  text-align: center;
-  width: var(--bus-col-w);
-}
-
-/* Waiting list box: visible border on all 4 sides + corner radii */
-.waiting-list-row td {
-  border-bottom: none !important;
-}
-.waiting-list-row td:first-child {
-  border-left: none;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: var(--rux-radius-surface);
-}
-.waiting-list-row td:last-child {
-  border-right: none;
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: var(--rux-radius-surface);
-}
-
-/* When the waiting list is visible, the surface container provides the bottom
-   corners — suppress the waiting list's own bottom radii so the two tbody
-   sections form a seamless joint. JS toggles .has-waiting-list on the grid wrap. */
-.has-waiting-list .waiting-list-row td:first-child {
-  border-bottom-left-radius: 0;
-}
-.has-waiting-list .waiting-list-row td:last-child {
-  border-bottom-right-radius: 0;
+.waiting-list-row > .schedule-grid__cell {
+  height: var(--waiting-list-row-height) !important;
+  min-height: var(--waiting-list-row-height) !important;
+  max-height: var(--waiting-list-row-height) !important;
 }
 
 .waiting-list-row .schedule-grid__bus-indicator .material-symbols-outlined {
@@ -347,9 +308,6 @@
   z-index: 500;
   pointer-events: none;
   /* pass through so sticky overlay doesn't steal trip bar hover */
-  background: var(--rux-bg-schedule-headers-a);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   overflow: hidden;
   font-size: var(--bus-num-size);
   /* 14px */
@@ -361,7 +319,17 @@
   height: var(--schedule-row-height);
   padding: 0 !important;
 
-  text-shadow: var(--text-shadow);
+  /* 1. Apply your background token */
+  background: var(--rux-bg--glass);
+
+  /* 2. Apply the blur effect (critical for glassmorphism) */
+  backdrop-filter: var(--rux-blur--glass);
+  -webkit-backdrop-filter: var(--rux-blur--glass); /* Required for Safari */
+
+  /* 3. Add depth (Optional but recommended) */
+  border-inline-end: 1px solid var(--rux-border--glass);
+  border-bottom: 1px solid var(--rux-border--glass);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
   /* border-inline-end: from general rule — single line, no ::after */
 }
 
@@ -385,11 +353,6 @@
 .schedule-grid__cell--bus-conflict {
   box-shadow: inset 3px 0 0 var(--rux-status-red);
   /* Note: Using physical property for inset box-shadow as logical properties aren't supported */
-}
-
-/* Bus column width */
-.schedule-grid__col-bus {
-  width: var(--bus-col-w);
 }
 
 /* Bus icons */
@@ -1101,7 +1064,7 @@ body.bars-compact {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 140px;
-  display:flex;
+  display: flex;
 }
 
 .log-list {
@@ -1203,7 +1166,9 @@ body.bars-compact {
   height: var(--rux-fld-height);
   padding-inline: var(--rux-space-2);
   box-sizing: border-box;
-  transition: box-shadow 0.11s, border-color 0.11s;
+  transition:
+    box-shadow 0.11s,
+    border-color 0.11s;
 }
 
 .search-card__body .search-row__input:focus,

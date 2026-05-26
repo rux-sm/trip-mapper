@@ -158,19 +158,19 @@
   /* Per-variant accent seeds — change a color here */
   --tripbar-default-accent:     oklch(55% 0.2 260 / 100%);
   --tripbar-unconfirmed-accent: oklch(55% 0.2 24 / 100%);
-  --tripbar-blue-accent:        oklch(40% 0.18 250 / 100%);
-  --tripbar-red-accent:         oklch(40% 0.18 24 / 100%);
-  --tripbar-green-accent:       oklch(40% 0.18 150 / 100%);
-  --tripbar-yellow-accent:      oklch(55% 0.20 90 / 100%);
-  --tripbar-orange-accent:      oklch(40% 0.18 65 / 100%);
-  --tripbar-purple-accent:      oklch(40% 0.18 285 / 100%);
-  --tripbar-violet-accent:      oklch(40% 0.18 300 / 100%);
-  --tripbar-indigo-accent:      oklch(40% 0.18 275 / 100%);
-  --tripbar-pink-accent:        oklch(40% 0.18 350 / 100%);
-  --tripbar-cyan-accent:        oklch(40% 0.18 210 / 100%);
-  --tripbar-teal-accent:        oklch(40% 0.18 185 / 100%);
-  --tripbar-mint-accent:        oklch(40% 0.18 165 / 100%);
-  --tripbar-brown-accent:       oklch(40% 0.11 55 / 100%);
+  --tripbar-blue-accent:        oklch(55% 0.2 250 / 100%);
+  --tripbar-red-accent:         oklch(55% 0.2 24 / 100%);
+  --tripbar-green-accent:       oklch(55% 0.2 150 / 100%);
+  --tripbar-yellow-accent:      oklch(55% 0.2 90 / 100%);
+  --tripbar-orange-accent:      oklch(55% 0.2 65 / 100%);
+  --tripbar-purple-accent:      oklch(55% 0.2 285 / 100%);
+  --tripbar-violet-accent:      oklch(55% 0.2 300 / 100%);
+  --tripbar-indigo-accent:      oklch(55% 0.2 275 / 100%);
+  --tripbar-pink-accent:        oklch(55% 0.2 350 / 100%);
+  --tripbar-cyan-accent:        oklch(55% 0.2 210 / 100%);
+  --tripbar-teal-accent:        oklch(55% 0.2 185 / 100%);
+  --tripbar-mint-accent:        oklch(55% 0.2 165 / 100%);
+  --tripbar-brown-accent:       oklch(55% 0.2 55 / 100%);
   --tripbar-gray-accent:        oklch(from var(--rux-color-gray) 40% 0.05 h / 100%);
 
   /* Active accent — overridden per variant by .color-* and .unconfirmed */
